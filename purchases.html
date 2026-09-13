@@ -3,75 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MistCash - مشترياتي وسجل السحب</title>
+    <title>MistCash - مشترياتي</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-
-    <!-- الشريط العلوي -->
     <header class="navbar">
-        <div class="logo">
-            <i class="fa-solid fa-coins logo-icon"></i>
-            <span>MistCash</span>
-        </div>
-        <div class="user-stats">
-            <div class="stat-badge">
-                <i class="fa-solid fa-wallet"></i>
-                <span id="user-points">0</span> نقطة
-            </div>
-        </div>
+        <div class="logo"><i class="fa-solid fa-coins logo-icon"></i><span>MistCash</span></div>
+        <div class="stat-badge"><i class="fa-solid fa-wallet"></i><span id="user-points">0</span> نقطة</div>
     </header>
 
-    <!-- محتوى الصفحة -->
     <main class="container">
-        <section class="welcome-section">
-            <h2>سجل المشتريات والمكافآت <i class="fa-solid fa-bag-shopping"></i></h2>
-            <p>هنا تجد جميع الطلبات والمكافآت التي قمت باستبدالها وحالة كل طلب.</p>
-        </section>
-
-        <section class="rewards-section">
-            <div class="section-title">
-                <h3>طلبات السحب الأخيرة</h3>
-            </div>
-
-            <!-- جدول أو قائمة المشتريات -->
-            <div id="purchases-list" class="grid-cards">
-                <!-- حالة عدم وجود مشتريات (تظهر افتراضياً) -->
-                <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 40px 20px;">
-                    <i class="fa-solid fa-box-open" style="font-size: 48px; color: #94a3b8; margin-bottom: 15px;"></i>
-                    <h4 style="margin-bottom: 10px; color: #f8fafc;">لا توجد مشتريات بعد</h4>
-                    <p style="color: #94a3b8; margin-bottom: 20px;">لم تقم باستبدال نقاطك بأي مكافأة حتى الآن.</p>
-                    <a href="rewards.html" class="btn-action" style="display: inline-block; width: auto; padding: 10px 25px; text-decoration: none;">استبدل نقاطك الآن</a>
+        <div class="section-title"><i class="fa-solid fa-bag-shopping" style="color: #38bdf8;"></i> سجل طلباتك</div>
+        
+        <div class="grid-cards">
+            <div class="card" style="justify-content: center; text-align: center; padding: 40px 20px;">
+                <div>
+                    <i class="fa-solid fa-box-open" style="font-size: 40px; color: #94a3b8; margin-bottom: 10px;"></i>
+                    <p>لا توجد طلبات سحب سابقة حتى الآن.</p>
                 </div>
             </div>
-        </section>
+        </div>
     </main>
 
-    <!-- شريط التنقل السفلي -->
     <nav class="bottom-nav">
-        <a href="index.html" class="nav-item">
-            <i class="fa-solid fa-house"></i>
-            <span>الرئيسية</span>
-        </a>
-        <a href="rewards.html" class="nav-item">
-            <i class="fa-solid fa-gift"></i>
-            <span>الجوائز</span>
-        </a>
-        <a href="purchases.html" class="nav-item active">
-            <i class="fa-solid fa-bag-shopping"></i>
-            <span>مشترياتي</span>
-        </a>
-        <a href="referral.html" class="nav-item">
-            <i class="fa-solid fa-users"></i>
-            <span>الإحالة</span>
-        </a>
-        <a href="profile.html" class="nav-item">
-            <i class="fa-solid fa-user"></i>
-            <span>حسابي</span>
-        </a>
+        <a href="index.html" class="nav-item"><i class="fa-solid fa-house"></i><span>الرئيسية</span></a>
+        <a href="rewards.html" class="nav-item"><i class="fa-solid fa-gift"></i><span>الجوائز</span></a>
+        <a href="purchases.html" class="nav-item active"><i class="fa-solid fa-bag-shopping"></i><span>مشترياتي</span></a>
+        <a href="referral.html" class="nav-item"><i class="fa-solid fa-users"></i><span>الإحالة</span></a>
+        <a href="profile.html" class="nav-item"><i class="fa-solid fa-user"></i><span>حسابي</span></a>
     </nav>
-
 </body>
 </html>
