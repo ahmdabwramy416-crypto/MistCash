@@ -9,18 +9,15 @@
 </head>
 <body>
 
-  <!-- محتوى الصفحة الرئيسي -->
   <main class="container" style="padding: 20px; max-width: 500px; margin: 0 auto; text-align: center;">
-    
     <h2>حسابي</h2>
 
-    <!-- قسم تسجيل الدخول وإنشاء الحساب -->
-    <div class="auth-card" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 20px; margin-top: 20px; backdrop-filter: blur(10px);">
+    <div class="auth-card" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 20px; margin-top: 20px;">
       
+      <!-- نماذج التسجيل -->
       <div id="auth-forms">
-        <!-- نموذج تسجيل الدخول -->
         <form id="login-form" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px;">
-          <h3 style="margin-bottom: 10px;">تسجيل الدخول</h3>
+          <h3>تسجيل الدخول</h3>
           <input type="email" id="login-email" placeholder="البريد الإلكتروني" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #444; background: #1a1a1a; color: #fff; box-sizing: border-box;">
           <input type="password" id="login-password" placeholder="كلمة المرور" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #444; background: #1a1a1a; color: #fff; box-sizing: border-box;">
           <button type="submit" style="width: 100%; padding: 12px; border-radius: 8px; border: none; background: #3b82f6; color: #fff; font-weight: bold; cursor: pointer;">دخول</button>
@@ -28,28 +25,25 @@
 
         <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.1); margin: 20px 0;">
 
-        <!-- نموذج إنشاء حساب -->
         <form id="signup-form" style="display: flex; flex-direction: column; gap: 12px;">
-          <h3 style="margin-bottom: 10px;">إنشاء حساب جديد</h3>
+          <h3>إنشاء حساب جديد</h3>
           <input type="email" id="signup-email" placeholder="البريد الإلكتروني" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #444; background: #1a1a1a; color: #fff; box-sizing: border-box;">
           <input type="password" id="signup-password" placeholder="كلمة المرور" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #444; background: #1a1a1a; color: #fff; box-sizing: border-box;">
           <button type="submit" style="width: 100%; padding: 12px; border-radius: 8px; border: none; background: #10b981; color: #fff; font-weight: bold; cursor: pointer;">إنشاء حساب جديد</button>
         </form>
       </div>
 
-      <!-- معلومات المستخدم المسجل -->
+      <!-- معلومات المستخدم بعد الدخول -->
       <div id="user-info" style="display: none;">
         <i class="fa-solid fa-circle-user" style="font-size: 60px; color: #3b82f6; margin-bottom: 15px;"></i>
         <h3>مرحباً بك!</h3>
         <p style="font-size: 18px; margin: 15px 0;">رصيد النقاط: <strong id="user-points" style="color: #f59e0b;">0</strong> نقطة</p>
-        <button id="logout-btn" style="padding: 10px 20px; border-radius: 8px; border: none; background: #ef4444; color: #fff; font-weight: bold; cursor: pointer; margin-top: 10px;">تسجيل الخروج</button>
+        <button id="logout-btn" style="padding: 10px 20px; border-radius: 8px; border: none; background: #ef4444; color: #fff; font-weight: bold; cursor: pointer;">تسجيل الخروج</button>
       </div>
 
     </div>
-
   </main>
 
-  <!-- شريط التنقل السفلية -->
   <nav class="bottom-nav">
     <a href="index.html" class="nav-item"><i class="fa-solid fa-house"></i><span>الرئيسية</span></a>
     <a href="rewards.html" class="nav-item"><i class="fa-solid fa-gift"></i><span>المكافآت</span></a>
@@ -58,7 +52,73 @@
     <a href="profile.html" class="nav-item active"><i class="fa-solid fa-user"></i><span>حسابي</span></a>
   </nav>
 
-  <!-- ربط ملف Firebase البرمجي -->
-  <script type="module" src="app.js"></script>
+  <!-- كود تشغيل وتوصيل Firebase المباشر -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB6rnXLMDlvy0Eezc7MkdmP334EzPTKlGE",
+      authDomain: "mistcash-9a71c.firebaseapp.com",
+      projectId: "mistcash-9a71c",
+      storageBucket: "mistcash-9a71c.firebasestorage.app",
+      messagingSenderId: "819929785371",
+      appId: "1:819929785371:web:396e322f83319016bb44be",
+      measurementId: "G-FGBZZ1P9W6"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const authForms = document.getElementById('auth-forms');
+    const userInfo = document.getElementById('user-info');
+
+    // تسجيل حساب جديد
+    document.getElementById('signup-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('signup-email').value;
+      const password = document.getElementById('signup-password').value;
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await setDoc(doc(db, "users", userCredential.user.uid), { points: 0, createdAt: new Date() });
+        alert("تم إنشاء الحساب بنجاح!");
+      } catch (error) {
+        alert("خطأ: " + error.message);
+      }
+    });
+
+    // تسجيل الدخول
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        alert("تم تسجيل الدخول بنجاح!");
+      } catch (error) {
+        alert("خطأ: " + error.message);
+      }
+    });
+
+    // تسجيل الخروج
+    document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
+
+    // مراقبة حالة الحساب
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        authForms.style.display = 'none';
+        userInfo.style.display = 'block';
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if (userDoc.exists()) {
+          document.getElementById('user-points').textContent = userDoc.data().points || 0;
+        }
+      } else {
+        authForms.style.display = 'block';
+        userInfo.style.display = 'none';
+      }
+    });
+  </script>
 </body>
 </html>
