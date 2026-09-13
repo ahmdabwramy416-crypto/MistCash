@@ -3,582 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MistCash | العب واكسب بطاقات الهدايا</title>
-    <!-- Font Awesome Icons -->
+    <title>MistCash | كسب النقاط</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --bg-dark: #0b0f19;
-            --bg-card: #151c2c;
-            --bg-card-hover: #1e293b;
-            --accent-green: #10b981;
-            --accent-green-hover: #059669;
-            --accent-blue: #3b82f6;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: #232d42;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            user-select: none;
-        }
-
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            padding-bottom: 70px; /* Space for bottom nav on mobile */
-        }
-
-        /* Top Header */
-        header {
-            background-color: var(--bg-card);
-            border-bottom: 1px solid var(--border-color);
-            padding: 12px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.3rem;
-            font-weight: 800;
-            color: var(--accent-green);
-        }
-
-        .user-stats {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .stat-badge {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid var(--accent-green);
-            color: var(--accent-green);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        /* Top Navigation Bar (Desktop) */
-        nav.desktop-nav {
-            display: flex;
-            gap: 15px;
-        }
-
-        nav.desktop-nav button {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1rem;
-            font-weight: 600;
-            padding: 8px 16px;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        nav.desktop-nav button.active, nav.desktop-nav button:hover {
-            color: var(--text-main);
-            background-color: var(--bg-card-hover);
-        }
-
-        /* Main Container */
-        main {
-            flex: 1;
-            max-width: 1100px;
-            width: 100%;
-            margin: 20px auto;
-            padding: 0 15px;
-        }
-
-        /* Tab Content Pages */
-        .page {
-            display: none;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Hero / Banner */
-        .banner {
-            background: linear-gradient(135deg, #1e1b4b 0%, #311042 100%);
-            border: 1px solid #4338ca;
-            border-radius: 16px;
-            padding: 25px;
-            margin-bottom: 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .banner-text h2 {
-            font-size: 1.5rem;
-            margin-bottom: 8px;
-        }
-
-        .banner-text p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        .banner-icon {
-            font-size: 3.5rem;
-            color: #818cf8;
-        }
-
-        /* Section Title */
-        .section-title {
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .section-title i {
-            color: var(--accent-green);
-        }
-
-        /* Cards Grid */
-        .grid-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 18px;
-            margin-bottom: 30px;
-        }
-
-        .card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 18px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: transform 0.2s, border-color 0.2s;
-        }
-
-        .card:hover {
-            transform: translateY(-4px);
-            border-color: var(--accent-green);
-            background-color: var(--bg-card-hover);
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .card-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: var(--accent-green);
-        }
-
-        .card-title h4 {
-            font-size: 1rem;
-            margin-bottom: 2px;
-        }
-
-        .card-title p {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        .card-reward {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--accent-green);
-            font-weight: bold;
-            padding: 6px;
-            border-radius: 6px;
-            text-align: center;
-            font-size: 0.9rem;
-            margin: 10px 0;
-        }
-
-        .btn-action {
-            background-color: var(--accent-green);
-            color: #000;
-            border: none;
-            padding: 10px;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            width: 100%;
-            transition: background 0.2s;
-        }
-
-        .btn-action:hover {
-            background-color: var(--accent-green-hover);
-        }
-
-        /* Profile & History Styling */
-        .profile-card {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 20px;
-            border: 1px solid var(--border-color);
-            margin-bottom: 20px;
-        }
-
-        .profile-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: var(--accent-blue);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-        }
-
-        .history-list {
-            list-style: none;
-        }
-
-        .history-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        /* Bottom Navigation Bar (Mobile) */
-        nav.mobile-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: var(--bg-card);
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-around;
-            padding: 8px 0;
-            z-index: 1000;
-        }
-
-        nav.mobile-nav button {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            width: 20%;
-        }
-
-        nav.mobile-nav button i {
-            font-size: 1.2rem;
-        }
-
-        nav.mobile-nav button.active {
-            color: var(--accent-green);
-        }
-
-        /* Responsive Breakpoints */
-        @media (min-width: 768px) {
-            nav.mobile-nav { display: none; }
-            body { padding-bottom: 0; }
-        }
-
-        @media (max-width: 767px) {
-            nav.desktop-nav { display: none; }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Header -->
     <header>
-        <div class="logo">
-            <i class="fa-solid fa-gamepad"></i> MistCash
-        </div>
-
-        <!-- Desktop Navigation -->
+        <a href="index.html" class="logo"><i class="fa-solid fa-gamepad"></i> MistCash</a>
         <nav class="desktop-nav">
-            <button class="nav-btn active" onclick="switchPage('earn')"><i class="fa-solid fa-coins"></i> كسب النقاط</button>
-            <button class="nav-btn" onclick="switchPage('rewards')"><i class="fa-solid fa-gift"></i> الجوائز</button>
-            <button class="nav-btn" onclick="switchPage('referral')"><i class="fa-solid fa-users"></i> الاحالة</button>
-            <button class="nav-btn" onclick="switchPage('profile')"><i class="fa-solid fa-user"></i> الحساب</button>
+            <a href="index.html" class="active"><i class="fa-solid fa-coins"></i> كسب النقاط</a>
+            <a href="rewards.html"><i class="fa-solid fa-gift"></i> الجوائز</a>
+            <a href="referral.html"><i class="fa-solid fa-users"></i> الاحالة</a>
+            <a href="profile.html"><i class="fa-solid fa-user"></i> الحساب</a>
         </nav>
-
         <div class="user-stats">
-            <div class="stat-badge">
-                <i class="fa-solid fa-coins"></i>
-                <span id="user-coins">1,250</span>
-            </div>
+            <div class="stat-badge"><i class="fa-solid fa-coins"></i> <span>1,250</span></div>
         </div>
     </header>
 
-    <!-- Main Content -->
     <main>
-        <!-- PAGE 1: EARN / TASKS -->
-        <div id="page-earn" class="page active">
-            <div class="banner">
-                <div class="banner-text">
-                    <h2>العب واكسب النقاط مجاناً!</h2>
-                    <p>أكمل الاستطلاعات وتنزيل الألعاب لتحويل نقاطك إلى بطاقات هدايا حقيقية.</p>
-                </div>
-                <div class="banner-icon">
-                    <i class="fa-solid fa-trophy"></i>
-                </div>
+        <div class="banner">
+            <div class="banner-text">
+                <h2>العب واكسب النقاط مجاناً!</h2>
+                <p>أكمل الاستطلاعات وتنزيل الألعاب لتحويل نقاطك إلى بطاقات هدايا حقيقية.</p>
             </div>
-
-            <div class="section-title">
-                <i class="fa-solid fa-fire"></i> شبكات العروض الموصى بها (Offerwalls)
-            </div>
-
-            <div class="grid-cards">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-icon" style="color: #6366f1;"><i class="fa-solid fa-list-check"></i></div>
-                        <div class="card-title">
-                            <h4>AdGate Media</h4>
-                            <p>ألعاب واستطلاعات عالية العائد</p>
-                        </div>
-                    </div>
-                    <div class="card-reward">+50 إلى +10,000 نقطة</div>
-                    <button class="btn-action" onclick="openOfferwall('AdGate')">دخول الجدار</button>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-icon" style="color: #ec4899;"><i class="fa-solid fa-square-poll-vertical"></i></div>
-                        <div class="card-title">
-                            <h4>BitLabs</h4>
-                            <p>استطلاعات رأي سريعة ومباشرة</p>
-                        </div>
-                    </div>
-                    <div class="card-reward">+200 إلى +1,500 نقطة</div>
-                    <button class="btn-action" onclick="openOfferwall('BitLabs')">دخول الجدار</button>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-icon" style="color: #f59e0b;"><i class="fa-solid fa-download"></i></div>
-                        <div class="card-title">
-                            <h4>CPALead</h4>
-                            <p>تثبيت تطبيقات وتجارب مجانية</p>
-                        </div>
-                    </div>
-                    <div class="card-reward">+100 إلى +3,000 نقطة</div>
-                    <button class="btn-action" onclick="openOfferwall('CPALead')">دخول الجدار</button>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-icon" style="color: #10b981;"><i class="fa-solid fa-gamepad"></i></div>
-                        <div class="card-title">
-                            <h4>OfferToro</h4>
-                            <p>مهام ألعاب وتحديات احترافية</p>
-                        </div>
-                    </div>
-                    <div class="card-reward">+500 إلى +15,000 نقطة</div>
-                    <button class="btn-action" onclick="openOfferwall('OfferToro')">دخول الجدار</button>
-                </div>
-            </div>
+            <div class="banner-icon"><i class="fa-solid fa-trophy"></i></div>
         </div>
 
-        <!-- PAGE 2: REWARDS -->
-        <div id="page-rewards" class="page">
-            <div class="section-title">
-                <i class="fa-solid fa-gift"></i> متجر بطاقات الهدايا والسحب
+        <div class="section-title"><i class="fa-solid fa-fire"></i> شبكات العروض الموصى بها (Offerwalls)</div>
+
+        <div class="grid-cards">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="color: #6366f1;"><i class="fa-solid fa-list-check"></i></div>
+                    <div class="card-title"><h4>AdGate Media</h4><p>ألعاب واستطلاعات عالية العائد</p></div>
+                </div>
+                <div class="card-reward">+50 إلى +10,000 نقطة</div>
+                <button class="btn-action" onclick="alert('جاري التوجيه إلى AdGate...')">دخول الجدار</button>
             </div>
 
-            <div class="grid-cards">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-icon" style="color: #ea4335;"><i class="fa-brands fa-google-play"></i></div>
-                        <div class="card-title">
-                            <h4>Google Play $5</h4>
-                            <p>كود بطاقة جوجل بلاي</p>
-                        </div>
-                    </div>
-                    <div class="card-reward">5,000 نقطة</div>
-                    <button class="btn-action" onclick="redeemReward(5000, 'بطاقة Google Play $5')">استبدال الان</button>
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="color: #ec4899;"><i class="fa-solid fa-square-poll-vertical"></i></div>
+                    <div class="card-title"><h4>BitLabs</h4><p>استطلاعات رأي سريعة ومباشرة</p></div>
                 </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-icon" style="color: #ff9900;"><i class="fa-brands fa-amazon"></i></div>
-                        <div class="card-title">
-                            <h4>Amazon Gift Card $10</h4>
-                            <p>رصيد تسوق أمازون</p>
-                        </div>
-                    </div>
-                    <div class="card-reward">10,000 نقطة</div>
-                    <button class="btn-action" onclick="redeemReward(10000, 'بطاقة Amazon $10')">استبدال الان</button>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-icon" style="color: #00439c;"><i class="fa-brands fa-playstation"></i></div>
-                        <div class="card-title">
-                            <h4>PlayStation $10</h4>
-                            <p>بطاقة بلايستيشن ستور</p>
-                        </div>
-                    </div>
-                    <div class="card-reward">10,000 نقطة</div>
-                    <button class="btn-action" onclick="redeemReward(10000, 'بطاقة PlayStation $10')">استبدال الان</button>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-icon" style="color: #0070ba;"><i class="fa-brands fa-paypal"></i></div>
-                        <div class="card-title">
-                            <h4>PayPal Cash $5</h4>
-                            <p>تحويل مباشر لحسابك</p>
-                        </div>
-                    </div>
-                    <div class="card-reward">5,000 نقطة</div>
-                    <button class="btn-action" onclick="redeemReward(5000, 'سحب PayPal $5')">استبدال الان</button>
-                </div>
+                <div class="card-reward">+200 إلى +1,500 نقطة</div>
+                <button class="btn-action" onclick="alert('جاري التوجيه إلى BitLabs...')">دخول الجدار</button>
             </div>
-        </div>
 
-        <!-- PAGE 3: REFERRAL -->
-        <div id="page-referral" class="page">
-            <div class="profile-card">
-                <div class="section-title">
-                    <i class="fa-solid fa-user-plus"></i> برنامج الإحالة والتسويق
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="color: #f59e0b;"><i class="fa-solid fa-download"></i></div>
+                    <div class="card-title"><h4>CPALead</h4><p>تثبيت تطبيقات وتجارب مجانية</p></div>
                 </div>
-                <p style="color: var(--text-muted); margin-bottom: 15px;">
-                    شارِك رابط الإحالة الخاص بك مع أصدقائك واكسب <strong>10%</strong> من إجمالي النقاط التي يحصلون عليها مدى الحياة!
-                </p>
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" id="ref-link" value="https://mistcash.co/register?ref=user123" readonly 
-                           style="flex: 1; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border-color); color: #fff; border-radius: 8px;">
-                    <button class="btn-action" style="width: auto; padding: 0 20px;" onclick="copyReferral()">نسخ الرابط</button>
-                </div>
+                <div class="card-reward">+100 إلى +3,000 نقطة</div>
+                <button class="btn-action" onclick="alert('جاري التوجيه إلى CPALead...')">دخول الجدار</button>
             </div>
-        </div>
 
-        <!-- PAGE 4: PROFILE -->
-        <div id="page-profile" class="page">
-            <div class="profile-card">
-                <div class="profile-header">
-                    <div class="avatar"><i class="fa-solid fa-user"></i></div>
-                    <div>
-                        <h3>أحمد محمد</h3>
-                        <p style="color: var(--text-muted); font-size: 0.9rem;">ahmed@example.com</p>
-                    </div>
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="color: #10b981;"><i class="fa-solid fa-gamepad"></i></div>
+                    <div class="card-title"><h4>OfferToro</h4><p>مهام ألعاب وتحديات احترافية</p></div>
                 </div>
-                <h4><i class="fa-solid fa-clock-rotate-left"></i> سجل العمليات الأخير</h4>
-                <ul class="history-list">
-                    <li class="history-item">
-                        <span>إكمال استطلاع BitLabs</span>
-                        <span style="color: var(--accent-green); font-weight: bold;">+250 نقطة</span>
-                    </li>
-                    <li class="history-item">
-                        <span>مكافأة التسجيل</span>
-                        <span style="color: var(--accent-green); font-weight: bold;">+1,000 نقطة</span>
-                    </li>
-                </ul>
+                <div class="card-reward">+500 إلى +15,000 نقطة</div>
+                <button class="btn-action" onclick="alert('جاري التوجيه إلى OfferToro...')">دخول الجدار</button>
             </div>
         </div>
     </main>
 
-    <!-- Mobile Navigation (Bottom Bar) -->
     <nav class="mobile-nav">
-        <button class="nav-btn active" onclick="switchPage('earn')">
-            <i class="fa-solid fa-coins"></i>
-            <span>الكسب</span>
-        </button>
-        <button class="nav-btn" onclick="switchPage('rewards')">
-            <i class="fa-solid fa-gift"></i>
-            <span>الجوائز</span>
-        </button>
-        <button class="nav-btn" onclick="switchPage('referral')">
-            <i class="fa-solid fa-users"></i>
-            <span>الإحالة</span>
-        </button>
-        <button class="nav-btn" onclick="switchPage('profile')">
-            <i class="fa-solid fa-user"></i>
-            <span>حسابي</span>
-        </button>
+        <a href="index.html" class="active"><i class="fa-solid fa-coins"></i><span>الكسب</span></a>
+        <a href="rewards.html"><i class="fa-solid fa-gift"></i><span>الجوائز</span></a>
+        <a href="referral.html"><i class="fa-solid fa-users"></i><span>الإحالة</span></a>
+        <a href="profile.html"><i class="fa-solid fa-user"></i><span>حسابي</span></a>
     </nav>
-
-    <!-- Scripts -->
-    <script>
-        let currentCoins = 1250;
-
-        function switchPage(pageId) {
-            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-
-            document.getElementById('page-' + pageId).classList.add('active');
-
-            const activeBtns = document.querySelectorAll(`button[onclick="switchPage('${pageId}')"]`);
-            activeBtns.forEach(btn => btn.classList.add('active'));
-        }
-
-        function openOfferwall(providerName) {
-            alert("جاري توجيهك إلى جدار عروض " + providerName + "...");
-        }
-
-        function redeemReward(cost, rewardName) {
-            if (currentCoins >= cost) {
-                currentCoins -= cost;
-                document.getElementById('user-coins').innerText = currentCoins.toLocaleString();
-                alert("تم تقديم طلبك لـ (" + rewardName + ") بنجاح!");
-            } else {
-                alert("عذراً، رصيدك الحالي غير كافٍ. تحتاج إلى " + (cost - currentCoins) + " نقطة إضافية.");
-            }
-        }
-
-        function copyReferral() {
-            const copyText = document.getElementById("ref-link");
-            copyText.select();
-            document.execCommand("copy");
-            alert("تم نسخ رابط الإحالة الخاص بك بنجاح!");
-        }
-    </script>
 </body>
 </html>
