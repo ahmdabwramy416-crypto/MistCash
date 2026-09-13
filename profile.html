@@ -52,10 +52,17 @@
     <a href="profile.html" class="nav-item active"><i class="fa-solid fa-user"></i><span>حسابي</span></a>
   </nav>
 
-  <!-- كود تشغيل وتوصيل Firebase المباشر -->
+  <!-- كود تشغيل وتوصيل Firebase المباشر مع خاصية إرسال التأكيد -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { 
+      getAuth, 
+      createUserWithEmailAndPassword, 
+      signInWithEmailAndPassword, 
+      signOut, 
+      onAuthStateChanged,
+      sendEmailVerification 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -75,15 +82,21 @@
     const authForms = document.getElementById('auth-forms');
     const userInfo = document.getElementById('user-info');
 
-    // تسجيل حساب جديد
+    // تسجيل حساب جديد + إرسال رسالة التأكيد
     document.getElementById('signup-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('signup-email').value;
       const password = document.getElementById('signup-password').value;
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        
+        // إرسال رسالة التأكيد على البريد الإلكتروني
+        await sendEmailVerification(userCredential.user);
+        
+        // إنشاء مستند المستخدم في قاعدة البيانات
         await setDoc(doc(db, "users", userCredential.user.uid), { points: 0, createdAt: new Date() });
-        alert("تم إنشاء الحساب بنجاح!");
+        
+        alert("تم إنشاء الحساب بنجاح! تم إرسال رسالة تأكيد إلى بريدك الإلكتروني.");
       } catch (error) {
         alert("خطأ: " + error.message);
       }
