@@ -1,9 +1,14 @@
-// استدعاء مكتبات Firebase عبر CDN
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { 
+  getAuth, 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, 
+  signOut, 
+  onAuthStateChanged,
+  sendEmailVerification 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// إعدادات Firebase الخاصة بمشروعك
 const firebaseConfig = {
   apiKey: "AIzaSyB6rnXLMDlvy0Eezc7MkdmP334EzPTKlGE",
   authDomain: "mistcash-9a71c.firebaseapp.com",
@@ -14,42 +19,85 @@ const firebaseConfig = {
   measurementId: "G-FGBZZ1P9W6"
 };
 
-// تهيئة الخدمة
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// تحديث عرض النقاط في الصفحة
-function updateUI(points) {
-    const pointsElements = document.querySelectorAll('#user-points');
-    pointsElements.forEach(el => {
-        el.textContent = points || 0;
+document.addEventListener("DOMContentLoaded", () => {
+  const authForms = document.getElementById('auth-forms');
+  const userInfo = document.getElementById('user-info');
+  const signupForm = document.getElementById('signup-form');
+  const loginForm = document.getElementById('login-form');
+  const logoutBtn = document.getElementById('logout-btn');
+
+  // إنشاء حساب
+  if (signupForm) {
+    signupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('signup-email').value;
+      const password = document.getElementById('signup-password').value;
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await sendEmailVerification(userCredential.user);
+        await setDoc(doc(db, "users", userCredential.user.uid), { points: 0, createdAt: new Date() });
+        alert("تم إنشاء الحساب بنجاح! تم إرسال رسالة تأكيد إلى بريدك.");
+      } catch (error) {
+        alert("خطأ: " + error.message);
+      }
     });
-}
+  }
 
-// تحميل نقاط المستخدم
-async function loadUserData(userId) {
-    try {
-        const userRef = doc(db, "users", userId);
-        const userSnap = await getDoc(userRef);
-        
-        if (userSnap.exists()) {
-            updateUI(userSnap.data().points);
-        } else {
-            // إنشاء مستخدم جديد بنقاط أولية 0
-            await setDoc(userRef, { points: 0, createdAt: new Date() });
-            updateUI(0);
-        }
-    } catch (error) {
-        console.error("خطأ في جلب البيانات:", error);
-    }
-}
+  // تسجيل دخول
+  if (loginForm) {
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        alert("تم تسجيل الدخول بنجاح!");
+      } catch (error) {
+        alert("خطأ: " + error.message);
+      }
+    });
+  }
 
-// متابعة حالة تسجيل الدخول
-auth.onAuthStateChanged(user => {
+  // خروج
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => signOut(auth));
+  }
+
+  // مراقبة حالة المستخدم وترتيب البيانات
+  onAuthStateChanged(auth, async (user) => {
     if (user) {
-        loadUserData(user.uid);
+      if (authForms) authForms.style.display = 'none';
+      if (userInfo) userInfo.style.display = 'block';
+
+      const userEmailText = document.getElementById('user-email-text');
+      if (userEmailText) userEmailText.textContent = user.email;
+
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      const points = userDoc.exists() ? (userDoc.data().points || 0) : 0;
+
+      // تحديث النقاط في كافة المواضع
+      document.querySelectorAll('#user-points, #profile-points').forEach(el => el.textContent = points);
+
+      // توليد رابط الإحالة الخاص بالمستخدم
+      const refInput = document.getElementById('ref-link');
+      if (refInput) {
+        refInput.value = `${window.location.origin}/index.html?ref=${user.uid}`;
+      }
+
+      // إسناد UID لجدار العروض CPALead
+      const cpaIframe = document.getElementById('cpa-wall');
+      if (cpaIframe) {
+        cpaIframe.src = `https://www.appstorevault.mobi/wall/Fja8DpRW?subid=${user.uid}`;
+      }
     } else {
-        updateUI(0);
+      if (authForms) authForms.style.display = 'block';
+      if (userInfo) userInfo.style.display = 'none';
+      const refInput = document.getElementById('ref-link');
+      if (refInput) refInput.value = "يرجى تسجيل الدخول أولاً للحصول على رابطك";
     }
+  });
 });
