@@ -15,7 +15,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #0d0519; color: #ffffff; padding-bottom: 90px; }
         
-        /* Top Navigation Header */
         .top-bar {
             background: linear-gradient(135deg, #24103f, #1a0b2e);
             padding: 15px 20px;
@@ -31,23 +30,19 @@
 
         .container { padding: 15px; max-width: 600px; margin: 0 auto; }
 
-        /* Lucky Wheel Section */
         .wheel-section { background: #1a0b2e; border: 1px solid #3b1568; border-radius: 16px; padding: 20px; text-align: center; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
         .wheel-container { position: relative; width: 200px; height: 200px; margin: 15px auto; }
         .wheel { width: 100%; height: 100%; border-radius: 50%; border: 6px solid #a855f7; background: conic-gradient(#7c3aed 0deg 60deg, #4c1d95 60deg 120deg, #7c3aed 120deg 180deg, #4c1d95 180deg 240deg, #7c3aed 240deg 300deg, #4c1d95 300deg 360deg); transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); }
         .spin-btn { background: #a855f7; color: #fff; border: none; padding: 10px 24px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4); }
 
-        /* Tabs for Offerwalls */
         .section-title { font-size: 1.1rem; color: #c084fc; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
         .offer-tabs { display: flex; gap: 10px; margin-bottom: 15px; }
         .tab-btn { flex: 1; background: #1a0b2e; border: 1px solid #3b1568; color: #aaa; padding: 10px; border-radius: 10px; cursor: pointer; font-weight: bold; text-align: center; }
         .tab-btn.active { background: #7c3aed; color: #fff; border-color: #a855f7; }
 
-        /* Offerwall Frame */
         .offer-frame-container { background: #1a0b2e; border: 1px solid #3b1568; border-radius: 16px; overflow: hidden; height: 600px; }
         iframe { width: 100%; height: 100%; border: none; background: #fff; }
 
-        /* Bottom Navigation Bar */
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #150727; border-top: 1px solid #3b1568; display: flex; justify-content: space-around; padding: 12px 0; z-index: 1000; }
         .nav-item { color: #8b5cf6; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 0.75rem; gap: 4px; }
         .nav-item.active { color: #c084fc; font-weight: bold; }
@@ -61,7 +56,7 @@
             <div class="avatar" id="avatar">U</div>
             <div>
                 <div style="font-size: 0.85rem; color: #aaa;">مرحباً بك</div>
-                <div id="user-email" style="font-size: 0.9rem; font-weight: bold;">...</div>
+                <div id="user-email" style="font-size: 0.9rem; font-weight: bold;">جاري التحميل...</div>
             </div>
         </div>
         <div class="points-card">
@@ -70,7 +65,6 @@
     </div>
 
     <div class="container">
-        <!-- Lucky Wheel -->
         <div class="wheel-section">
             <div class="section-title"><i class="fa-solid fa-spinner"></i> عجلة الحظ اليومية</div>
             <div class="wheel-container">
@@ -79,7 +73,6 @@
             <button class="spin-btn" id="spin-button" onclick="spinWheel()">أدر العجلة الآن</button>
         </div>
 
-        <!-- Offerwalls -->
         <div class="section-title"><i class="fa-solid fa-list-check"></i> شركات العروض والمهام</div>
         <div class="offer-tabs">
             <div class="tab-btn active" onclick="switchWall('cpalead', this)">CPALead</div>
@@ -92,7 +85,6 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation -->
     <div class="bottom-nav">
         <a href="index.html" class="nav-item active"><i class="fa-solid fa-house"></i>الرئيسية</a>
         <a href="rewards.html" class="nav-item"><i class="fa-solid fa-gift"></i>المكافآت</a>
@@ -116,11 +108,12 @@
 
         let currentUid = null;
 
+        // التحقق من حالة المستخدم بدون إحداث حلقة تحويل مزعجة
         auth.onAuthStateChanged((user) => {
             if (user) {
                 currentUid = user.uid;
-                document.getElementById("user-email").innerText = user.email.split('@')[0];
-                document.getElementById("avatar").innerText = user.email.charAt(0).toUpperCase();
+                document.getElementById("user-email").innerText = user.email ? user.email.split('@')[0] : "مستخدم";
+                document.getElementById("avatar").innerText = user.email ? user.email.charAt(0).toUpperCase() : "U";
 
                 database.ref('users/' + currentUid + '/points').on('value', (snapshot) => {
                     document.getElementById("user-points").innerText = snapshot.val() || 0;
@@ -128,6 +121,7 @@
 
                 switchWall('cpalead');
             } else {
+                // التوجيه إلى صفحة تسجيل الدخول فقط إذا لم يكن مسجلاً حقاً
                 window.location.href = "login.html";
             }
         });
@@ -140,18 +134,20 @@
             
             const frame = document.getElementById("offerwall-frame");
             if (provider === 'cpalead') {
-                frame.src = `https://main.cpalead.com/generic_offer_wall.php?pub=761899&subid=${currentUid}`;
-            } else if (provider === 'wall2') {
-                frame.src = `about:blank`; // استبدلها برابط الشركة الثانية لاحقاً
-            } else if (provider === 'wall3') {
-                frame.src = `about:blank`; // استبدلها برابط الشركة الثالثة لاحقاً
+                frame.src = `https://main.cpalead.com/generic_offer_wall.php?pub=761899&subid=${currentUid || 'guest'}`;
+            } else {
+                frame.src = `about:blank`;
             }
         }
 
         function spinWheel() {
+            if (!currentUid) {
+                alert("الرجاء تسجيل الدخول أولاً!");
+                return;
+            }
             const btn = document.getElementById("spin-button");
             btn.disabled = true;
-            const randomDegree = Math.floor(Math.random() * 360) + 1440; // 4 لفات على الأقل
+            const randomDegree = Math.floor(Math.random() * 360) + 1440;
             const wheel = document.getElementById("wheel");
             wheel.style.transform = `rotate(${randomDegree}deg)`;
 
