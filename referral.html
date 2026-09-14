@@ -17,16 +17,17 @@
     </div>
   </header>
 
-  <main style="padding: 20px; text-align: center;">
-    <div class="hero-banner">
-      <h2>ادعُ أصدقاءك واكسب 🪙</h2>
-      <p style="color: #ccc; font-size: 13px;">احصل على 100 نقطة عن كل صديق يقوم بالتسجيل من خلال رابطك!</p>
-    </div>
+  <main style="padding: 20px; max-width: 500px; margin: 0 auto; text-align: center;">
+    <i class="fa-solid fa-users-viewfinder" style="font-size: 60px; color: var(--accent-yellow); margin-bottom: 15px;"></i>
+    <h2 style="color: #fff; margin-bottom: 10px;">ادعُ أصدقاءك واكسب النقاط! 🎁</h2>
+    <p style="color: #aaa; font-size: 14px; margin-bottom: 25px;">احصل على <b>100 نقطة</b> عن كل صديق يسجل في التطبيق عبر رابطك الخاص.</p>
 
-    <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 20px; margin-top: 20px;">
-      <h3 style="margin-bottom: 15px; color: var(--accent-yellow);">رابط الدعوة الخاص بك</h3>
-      <input type="text" id="ref-link" value="جاري التحميل..." readonly style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: #0c0d12; color: #fff; text-align: center; margin-bottom: 15px;">
-      <button onclick="navigator.clipboard.writeText(document.getElementById('ref-link').value); alert('تم نسخ رابط الدعوة!');" style="background: var(--accent-gold); border: none; padding: 12px 25px; font-weight: bold; border-radius: 8px; cursor: pointer;">نسخ الرابط</button>
+    <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px;">
+      <label style="color: #888; font-size: 12px; display: block; margin-bottom: 8px;">رابط الدعوة الخاص بك:</label>
+      <input type="text" id="ref-link" readonly value="جاري التحميل..." style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: #0c0d12; color: #fff; text-align: center; margin-bottom: 12px; box-sizing: border-box;">
+      <button id="copy-ref-btn" style="width: 100%; padding: 12px; border-radius: 8px; border: none; background: var(--accent-gold); color: #000; font-weight: bold; cursor: pointer;">
+        <i class="fa-solid fa-copy"></i> نسخ الرابط
+      </button>
     </div>
   </main>
 
