@@ -5,7 +5,9 @@ import {
   signInWithEmailAndPassword, 
   signOut, 
   onAuthStateChanged,
-  sendEmailVerification 
+  sendEmailVerification,
+  GoogleAuthProvider,
+  signInWithPopup
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
@@ -22,8 +24,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const googleProvider = new GoogleAuthProvider();
 
-// حفظ الداعي (المرسِل) من رابط URL
+// حفظ المعرف المرجعي للداعي
 const urlParams = new URLSearchParams(window.location.search);
 const referrerUid = urlParams.get('ref');
 if (referrerUid) {
@@ -33,10 +36,44 @@ if (referrerUid) {
 document.addEventListener("DOMContentLoaded", () => {
   const signupForm = document.getElementById('signup-form');
   const loginForm = document.getElementById('login-form');
+  const googleBtn = document.getElementById('google-btn');
   const logoutBtn = document.getElementById('logout-btn');
   const copyRefBtn = document.getElementById('copy-ref-btn');
   const path = window.location.pathname;
   const isLoginPage = path.includes("login.html");
+
+  // تسجيل الدخول الحساب باستخدام Google
+  if (googleBtn) {
+    googleBtn.addEventListener('click', async () => {
+      try {
+        const result = await signInWithPopup(auth, googleProvider);
+        const user = result.user;
+        
+        // التحقق مما إذا كان المستخدم يملك مستنداً سابقاً في قاعدة البيانات
+        const userDocRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userDocRef);
+
+        if (!userDoc.exists()) {
+          // إنشاء حساب ومستند جديد للمستخدم
+          await setDoc(userDocRef, { points: 0, createdAt: new Date() });
+
+          // إضافة مكافأة الإحالة للداعي إن وجد
+          const savedReferrer = localStorage.getItem('lootplay_referrer');
+          if (savedReferrer && savedReferrer !== user.uid) {
+            try {
+              const refUserRef = doc(db, "users", savedReferrer);
+              await updateDoc(refUserRef, { points: increment(100) });
+              localStorage.removeItem('lootplay_referrer');
+            } catch (err) { console.log("خطأ إحالة:", err); }
+          }
+        }
+
+        window.location.href = "index.html";
+      } catch (error) {
+        alert("خطأ أثناء تسجيل الدخول بـ Google: " + error.message);
+      }
+    });
+  }
 
   // نسخ رابط الإحالة
   if (copyRefBtn) {
@@ -49,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // تسجيل حساب جديد ونسب مكافأة الإحالة تلقائياً
+  // إنشاء حساب عادي بالبريد
   if (signupForm) {
     signupForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -58,18 +95,15 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         await sendEmailVerification(userCredential.user);
-
-        // إنشاء مستند المستخدم
         await setDoc(doc(db, "users", userCredential.user.uid), { points: 0, createdAt: new Date() });
 
-        // إضافة 100 نقطة للشخص الذي دعاه إن وجد
         const savedReferrer = localStorage.getItem('lootplay_referrer');
         if (savedReferrer && savedReferrer !== userCredential.user.uid) {
           try {
             const refUserRef = doc(db, "users", savedReferrer);
             await updateDoc(refUserRef, { points: increment(100) });
             localStorage.removeItem('lootplay_referrer');
-          } catch(err) { console.log("تعذر إضافة نقاط الداعي:", err); }
+          } catch(err) {}
         }
 
         alert("تم إنشاء الحساب بنجاح!");
@@ -80,7 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // تسجيل الدخول
+  // تسجيل الدخول بالبريد
   if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -95,14 +129,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // الخروج
+  // تسجيل الخروج
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
       signOut(auth).then(() => { window.location.href = "login.html"; });
     });
   }
 
-  // إدارة الحماية والنقاط وعجلة الحظ
+  // فحص حالة الجلسة
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
       if (!isLoginPage) window.location.href = "login.html";
@@ -110,7 +144,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (isLoginPage) {
         window.location.href = "index.html";
       } else {
-        // تحديث النقاط في الواجهة
         const userRef = doc(db, "users", user.uid);
         const userDoc = await getDoc(userRef);
         let currentPoints = userDoc.exists() ? (userDoc.data().points || 0) : 0;
@@ -130,14 +163,13 @@ document.addEventListener("DOMContentLoaded", () => {
           cpaIframe.src = `https://www.appstorevault.mobi/wall/Fja8DpRW?subid=${user.uid}`;
         }
 
-        // البرمجة الحقيقية لعجلة الحظ
         setupWheel(user.uid, userRef);
       }
     }
   });
 });
 
-// رسم وإدارة عجلة الحظ
+// إعداد عجلة الحظ
 function setupWheel(uid, userRef) {
   const canvas = document.getElementById('wheel-canvas');
   const spinBtn = document.getElementById('spin-btn');
@@ -161,7 +193,6 @@ function setupWheel(uid, userRef) {
       ctx.lineTo(150, 150);
       ctx.fill();
 
-      // كتابة الأرقام داخل العجلة
       ctx.save();
       ctx.translate(150, 150);
       ctx.rotate(angle + sliceAngle / 2);
@@ -195,15 +226,13 @@ function setupWheel(uid, userRef) {
         isSpinning = false;
         spinBtn.disabled = false;
 
-        // إضافة النقاط لقاعدة البيانات الحقيقية
         await updateDoc(userRef, { points: increment(prize) });
         alert(`مبروك! ربحت ${prize} نقطة تم إضافتها لحسابك!`);
 
-        // تحديث الرقم الظاهر بالصفحة
         const updatedDoc = await getDoc(userRef);
         const newPoints = updatedDoc.data().points;
         document.querySelectorAll('#user-points, #profile-points').forEach(el => el.textContent = newPoints);
       }
     }, 15);
   });
-            }
+}
