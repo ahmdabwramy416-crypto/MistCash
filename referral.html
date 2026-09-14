@@ -1,44 +1,130 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Loot Play - نظام الإحالة</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MistCash - دعوة الأصدقاء</title>
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #0d0519; color: #ffffff; padding-bottom: 90px; }
+        
+        /* Header */
+        .top-bar {
+            background: linear-gradient(135deg, #24103f, #1a0b2e);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #3b1568;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .points-card { background: linear-gradient(90deg, #f59e0b, #d97706); padding: 8px 16px; border-radius: 20px; font-weight: bold; color: #fff; }
+
+        .container { padding: 15px; max-width: 600px; margin: 0 auto; text-align: center; }
+
+        /* Referral Card */
+        .ref-card { background: #1a0b2e; border: 1px solid #3b1568; border-radius: 16px; padding: 20px; margin-top: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .ref-card i { font-size: 3rem; color: #a855f7; margin-bottom: 10px; }
+        .ref-title { font-size: 1.3rem; font-weight: bold; color: #c084fc; margin-bottom: 8px; }
+        .ref-desc { color: #aaa; font-size: 0.9rem; margin-bottom: 20px; line-height: 1.5; }
+
+        /* Code Box */
+        .box-title { text-align: right; font-size: 0.85rem; color: #c084fc; margin-bottom: 5px; font-weight: bold; }
+        .input-box { background: #0d0519; border: 1px solid #7c3aed; border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .code-text { font-family: monospace; font-size: 1.1rem; color: #f59e0b; font-weight: bold; word-break: break-all; }
+        .copy-btn { background: #7c3aed; color: white; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+
+        /* Bottom Navigation */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #150727; border-top: 1px solid #3b1568; display: flex; justify-content: space-around; padding: 12px 0; z-index: 1000; }
+        .nav-item { color: #8b5cf6; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 0.75rem; gap: 4px; }
+        .nav-item.active { color: #c084fc; font-weight: bold; }
+        .nav-item i { font-size: 1.2rem; }
+    </style>
 </head>
 <body>
 
-  <header class="top-header">
-    <div style="font-weight: bold; color: var(--accent-yellow);">LOOT PLAY</div>
-    <div class="coin-badge">
-      <i class="fa-solid fa-coins"></i>
-      <span id="user-points">0</span>
+    <div class="top-bar">
+        <h3 style="color: #c084fc;"><i class="fa-solid fa-user-plus"></i> نظام الإحالة</h3>
+        <div class="points-card">
+            🪙 <span id="user-points">0</span>
+        </div>
     </div>
-  </header>
 
-  <main style="padding: 20px; max-width: 500px; margin: 0 auto; text-align: center;">
-    <i class="fa-solid fa-users-viewfinder" style="font-size: 60px; color: var(--accent-yellow); margin-bottom: 15px;"></i>
-    <h2 style="color: #fff; margin-bottom: 10px;">ادعُ أصدقاءك واكسب النقاط! 🎁</h2>
-    <p style="color: #aaa; font-size: 14px; margin-bottom: 25px;">احصل على <b>100 نقطة</b> عن كل صديق يسجل في التطبيق عبر رابطك الخاص.</p>
+    <div class="container">
+        <div class="ref-card">
+            <i class="fa-solid fa-users-rays"></i>
+            <div class="ref-title">ادعُ أصدقاءك واربح النقاط!</div>
+            <div class="ref-desc">احصل على <b>50 نقطة</b> فورية لكل صديق يقوم بالتسجيل في الموقع عن طريق كود أو رابط الدعوة الخاص بك.</div>
 
-    <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px;">
-      <label style="color: #888; font-size: 12px; display: block; margin-bottom: 8px;">رابط الدعوة الخاص بك:</label>
-      <input type="text" id="ref-link" readonly value="جاري التحميل..." style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: #0c0d12; color: #fff; text-align: center; margin-bottom: 12px; box-sizing: border-box;">
-      <button id="copy-ref-btn" style="width: 100%; padding: 12px; border-radius: 8px; border: none; background: var(--accent-gold); color: #000; font-weight: bold; cursor: pointer;">
-        <i class="fa-solid fa-copy"></i> نسخ الرابط
-      </button>
+            <!-- Code Box -->
+            <div class="box-title">كود الدعوة الخاص بك:</div>
+            <div class="input-box">
+                <span class="code-text" id="ref-code">جاري التحميل...</span>
+                <button class="copy-btn" onclick="copyText('ref-code')"><i class="fa-solid fa-copy"></i> نسخ</button>
+            </div>
+
+            <!-- Link Box -->
+            <div class="box-title">رابط الدعوة المباشر:</div>
+            <div class="input-box">
+                <span class="code-text" id="ref-link" style="font-size: 0.8rem;">جاري التحميل...</span>
+                <button class="copy-btn" onclick="copyText('ref-link')"><i class="fa-solid fa-copy"></i> نسخ</button>
+            </div>
+        </div>
     </div>
-  </main>
 
-  <nav class="bottom-nav">
-    <a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i><span>الرئيسية</span></a>
-    <a href="wheel.html" class="nav-link"><i class="fa-solid fa-dharmachakra"></i><span>العجلة</span></a>
-    <a href="rewards.html" class="nav-link"><i class="fa-solid fa-gift"></i><span>المكافآت</span></a>
-    <a href="referral.html" class="nav-link active"><i class="fa-solid fa-users"></i><span>الإحالة</span></a>
-    <a href="profile.html" class="nav-link"><i class="fa-solid fa-user"></i><span>حسابي</span></a>
-  </nav>
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item"><i class="fa-solid fa-house"></i>الرئيسية</a>
+        <a href="rewards.html" class="nav-item"><i class="fa-solid fa-gift"></i>المكافآت</a>
+        <a href="referral.html" class="nav-item active"><i class="fa-solid fa-user-plus"></i>الدعوة</a>
+        <a href="profile.html" class="nav-item"><i class="fa-solid fa-user"></i>حسابي</a>
+    </div>
 
-  <script type="module" src="app.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDwecoLNEfzLufKWKFK4ps6PqqjE2EIXEQ",
+            authDomain: "loot-play-71c16.firebaseapp.com",
+            databaseURL: "https://loot-play-71c16-default-rtdb.firebaseio.com",
+            projectId: "loot-play-71c16",
+            storageBucket: "loot-play-71c16.firebasestorage.app",
+            appId: "1:477272517069:web:72ab9748e4afc97f5dfc84"
+        };
+
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                const uid = user.uid;
+                
+                database.ref('users/' + uid + '/points').on('value', (snapshot) => {
+                    document.getElementById("user-points").innerText = snapshot.val() || 0;
+                });
+
+                // إظهار كود الدعوة ورابط الدعوة
+                document.getElementById("ref-code").innerText = uid.substring(0, 8).toUpperCase();
+                const inviteUrl = `${window.location.origin}/login.html?ref=${uid}`;
+                document.getElementById("ref-link").innerText = inviteUrl;
+
+            } else {
+                window.location.href = "login.html";
+            }
+        });
+
+        function copyText(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert("تم نسخ النص بنجاح!");
+            });
+        }
+    </script>
 </body>
 </html>
