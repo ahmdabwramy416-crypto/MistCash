@@ -1,147 +1,201 @@
-:root {
-  --bg-main: #0c0d12;
-  --card-bg: #181a24;
-  --accent-gold: #f59e0b;
-  --accent-yellow: #fbbf24;
-  --text-primary: #ffffff;
-  --text-secondary: #9ca3af;
-  --border-color: rgba(245, 158, 11, 0.2);
-}
-
+/* إعدادات العام والتنسيق */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-  background-color: var(--bg-main);
-  color: var(--text-primary);
-  padding-bottom: 75px;
+  background-color: #0f172a;
+  color: #f8fafc;
   direction: rtl;
+  min-height: 100vh;
+  padding-bottom: 40px;
 }
 
-/* Header */
-.top-header {
+/* الشريط العلوي (Header) */
+.navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
-  background: var(--card-bg);
-  border-bottom: 1px solid var(--border-color);
+  padding: 15px 25px;
+  background-color: #1e293b;
+  border-bottom: 2px solid #334155;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-.coin-badge {
-  background: rgba(245, 158, 11, 0.15);
-  border: 1px solid var(--accent-gold);
-  color: var(--accent-yellow);
-  padding: 6px 16px;
-  border-radius: 20px;
+.logo {
+  font-size: 22px;
   font-weight: bold;
+  color: #f59e0b;
+  letter-spacing: 1px;
+}
+
+.user-info {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 15px;
+  font-size: 16px;
 }
 
-/* Hero Section */
-.hero-banner {
-  background: linear-gradient(135deg, #1f1a0e, #3a2e12);
-  border: 1px solid var(--accent-gold);
-  border-radius: 16px;
-  padding: 20px;
-  margin: 15px;
-  text-align: center;
+.btn-logout {
+  background-color: #ef4444;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
 }
 
-.hero-banner h2 {
-  color: var(--accent-yellow);
-  margin-bottom: 8px;
+.btn-logout:hover {
+  background-color: #dc2626;
 }
 
-/* Quick Actions Grid */
-.actions-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+/* الحاوية الرئيسية */
+.container {
+  max-width: 800px;
+  margin: 30px auto;
   padding: 0 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* قسم CPALead */
+.cpa-section {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  padding: 25px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.cpa-section h2 {
+  color: #10b981;
+  margin-bottom: 10px;
+}
+
+.cpa-section p {
+  color: #94a3b8;
   margin-bottom: 20px;
 }
 
-.action-btn {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  padding: 15px 10px;
+.cpa-btn {
+  display: inline-block;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff;
+  padding: 14px 28px;
+  font-size: 18px;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  transition: all 0.3s ease;
+}
+
+.cpa-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.5);
+  background: linear-gradient(135deg, #059669, #047857);
+}
+
+/* قسم عجلة الحظ */
+.wheel-section {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  padding: 25px;
   border-radius: 12px;
   text-align: center;
-  text-decoration: none;
-  color: white;
+}
+
+.wheel-section h2 {
+  color: #f59e0b;
+  margin-bottom: 15px;
+}
+
+.wheel-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  font-size: 13px;
+  gap: 15px;
+}
+
+#wheel-canvas {
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+.btn-spin {
+  background-color: #f59e0b;
+  color: #0f172a;
+  border: none;
+  padding: 12px 30px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-spin:hover {
+  background-color: #d97706;
+}
+
+.btn-spin:disabled {
+  background-color: #64748b;
+  cursor: not-allowed;
+}
+
+/* قسم دعوة الأصدقاء */
+.referral-section {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  padding: 25px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.referral-section h2 {
+  color: #3b82f6;
+  margin-bottom: 10px;
+}
+
+.referral-section p {
+  color: #94a3b8;
+  margin-bottom: 15px;
+}
+
+.ref-box {
+  display: flex;
+  gap: 10px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.ref-box input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #334155;
+  background-color: #0f172a;
+  color: #fff;
+  text-align: center;
+}
+
+.btn-copy {
+  background-color: #3b82f6;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
   font-weight: bold;
 }
 
-.action-btn i {
-  font-size: 24px;
-  color: var(--accent-yellow);
-}
-
-/* Section Title */
-.section-title {
-  padding: 0 15px;
-  margin-bottom: 10px;
-  color: var(--accent-yellow);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-/* Offerwall Wrapper */
-.offerwall-container {
-  margin: 0 15px;
-  border-radius: 12px;
-  overflow: hidden;
-  height: 650px;
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-}
-
-.offerwall-container iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-
-/* Bottom Navigation */
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  height: 65px;
-  background: var(--card-bg);
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  border-top: 1px solid var(--border-color);
-}
-
-.nav-link {
-  color: var(--text-secondary);
-  text-decoration: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  font-size: 11px;
-}
-
-.nav-link.active, .nav-link:hover {
-  color: var(--accent-yellow);
-}
-
-.nav-link i {
-  font-size: 18px;
+.btn-copy:hover {
+  background-color: #2563eb;
 }
