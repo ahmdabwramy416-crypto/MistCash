@@ -1,41 +1,114 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Loot Play - ملفي الشخصي</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MistCash - حسابي</title>
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #0d0519; color: #ffffff; padding-bottom: 90px; }
+        
+        .top-bar {
+            background: linear-gradient(135deg, #24103f, #1a0b2e);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #3b1568;
+            position: sticky; top: 0; z-index: 100;
+        }
+
+        .container { padding: 15px; max-width: 600px; margin: 0 auto; }
+
+        /* Profile Card */
+        .profile-card { background: #1a0b2e; border: 1px solid #3b1568; border-radius: 16px; padding: 25px; text-align: center; margin-top: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .big-avatar { width: 80px; height: 80px; background: linear-gradient(135deg, #a855f7, #7c3aed); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold; margin: 0 auto 15px auto; box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4); }
+        .user-email-title { font-size: 1.1rem; font-weight: bold; color: #e9d5ff; margin-bottom: 5px; }
+        .user-uid { font-size: 0.8rem; color: #aaa; margin-bottom: 20px; font-family: monospace; }
+
+        .stat-box { background: #0d0519; border: 1px solid #3b1568; border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .stat-title { color: #c084fc; font-weight: bold; font-size: 0.95rem; }
+        .stat-val { color: #f59e0b; font-weight: bold; font-size: 1.1rem; }
+
+        .logout-btn { background: #ef4444; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1rem; margin-top: 10px; }
+
+        /* Bottom Navigation */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #150727; border-top: 1px solid #3b1568; display: flex; justify-content: space-around; padding: 12px 0; z-index: 1000; }
+        .nav-item { color: #8b5cf6; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 0.75rem; gap: 4px; }
+        .nav-item.active { color: #c084fc; font-weight: bold; }
+        .nav-item i { font-size: 1.2rem; }
+    </style>
 </head>
 <body>
 
-  <header class="top-header">
-    <div style="font-weight: bold; color: var(--accent-yellow);">LOOT PLAY</div>
-    <div class="coin-badge">
-      <i class="fa-solid fa-coins"></i>
-      <span id="user-points">0</span>
+    <div class="top-bar">
+        <h3 style="color: #c084fc;"><i class="fa-solid fa-user"></i> حسابي الشخصي</h3>
     </div>
-  </header>
 
-  <main style="padding: 20px; max-width: 500px; margin: 0 auto; text-align: center;">
-    <h2 style="color: var(--accent-yellow); margin-bottom: 20px;">حسابي</h2>
+    <div class="container">
+        <div class="profile-card">
+            <div class="big-avatar" id="avatar">U</div>
+            <div class="user-email-title" id="user-email">جاري التحميل...</div>
+            <div class="user-uid" id="user-id">UID: ...</div>
 
-    <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px;">
-      <i class="fa-solid fa-user-astronaut" style="font-size: 60px; color: var(--accent-yellow); margin-bottom: 15px;"></i>
-      <h3 id="user-email-text" style="color: #fff; font-size: 16px; margin-bottom: 10px;">جاري التحميل...</h3>
-      <p style="font-size: 18px; margin: 15px 0;">رصيد النقاط: <strong id="profile-points" style="color: var(--accent-yellow);">0</strong> نقطة</p>
-      <button id="logout-btn" style="padding: 12px 30px; border-radius: 8px; border: none; background: #ef4444; color: #fff; font-weight: bold; cursor: pointer; width: 100%;">تسجيل الخروج</button>
+            <div class="stat-box">
+                <span class="stat-title"><i class="fa-solid fa-coins"></i> إجمالي النقاط</span>
+                <span class="stat-val" id="user-points">0</span>
+            </div>
+
+            <button class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</button>
+        </div>
     </div>
-  </main>
 
-  <nav class="bottom-nav">
-    <a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i><span>الرئيسية</span></a>
-    <a href="wheel.html" class="nav-link"><i class="fa-solid fa-dharmachakra"></i><span>العجلة</span></a>
-    <a href="rewards.html" class="nav-link"><i class="fa-solid fa-gift"></i><span>المكافآت</span></a>
-    <a href="referral.html" class="nav-link"><i class="fa-solid fa-users"></i><span>الإحالة</span></a>
-    <a href="profile.html" class="nav-link active"><i class="fa-solid fa-user"></i><span>حسابي</span></a>
-  </nav>
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item"><i class="fa-solid fa-house"></i>الرئيسية</a>
+        <a href="rewards.html" class="nav-item"><i class="fa-solid fa-gift"></i>المكافآت</a>
+        <a href="referral.html" class="nav-item"><i class="fa-solid fa-user-plus"></i>الدعوة</a>
+        <a href="profile.html" class="nav-item active"><i class="fa-solid fa-user"></i>حسابي</a>
+    </div>
 
-  <script type="module" src="app.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDwecoLNEfzLufKWKFK4ps6PqqjE2EIXEQ",
+            authDomain: "loot-play-71c16.firebaseapp.com",
+            databaseURL: "https://loot-play-71c16-default-rtdb.firebaseio.com",
+            projectId: "loot-play-71c16",
+            storageBucket: "loot-play-71c16.firebasestorage.app",
+            appId: "1:477272517069:web:72ab9748e4afc97f5dfc84"
+        };
+
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                const uid = user.uid;
+                document.getElementById("user-email").innerText = user.email;
+                document.getElementById("user-id").innerText = "ID: " + uid;
+                document.getElementById("avatar").innerText = user.email.charAt(0).toUpperCase();
+
+                database.ref('users/' + uid + '/points').on('value', (snapshot) => {
+                    document.getElementById("user-points").innerText = snapshot.val() || 0;
+                });
+            } else {
+                window.location.href = "login.html";
+            }
+        });
+
+        function logout() {
+            auth.signOut().then(() => {
+                window.location.href = "login.html";
+            });
+        }
+    </script>
 </body>
 </html>
