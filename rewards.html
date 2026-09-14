@@ -1,46 +1,38 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MistCash - الجوائز</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>العروض والمكافآت - MistCash</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <header class="navbar">
-        <div class="logo"><i class="fa-solid fa-coins logo-icon"></i><span>MistCash</span></div>
-        <div class="stat-badge"><i class="fa-solid fa-wallet"></i><span id="user-points">0</span> نقطة</div>
-    </header>
 
-    <main class="container">
-        <div class="section-title"><i class="fa-solid fa-gift" style="color: #10b981;"></i> الجوائز المتاحة</div>
-        
-        <div class="grid-cards">
-            <div class="card">
-                <div class="card-info">
-                    <h4>بطاقة Free Fire</h4>
-                    <p>100 جوهرة مقابل 1000 نقطة</p>
-                </div>
-                <button class="btn-action">استبدال</button>
-            </div>
-            <div class="card">
-                <div class="card-info">
-                    <h4>بطاقة PUBG Mobile</h4>
-                    <p>60 UC مقابل 1200 نقطة</p>
-                </div>
-                <button class="btn-action">استبدال</button>
-            </div>
-        </div>
-    </main>
+  <main class="container" style="padding: 15px; max-width: 800px; margin: 0 auto; text-align: center;">
+    <h2>إكمال العروض واكتساب النقاط</h2>
+    <p style="color: #aaa; margin-bottom: 20px;">أكمل العروض أدناه لجمع النقاط وتحويلها إلى مكافآت!</p>
 
-    <nav class="bottom-nav">
-        <a href="index.html" class="nav-item"><i class="fa-solid fa-house"></i><span>الرئيسية</span></a>
-        <a href="rewards.html" class="nav-item active"><i class="fa-solid fa-gift"></i><span>الجوائز</span></a>
-        <a href="purchases.html" class="nav-item"><i class="fa-solid fa-bag-shopping"></i><span>مشترياتي</span></a>
-        <a href="referral.html" class="nav-item"><i class="fa-solid fa-users"></i><span>الإحالة</span></a>
-        <a href="profile.html" class="nav-item"><i class="fa-solid fa-user"></i><span>حسابي</span></a>
-    </nav>
-    <script type="module" src="app.js"></script>
+    <!-- جدار عروض CPALead -->
+    <div class="offerwall-holder" style="width: 100%; overflow: hidden; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); background: #1a1a1a;">
+      <iframe 
+        sandbox='allow-popups allow-same-origin allow-scripts allow-forms allow-top-navigation-by-user-activation allow-popups-to-escape-sandbox' 
+        referrerpolicy='no-referrer' 
+        src='https://www.appstorevault.mobi/wall/Fja8DpRW' 
+        style='width: 100%; height: 800px; border: none;'>
+      </iframe>
+    </div>
+  </main>
+
+  <!-- شريط التنقل السفلية -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item"><i class="fa-solid fa-house"></i><span>الرئيسية</span></a>
+    <a href="rewards.html" class="nav-item active"><i class="fa-solid fa-gift"></i><span>المكافآت</span></a>
+    <a href="purchases.html" class="nav-item"><i class="fa-solid fa-bag-shopping"></i><span>المشتريات</span></a>
+    <a href="referral.html" class="nav-item"><i class="fa-solid fa-users"></i><span>الإحالة</span></a>
+    <a href="profile.html" class="nav-item"><i class="fa-solid fa-user"></i><span>حسابي</span></a>
+  </nav>
+
+  <script type="module" src="app.js"></script>
 </body>
 </html>
