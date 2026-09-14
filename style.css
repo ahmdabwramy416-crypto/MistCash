@@ -1,123 +1,151 @@
-/* إعدادات العام والتنسيق */
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap');
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Tajawal', sans-serif;
 }
 
 body {
-  background-color: #0f172a;
-  color: #f8fafc;
+  background: #0d1117;
+  color: #c9d1d9;
   direction: rtl;
   min-height: 100vh;
-  padding-bottom: 40px;
+  padding-bottom: 50px;
 }
 
-/* الشريط العلوي (Header) */
-.navbar {
+/* الهيدر العلوي */
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 25px;
-  background-color: #1e293b;
-  border-bottom: 2px solid #334155;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  padding: 15px 20px;
+  background: #161b22;
+  border-bottom: 1px solid #30363d;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .logo {
   font-size: 22px;
-  font-weight: bold;
-  color: #f59e0b;
-  letter-spacing: 1px;
-}
-
-.user-info {
+  font-weight: 900;
+  color: #f1e05a;
   display: flex;
   align-items: center;
-  gap: 15px;
-  font-size: 16px;
+  gap: 8px;
 }
 
-.btn-logout {
-  background-color: #ef4444;
-  color: #fff;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 6px;
-  cursor: pointer;
+.user-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.points-badge {
+  background: #21262d;
+  border: 1px solid #30363d;
+  padding: 6px 14px;
+  border-radius: 20px;
+  color: #58a6ff;
   font-weight: bold;
-  transition: background 0.2s;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.btn-logout:hover {
-  background-color: #dc2626;
+.points-badge i {
+  color: #f1e05a;
 }
 
-/* الحاوية الرئيسية */
-.container {
-  max-width: 800px;
-  margin: 30px auto;
+.btn-logout-icon {
+  background: #21262d;
+  border: 1px solid #30363d;
+  color: #f85149;
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s;
+}
+
+.btn-logout-icon:hover {
+  background: #b82520;
+  color: #fff;
+}
+
+/* الحاوية الرئيسية للكروت */
+.main-wrapper {
+  max-width: 650px;
+  margin: 25px auto;
   padding: 0 15px;
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  gap: 20px;
 }
 
-/* قسم CPALead */
-.cpa-section {
-  background-color: #1e293b;
-  border: 1px solid #334155;
-  padding: 25px;
-  border-radius: 12px;
+/* التنسيق العام لكروت الصفحة */
+.card {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 16px;
+  padding: 20px;
   text-align: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
-.cpa-section h2 {
-  color: #10b981;
+.card h2 {
+  font-size: 20px;
+  color: #f0f6fc;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.card p {
+  font-size: 14px;
+  color: #8b949e;
+  margin-bottom: 18px;
+}
+
+/* كرت CPALead المخصص */
+.cpa-banner-card {
+  background: linear-gradient(145deg, #161b22, #1c2128);
+  border: 1px solid #238636;
+}
+
+.card-icon {
+  font-size: 32px;
+  color: #3fb950;
   margin-bottom: 10px;
 }
 
-.cpa-section p {
-  color: #94a3b8;
-  margin-bottom: 20px;
-}
-
-.cpa-btn {
-  display: inline-block;
-  background: linear-gradient(135deg, #10b981, #059669);
+.btn-cpa-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #238636;
   color: #ffffff;
-  padding: 14px 28px;
-  font-size: 18px;
+  padding: 12px 24px;
+  font-size: 16px;
   font-weight: bold;
   text-decoration: none;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-  transition: all 0.3s ease;
-}
-
-.cpa-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.5);
-  background: linear-gradient(135deg, #059669, #047857);
-}
-
-/* قسم عجلة الحظ */
-.wheel-section {
-  background-color: #1e293b;
-  border: 1px solid #334155;
-  padding: 25px;
   border-radius: 12px;
-  text-align: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(35, 134, 54, 0.3);
 }
 
-.wheel-section h2 {
-  color: #f59e0b;
-  margin-bottom: 15px;
+.btn-cpa-action:hover {
+  background: #2ea043;
+  transform: translateY(-2px);
 }
 
-.wheel-container {
+/* عجلة الحظ */
+.wheel-box {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -126,76 +154,82 @@ body {
 
 #wheel-canvas {
   border-radius: 50%;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  max-width: 100%;
+  height: auto;
 }
 
-.btn-spin {
-  background-color: #f59e0b;
-  color: #0f172a;
+.btn-spin-main {
+  background: #1f6feb;
+  color: #fff;
   border: none;
   padding: 12px 30px;
   font-size: 16px;
   font-weight: bold;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
+  width: 100%;
+  max-width: 250px;
   transition: background 0.2s;
 }
 
-.btn-spin:hover {
-  background-color: #d97706;
+.btn-spin-main:hover {
+  background: #388bfd;
 }
 
-.btn-spin:disabled {
-  background-color: #64748b;
+.btn-spin-main:disabled {
+  background: #30363d;
+  color: #8b949e;
   cursor: not-allowed;
 }
 
-/* قسم دعوة الأصدقاء */
-.referral-section {
-  background-color: #1e293b;
-  border: 1px solid #334155;
-  padding: 25px;
-  border-radius: 12px;
-  text-align: center;
+/* إطار العروض iframe */
+.iframe-container {
+  width: 100%;
+  height: 500px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #30363d;
+  background: #0d1117;
 }
 
-.referral-section h2 {
-  color: #3b82f6;
-  margin-bottom: 10px;
+.iframe-container iframe {
+  width: 100%;
+  height: 100%;
 }
 
-.referral-section p {
-  color: #94a3b8;
-  margin-bottom: 15px;
-}
-
-.ref-box {
+/* قسم الإحالة */
+.ref-input-group {
   display: flex;
-  gap: 10px;
-  max-width: 500px;
-  margin: 0 auto;
+  gap: 8px;
 }
 
-.ref-box input {
+.ref-input-group input {
   flex: 1;
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #334155;
-  background-color: #0f172a;
-  color: #fff;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  color: #58a6ff;
+  padding: 10px 14px;
+  border-radius: 8px;
   text-align: center;
+  font-size: 14px;
+  direction: ltr;
 }
 
-.btn-copy {
-  background-color: #3b82f6;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
+.btn-copy-action {
+  background: #21262d;
+  border: 1px solid #30363d;
+  color: #c9d1d9;
+  padding: 10px 16px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
 }
 
-.btn-copy:hover {
-  background-color: #2563eb;
+.btn-copy-action:hover {
+  background: #30363d;
+  color: #fff;
 }
