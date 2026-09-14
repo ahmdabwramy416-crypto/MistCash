@@ -1,103 +1,156 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Loot Play - متجر المكافآت</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    .rewards-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-      padding: 15px;
-    }
-    .reward-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 15px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-    }
-    .reward-card img {
-      width: 60px;
-      height: 60px;
-      object-fit: contain;
-    }
-    .claim-btn {
-      background: var(--accent-gold);
-      color: #000;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-weight: bold;
-      width: 100%;
-      cursor: pointer;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MistCash - المتجر والمكافآت</title>
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #0d0519; color: #ffffff; padding-bottom: 90px; }
+        
+        /* Top Navigation Header */
+        .top-bar {
+            background: linear-gradient(135deg, #24103f, #1a0b2e);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #3b1568;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .points-card { background: linear-gradient(90deg, #f59e0b, #d97706); padding: 8px 16px; border-radius: 20px; font-weight: bold; color: #fff; }
+
+        .container { padding: 15px; max-width: 600px; margin: 0 auto; }
+        .section-title { font-size: 1.2rem; color: #c084fc; margin: 15px 0; display: flex; align-items: center; gap: 8px; }
+
+        /* Store Grid Cards */
+        .rewards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; }
+        .reward-card { background: #1a0b2e; border: 1px solid #3b1568; border-radius: 16px; padding: 15px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .reward-card img { width: 60px; height: 60px; object-fit: contain; margin-bottom: 10px; }
+        .reward-title { font-weight: bold; font-size: 0.95rem; margin-bottom: 5px; color: #e9d5ff; }
+        .reward-cost { color: #f59e0b; font-weight: bold; font-size: 0.85rem; margin-bottom: 12px; }
+        .claim-btn { background: #7c3aed; color: white; border: none; padding: 8px 16px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; }
+        .claim-btn:hover { background: #9333ea; }
+
+        /* Bottom Navigation Bar */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #150727; border-top: 1px solid #3b1568; display: flex; justify-content: space-around; padding: 12px 0; z-index: 1000; }
+        .nav-item { color: #8b5cf6; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 0.75rem; gap: 4px; }
+        .nav-item.active { color: #c084fc; font-weight: bold; }
+        .nav-item i { font-size: 1.2rem; }
+    </style>
 </head>
 <body>
 
-  <header class="top-header">
-    <div style="font-weight: bold; color: var(--accent-yellow);">LOOT PLAY</div>
-    <div class="coin-badge">
-      <i class="fa-solid fa-coins"></i>
-      <span id="user-points">0</span>
-    </div>
-  </header>
-
-  <div class="section-title" style="margin-top: 15px;">
-    <i class="fa-solid fa-store"></i>
-    <h3>استبدل نقاطك بالجوائز</h3>
-  </div>
-
-  <div class="rewards-grid">
-    <!-- Google Play -->
-    <div class="reward-card">
-      <i class="fa-brands fa-google-play" style="font-size: 45px; color: #34a853;"></i>
-      <h4>بطاقة $5 Google Play</h4>
-      <span style="color: var(--accent-yellow); font-size: 13px;">5,000 نقطة</span>
-      <button class="claim-btn">سحب الآن</button>
+    <div class="top-bar">
+        <h3 style="color: #c084fc;"><i class="fa-solid fa-gift"></i> متجر المكافآت</h3>
+        <div class="points-card">
+            🪙 <span id="user-points">0</span>
+        </div>
     </div>
 
-    <!-- PUBG UC -->
-    <div class="reward-card">
-      <i class="fa-solid fa-gamepad" style="font-size: 45px; color: #f59e0b;"></i>
-      <h4>60 شدة PUBG UC</h4>
-      <span style="color: var(--accent-yellow); font-size: 13px;">1,200 نقطة</span>
-      <button class="claim-btn">سحب الآن</button>
+    <div class="container">
+        <!-- PUBG Mobile Section -->
+        <div class="section-title"><i class="fa-solid fa-gamepad"></i> شدات ببجي (PUBG UC)</div>
+        <div class="rewards-grid">
+            <div class="reward-card">
+                <img src="https://cdns.iconmonstr.com/wp-content/assets/preview/2012/240/iconmonstr-coin-10.png" alt="PUBG">
+                <div class="reward-title">60 UC</div>
+                <div class="reward-cost">🪙 1,000 نقطة</div>
+                <button class="claim-btn" onclick="redeemReward('PUBG 60 UC', 1000)">استبدال</button>
+            </div>
+            <div class="reward-card">
+                <img src="https://cdns.iconmonstr.com/wp-content/assets/preview/2012/240/iconmonstr-coin-10.png" alt="PUBG">
+                <div class="reward-title">325 UC</div>
+                <div class="reward-cost">🪙 5,000 نقطة</div>
+                <button class="claim-btn" onclick="redeemReward('PUBG 325 UC', 5000)">استبدال</button>
+            </div>
+        </div>
+
+        <!-- Google Play Section -->
+        <div class="section-title"><i class="fa-brands fa-google-play"></i> بطاقات جوجل بلاي</div>
+        <div class="rewards-grid">
+            <div class="reward-card">
+                <img src="https://cdns.iconmonstr.com/wp-content/assets/preview/2012/240/iconmonstr-coin-10.png" alt="Google Play">
+                <div class="reward-title">بطاقة 5$</div>
+                <div class="reward-cost">🪙 5,000 نقطة</div>
+                <button class="claim-btn" onclick="redeemReward('Google Play $5', 5000)">استبدال</button>
+            </div>
+            <div class="reward-card">
+                <img src="https://cdns.iconmonstr.com/wp-content/assets/preview/2012/240/iconmonstr-coin-10.png" alt="Google Play">
+                <div class="reward-title">بطاقة 10$</div>
+                <div class="reward-cost">🪙 10,000 نقطة</div>
+                <button class="claim-btn" onclick="redeemReward('Google Play $10', 10000)">استبدال</button>
+            </div>
+        </div>
     </div>
 
-    <!-- Free Fire Diamonds -->
-    <div class="reward-card">
-      <i class="fa-solid fa-gem" style="font-size: 45px; color: #3b82f6;"></i>
-      <h4>110 جوهرة Free Fire</h4>
-      <span style="color: var(--accent-yellow); font-size: 13px;">1,000 نقطة</span>
-      <button class="claim-btn">سحب الآن</button>
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item"><i class="fa-solid fa-house"></i>الرئيسية</a>
+        <a href="rewards.html" class="nav-item active"><i class="fa-solid fa-gift"></i>المكافآت</a>
+        <a href="referral.html" class="nav-item"><i class="fa-solid fa-user-plus"></i>الدعوة</a>
+        <a href="profile.html" class="nav-item"><i class="fa-solid fa-user"></i>حسابي</a>
     </div>
 
-    <!-- Payeer / Cash -->
-    <div class="reward-card">
-      <i class="fa-solid fa-wallet" style="font-size: 45px; color: #10b981;"></i>
-      <h4>$1 Payeer Cash</h4>
-      <span style="color: var(--accent-yellow); font-size: 13px;">1,000 نقطة</span>
-      <button class="claim-btn">سحب الآن</button>
-    </div>
-  </div>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDwecoLNEfzLufKWKFK4ps6PqqjE2EIXEQ",
+            authDomain: "loot-play-71c16.firebaseapp.com",
+            databaseURL: "https://loot-play-71c16-default-rtdb.firebaseio.com",
+            projectId: "loot-play-71c16",
+            storageBucket: "loot-play-71c16.firebasestorage.app",
+            appId: "1:477272517069:web:72ab9748e4afc97f5dfc84"
+        };
 
-  <nav class="bottom-nav">
-    <a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i><span>الرئيسية</span></a>
-    <a href="wheel.html" class="nav-link"><i class="fa-solid fa-dharmachakra"></i><span>العجلة</span></a>
-    <a href="rewards.html" class="nav-link active"><i class="fa-solid fa-gift"></i><span>المكافآت</span></a>
-    <a href="referral.html" class="nav-link"><i class="fa-solid fa-users"></i><span>الإحالة</span></a>
-    <a href="profile.html" class="nav-link"><i class="fa-solid fa-user"></i><span>حسابي</span></a>
-  </nav>
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
 
-  <script type="module" src="app.js"></script>
+        let currentUid = null;
+        let currentPoints = 0;
+
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUid = user.uid;
+                database.ref('users/' + currentUid + '/points').on('value', (snapshot) => {
+                    currentPoints = snapshot.val() || 0;
+                    document.getElementById("user-points").innerText = currentPoints;
+                });
+            } else {
+                window.location.href = "login.html";
+            }
+        });
+
+        function redeemReward(rewardName, cost) {
+            if (currentPoints < cost) {
+                alert("رصيد نقاطك غير كافٍ لاستبدال هذه الجائزة!");
+                return;
+            }
+
+            const playerData = prompt(`للحصول على ${rewardName}، يرجى إدخال (ايدي اللعبة ID أو البريد الإلكتروني):`);
+            if (!playerData) return;
+
+            // خصم النقاط وإنشاء طلب السحب
+            database.ref('users/' + currentUid + '/points').set(currentPoints - cost);
+            
+            database.ref('withdrawals').push({
+                uid: currentUid,
+                reward: rewardName,
+                cost: cost,
+                playerData: playerData,
+                status: 'pending',
+                date: new Date().toLocaleString()
+            });
+
+            alert("تم تقديم طلبك بنجاح! سيتم إرسال المكافأة لك خلال 24 ساعة.");
+        }
+    </script>
 </body>
 </html>
