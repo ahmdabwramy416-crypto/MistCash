@@ -27,9 +27,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const signupForm = document.getElementById('signup-form');
   const loginForm = document.getElementById('login-form');
   const logoutBtn = document.getElementById('logout-btn');
-  const currentPage = window.location.pathname.split("/").pop();
+  
+  // معرفة اسم الصفحة الحالية
+  const path = window.location.pathname;
+  const isLoginPage = path.endsWith("login.html");
 
-  // إنشاء حساب جديد
+  // إنعاش إنشاء حساب
   if (signupForm) {
     signupForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -39,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         await sendEmailVerification(userCredential.user);
         await setDoc(doc(db, "users", userCredential.user.uid), { points: 0, createdAt: new Date() });
-        alert("تم إنشاء الحساب بنجاح! جاري تحويلك للموقع...");
+        alert("تم إنشاء الحساب بنجاح!");
         window.location.href = "index.html";
       } catch (error) {
         alert("خطأ: " + error.message);
@@ -47,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // تسجيل الدخول
+  // إنعاش تسجيل الدخول
   if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -57,12 +60,12 @@ document.addEventListener("DOMContentLoaded", () => {
         await signInWithEmailAndPassword(auth, email, password);
         window.location.href = "index.html";
       } catch (error) {
-        alert("خطأ في البيانات: " + error.message);
+        alert("خطأ: " + error.message);
       }
     });
   }
 
-  // تسجيل الخروج
+  // خروج
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
       signOut(auth).then(() => {
@@ -71,36 +74,38 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // فحص حالة الحساب والتوجيه التلقائي للحماية
+  // فحص حارس الدخول
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
-      // إذا لم يكن مسجلاً وهو ليس في صفحة الدخول، حوّله لصفحة الدخول
-      if (currentPage !== "login.html" && currentPage !== "") {
+      if (!isLoginPage) {
         window.location.href = "login.html";
       }
     } else {
-      // إذا كان مسجلاً وبداخل صفحة الدخول، حوّله للرئيسية مباشرة
-      if (currentPage === "login.html") {
+      if (isLoginPage) {
         window.location.href = "index.html";
-      }
+      } else {
+        // إظهار الصفحة بعد التأكد من تسجيل الدخول
+        const mainBody = document.getElementById('main-body');
+        if (mainBody) mainBody.style.display = 'block';
 
-      // تحديث البيانات والنقاط
-      const userDoc = await getDoc(doc(db, "users", user.uid));
-      const points = userDoc.exists() ? (userDoc.data().points || 0) : 0;
+        // جلب البيانات
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        const points = userDoc.exists() ? (userDoc.data().points || 0) : 0;
 
-      document.querySelectorAll('#user-points, #profile-points').forEach(el => el.textContent = points);
+        document.querySelectorAll('#user-points, #profile-points').forEach(el => el.textContent = points);
 
-      const userEmailText = document.getElementById('user-email-text');
-      if (userEmailText) userEmailText.textContent = user.email;
+        const userEmailText = document.getElementById('user-email-text');
+        if (userEmailText) userEmailText.textContent = user.email;
 
-      const refInput = document.getElementById('ref-link');
-      if (refInput) {
-        refInput.value = `${window.location.origin}/login.html?ref=${user.uid}`;
-      }
+        const refInput = document.getElementById('ref-link');
+        if (refInput) {
+          refInput.value = `${window.location.origin}/login.html?ref=${user.uid}`;
+        }
 
-      const cpaIframe = document.getElementById('cpa-wall');
-      if (cpaIframe) {
-        cpaIframe.src = `https://www.appstorevault.mobi/wall/Fja8DpRW?subid=${user.uid}`;
+        const cpaIframe = document.getElementById('cpa-wall');
+        if (cpaIframe) {
+          cpaIframe.src = `https://www.appstorevault.mobi/wall/Fja8DpRW?subid=${user.uid}`;
+        }
       }
     }
   });
