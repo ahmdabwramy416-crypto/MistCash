@@ -7,7 +7,8 @@ import {
   onAuthStateChanged,
   sendEmailVerification,
   GoogleAuthProvider,
-  signInWithPopup
+  signInWithRedirect,
+  getRedirectResult
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
@@ -26,7 +27,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 
-// حفظ المعرف المرجعي للداعي
+// حفظ كود الإحالة من الرابط
 const urlParams = new URLSearchParams(window.location.search);
 const referrerUid = urlParams.get('ref');
 if (referrerUid) {
@@ -42,35 +43,38 @@ document.addEventListener("DOMContentLoaded", () => {
   const path = window.location.pathname;
   const isLoginPage = path.includes("login.html");
 
-  // تسجيل الدخول الحساب باستخدام Google
+  // معالجة النتيجة بعد العودة من تسجيل الدخول بـ Google
+  getRedirectResult(auth).then(async (result) => {
+    if (result && result.user) {
+      const user = result.user;
+      const userDocRef = doc(db, "users", user.uid);
+      const userDoc = await getDoc(userDocRef);
+
+      if (!userDoc.exists()) {
+        await setDoc(userDocRef, { points: 0, createdAt: new Date() });
+
+        const savedReferrer = localStorage.getItem('lootplay_referrer');
+        if (savedReferrer && savedReferrer !== user.uid) {
+          try {
+            const refUserRef = doc(db, "users", savedReferrer);
+            await updateDoc(refUserRef, { points: increment(100) });
+            localStorage.removeItem('lootplay_referrer');
+          } catch (err) {}
+        }
+      }
+      window.location.href = "index.html";
+    }
+  }).catch((error) => {
+    console.error("خطأ تسجل الدخول بـ Google:", error);
+  });
+
+  // عند الضغط على زر Google
   if (googleBtn) {
     googleBtn.addEventListener('click', async () => {
       try {
-        const result = await signInWithPopup(auth, googleProvider);
-        const user = result.user;
-        
-        // التحقق مما إذا كان المستخدم يملك مستنداً سابقاً في قاعدة البيانات
-        const userDocRef = doc(db, "users", user.uid);
-        const userDoc = await getDoc(userDocRef);
-
-        if (!userDoc.exists()) {
-          // إنشاء حساب ومستند جديد للمستخدم
-          await setDoc(userDocRef, { points: 0, createdAt: new Date() });
-
-          // إضافة مكافأة الإحالة للداعي إن وجد
-          const savedReferrer = localStorage.getItem('lootplay_referrer');
-          if (savedReferrer && savedReferrer !== user.uid) {
-            try {
-              const refUserRef = doc(db, "users", savedReferrer);
-              await updateDoc(refUserRef, { points: increment(100) });
-              localStorage.removeItem('lootplay_referrer');
-            } catch (err) { console.log("خطأ إحالة:", err); }
-          }
-        }
-
-        window.location.href = "index.html";
+        await signInWithRedirect(auth, googleProvider);
       } catch (error) {
-        alert("خطأ أثناء تسجيل الدخول بـ Google: " + error.message);
+        alert("خطأ: " + error.message);
       }
     });
   }
@@ -114,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // تسجيل الدخول بالبريد
+  // تسجيل الدخول العادي بالبريد
   if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -136,7 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // فحص حالة الجلسة
+  // متابعة حالة الحساب والتوجيه
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
       if (!isLoginPage) window.location.href = "login.html";
