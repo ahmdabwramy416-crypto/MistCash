@@ -20,35 +20,11 @@
   <main style="padding: 20px; max-width: 500px; margin: 0 auto; text-align: center;">
     <h2 style="color: var(--accent-yellow); margin-bottom: 20px;">حسابي</h2>
 
-    <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px;">
-      
-      <!-- نموذج التسجيل / الدخول -->
-      <div id="auth-forms">
-        <form id="login-form" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px;">
-          <h3 style="color: #fff;">تسجيل الدخول</h3>
-          <input type="email" id="login-email" placeholder="البريد الإلكتروني" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: #0c0d12; color: #fff; box-sizing: border-box;">
-          <input type="password" id="login-password" placeholder="كلمة المرور" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: #0c0d12; color: #fff; box-sizing: border-box;">
-          <button type="submit" style="width: 100%; padding: 12px; border-radius: 8px; border: none; background: var(--accent-gold); color: #000; font-weight: bold; cursor: pointer;">دخول</button>
-        </form>
-
-        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
-
-        <form id="signup-form" style="display: flex; flex-direction: column; gap: 12px;">
-          <h3 style="color: #fff;">إنشاء حساب جديد</h3>
-          <input type="email" id="signup-email" placeholder="البريد الإلكتروني" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: #0c0d12; color: #fff; box-sizing: border-box;">
-          <input type="password" id="signup-password" placeholder="كلمة المرور" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: #0c0d12; color: #fff; box-sizing: border-box;">
-          <button type="submit" style="width: 100%; padding: 12px; border-radius: 8px; border: none; background: #10b981; color: #fff; font-weight: bold; cursor: pointer;">إنشاء حساب جديد</button>
-        </form>
-      </div>
-
-      <!-- عرض بيانات المستخدم بعد التسجيل -->
-      <div id="user-info" style="display: none;">
-        <i class="fa-solid fa-user-astronaut" style="font-size: 60px; color: var(--accent-yellow); margin-bottom: 15px;"></i>
-        <h3 id="user-email-text" style="color: #fff; font-size: 16px; margin-bottom: 10px;">-</h3>
-        <p style="font-size: 18px; margin: 15px 0;">الرصيد الحالي: <strong id="profile-points" style="color: var(--accent-yellow);">0</strong> نقطة</p>
-        <button id="logout-btn" style="padding: 10px 25px; border-radius: 8px; border: none; background: #ef4444; color: #fff; font-weight: bold; cursor: pointer;">تسجيل الخروج</button>
-      </div>
-
+    <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px;">
+      <i class="fa-solid fa-user-astronaut" style="font-size: 60px; color: var(--accent-yellow); margin-bottom: 15px;"></i>
+      <h3 id="user-email-text" style="color: #fff; font-size: 16px; margin-bottom: 10px;">جاري التحميل...</h3>
+      <p style="font-size: 18px; margin: 15px 0;">رصيد النقاط: <strong id="profile-points" style="color: var(--accent-yellow);">0</strong> نقطة</p>
+      <button id="logout-btn" style="padding: 12px 30px; border-radius: 8px; border: none; background: #ef4444; color: #fff; font-weight: bold; cursor: pointer; width: 100%;">تسجيل الخروج</button>
     </div>
   </main>
 
