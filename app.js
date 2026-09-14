@@ -27,12 +27,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const signupForm = document.getElementById('signup-form');
   const loginForm = document.getElementById('login-form');
   const logoutBtn = document.getElementById('logout-btn');
-  
-  // معرفة اسم الصفحة الحالية
-  const path = window.location.pathname;
-  const isLoginPage = path.endsWith("login.html");
 
-  // إنعاش إنشاء حساب
+  // تحديد اسم الصفحة الحالية
+  const path = window.location.pathname;
+  const isLoginPage = path.includes("login.html");
+
+  // نموذج إنشاء حساب
   if (signupForm) {
     signupForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // إنعاش تسجيل الدخول
+  // نموذج تسجيل الدخول
   if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // خروج
+  // زر تسجيل الخروج
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
       signOut(auth).then(() => {
@@ -74,37 +74,39 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // فحص حارس الدخول
+  // التوجيه التلقائي وفحص حالة المستخدم
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
+      // إذا لم يكن مسجلاً ودخل أي صفحة غير صفحة الدخول، حوّله لـ login.html
       if (!isLoginPage) {
         window.location.href = "login.html";
       }
     } else {
+      // إذا كان مسجلاً وفي صفحة الدخول، حوّله للرئيسية
       if (isLoginPage) {
         window.location.href = "index.html";
       } else {
-        // إظهار الصفحة بعد التأكد من تسجيل الدخول
-        const mainBody = document.getElementById('main-body');
-        if (mainBody) mainBody.style.display = 'block';
+        // تحديث النقاط والمعلومات في الصفحة الحالية
+        try {
+          const userDoc = await getDoc(doc(db, "users", user.uid));
+          const points = userDoc.exists() ? (userDoc.data().points || 0) : 0;
 
-        // جلب البيانات
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        const points = userDoc.exists() ? (userDoc.data().points || 0) : 0;
+          document.querySelectorAll('#user-points, #profile-points').forEach(el => el.textContent = points);
 
-        document.querySelectorAll('#user-points, #profile-points').forEach(el => el.textContent = points);
+          const userEmailText = document.getElementById('user-email-text');
+          if (userEmailText) userEmailText.textContent = user.email;
 
-        const userEmailText = document.getElementById('user-email-text');
-        if (userEmailText) userEmailText.textContent = user.email;
+          const refInput = document.getElementById('ref-link');
+          if (refInput) {
+            refInput.value = `${window.location.origin}/login.html?ref=${user.uid}`;
+          }
 
-        const refInput = document.getElementById('ref-link');
-        if (refInput) {
-          refInput.value = `${window.location.origin}/login.html?ref=${user.uid}`;
-        }
-
-        const cpaIframe = document.getElementById('cpa-wall');
-        if (cpaIframe) {
-          cpaIframe.src = `https://www.appstorevault.mobi/wall/Fja8DpRW?subid=${user.uid}`;
+          const cpaIframe = document.getElementById('cpa-wall');
+          if (cpaIframe) {
+            cpaIframe.src = `https://www.appstorevault.mobi/wall/Fja8DpRW?subid=${user.uid}`;
+          }
+        } catch (err) {
+          console.error("خطأ في جلب البيانات:", err);
         }
       }
     }
