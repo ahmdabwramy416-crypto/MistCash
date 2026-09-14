@@ -1,76 +1,149 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MistCash - الصفحة الرئيسية</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MistCash - العروض والمكافآت</title>
+    
+    <!-- Firebase SDK (v8) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #1a0b2e;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+        }
+        .header-card {
+            background: linear-gradient(135deg, #7c3aed, #4c1d95);
+            border-radius: 16px;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto 20px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.3);
+        }
+        .user-info h3 {
+            font-size: 1.1rem;
+            color: #e9d5ff;
+        }
+        .points-badge {
+            background-color: #a855f7;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .offerwall-container {
+            background-color: #24103f;
+            border-radius: 16px;
+            padding: 15px;
+            max-width: 900px;
+            margin: 0 auto;
+            border: 1px solid #4c1d95;
+        }
+        .offerwall-container h2 {
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            color: #c084fc;
+        }
+        iframe {
+            width: 100%;
+            height: 750px;
+            border: none;
+            border-radius: 12px;
+            background-color: #ffffff;
+        }
+        .logout-btn {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+    </style>
 </head>
 <body>
 
-  <!-- الهيدر الشفاف والأنيق -->
-  <header class="header">
-    <div class="logo">
-      <i class="fa-solid fa-coins"></i> MistCash
+    <!-- الشريط العلوي للرصيد والمستخدم -->
+    <div class="header-card">
+        <div class="user-info">
+            <h3 id="user-email">جاري التحميل...</h3>
+            <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
+        </div>
+        <div class="points-badge">
+            🪙 النقاط: <span id="user-points">0</span>
+        </div>
     </div>
-    <div class="user-status">
-      <div class="points-badge">
-        <i class="fa-solid fa-star"></i>
-        <span id="user-points">0</span> نقطة
-      </div>
-      <button id="logout-btn" class="btn-logout-icon" title="تسجيل الخروج">
-        <i class="fa-solid fa-right-from-bracket"></i>
-      </button>
+
+    <!-- جدار العروض -->
+    <div class="offerwall-container">
+        <h2>🔥 أكمل المهام واحصل على النقاط فوراً</h2>
+        <iframe id="offerwall-frame" src=""></iframe>
     </div>
-  </header>
 
-  <div class="main-wrapper">
+    <script>
+        // إعدادات مشروع Firebase الخاصة بك
+        const firebaseConfig = {
+            apiKey: "AIzaSyDwecoLNEfzLufKWKFK4ps6PqqjE2EIXEQ",
+            authDomain: "loot-play-71c16.firebaseapp.com",
+            databaseURL: "https://loot-play-71c16-default-rtdb.firebaseio.com",
+            projectId: "loot-play-71c16",
+            storageBucket: "loot-play-71c16.firebasestorage.app",
+            appId: "1:477272517069:web:72ab9748e4afc97f5dfc84"
+        };
 
-    <!-- قسم الانتقال إلى عروض CPALead -->
-    <section class="card cpa-banner-card">
-      <div class="card-icon">
-        <i class="fa-solid fa-rocket"></i>
-      </div>
-      <h2>عروض واختبارات CPALead</h2>
-      <p>أكمل العروض والمهام السريعة لاكتساب مئات النقاط فوراً!</p>
-      <a href="https://www.cpalead.com" target="_blank" class="btn-cpa-action">
-        <i class="fa-solid fa-arrow-up-right-from-square"></i> الانتقال إلى CPALead
-      </a>
-    </section>
+        // تهيئة Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
 
-    <!-- قسم عجلة الحظ -->
-    <section class="card wheel-card">
-      <h2><i class="fa-solid fa-spinner"></i> عجلة الحظ اليومية</h2>
-      <p class="sub-text">أدر العجلة واحصل على نقاط مجانية يومياً!</p>
-      <div class="wheel-box">
-        <canvas id="wheel-canvas" width="300" height="300"></canvas>
-        <button id="spin-btn" class="btn-spin-main">أدر العجلة الآن</button>
-      </div>
-    </section>
+        const auth = firebase.auth();
+        const database = firebase.database();
 
-    <!-- قسم جدار العروض (CPA Wall) -->
-    <section class="card iframe-card">
-      <h2><i class="fa-solid fa-list-check"></i> جدار المهام المباشر</h2>
-      <div class="iframe-container">
-        <iframe id="cpa-wall" src="" frameborder="0"></iframe>
-      </div>
-    </section>
+        // متابعة حالة تسجيل الدخول
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                const userId = user.uid;
+                document.getElementById("user-email").innerText = user.email;
 
-    <!-- قسم نظام الإحالة ودعوة الأصدقاء -->
-    <section class="card ref-card">
-      <h2><i class="fa-solid fa-user-plus"></i> دعوة الأصدقاء</h2>
-      <p>احصل على 100 نقطة عن كل صديق يقوم بالتسجيل عبر رابطك الخاص!</p>
-      <div class="ref-input-group">
-        <input type="text" id="ref-link" readonly value="جاري جلب الرابط...">
-        <button id="copy-ref-btn" class="btn-copy-action">
-          <i class="fa-solid fa-copy"></i> نسخ
-        </button>
-      </div>
-    </section>
+                // قراءة النقاط المباشرة من قاعدة البيانات
+                database.ref('users/' + userId + '/points').on('value', (snapshot) => {
+                    const points = snapshot.val() || 0;
+                    document.getElementById("user-points").innerText = points;
+                });
 
-  </div>
+                // تحميل جدار العروض المربوط بـ ID الخاص بك و subid المستخدم
+                const cpaLeadUrl = `https://main.cpalead.com/generic_offer_wall.php?pub=761899&subid=${userId}`;
+                document.getElementById("offerwall-frame").src = cpaLeadUrl;
 
-  <script type="module" src="app.js"></script>
+            } else {
+                // إعادة التوجيه لصفحة تسجيل الدخول إذا لم يكن مسجلاً
+                window.location.href = "login.html";
+            }
+        });
+
+        // دالة تسجيل الخروج
+        function logout() {
+            auth.signOut().then(() => {
+                window.location.href = "login.html";
+            });
+        }
+    </script>
 </body>
 </html>
