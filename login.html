@@ -1,49 +1,111 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Loot Play - تسجيل الدخول</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body style="display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; box-sizing: border-box;">
-
-  <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; width: 100%; max-width: 400px; text-align: center;">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MistCash - تسجيل الدخول</title>
     
-    <div style="font-size: 24px; font-weight: bold; color: var(--accent-yellow); margin-bottom: 5px;">LOOT PLAY</div>
-    <p style="color: #aaa; font-size: 13px; margin-bottom: 20px;">قم بتسجيل الدخول لبدء جمع النقاط</p>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-    <!-- زر تسجيل الدخول بجوجل -->
-    <button id="google-btn" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #4285F4; background: #4285F4; color: #fff; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px;">
-      <i class="fa-brands fa-google" style="font-size: 18px;"></i>
-      المتابعة باستخدام Google
-    </button>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #0d0519; color: #ffffff; display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px; }
+        .auth-container { background: #1a0b2e; border: 1px solid #3b1568; border-radius: 16px; padding: 30px; width: 100%; max-width: 400px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); text-align: center; }
+        h2 { color: #c084fc; margin-bottom: 20px; font-size: 1.5rem; }
+        .input-group { margin-bottom: 15px; text-align: right; }
+        label { display: block; font-size: 0.85rem; color: #e9d5ff; margin-bottom: 5px; }
+        input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #4c1d95; background: #0d0519; color: white; font-size: 1rem; }
+        input:focus { outline: none; border-color: #a855f7; }
+        .auth-btn { background: #7c3aed; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; width: 100%; cursor: pointer; font-size: 1rem; margin-top: 10px; transition: 0.2s; }
+        .auth-btn:hover { background: #9333ea; }
+        .toggle-text { margin-top: 15px; font-size: 0.85rem; color: #aaa; cursor: pointer; }
+        .toggle-text span { color: #c084fc; font-weight: bold; }
+    </style>
+</head>
+<body>
 
-    <div style="display: flex; align-items: center; margin: 15px 0; color: #666;">
-      <hr style="flex: 1; border: 0; border-top: 1px solid var(--border-color);">
-      <span style="padding: 0 10px; font-size: 12px;">أو البريد الإلكتروني</span>
-      <hr style="flex: 1; border: 0; border-top: 1px solid var(--border-color);">
+    <div class="auth-container">
+        <h2 id="form-title">تسجيل الدخول</h2>
+        
+        <div class="input-group">
+            <label>البريد الإلكتروني</label>
+            <input type="email" id="email" placeholder="example@gmail.com">
+        </div>
+        
+        <div class="input-group">
+            <label>كلمة المرور</label>
+            <input type="password" id="password" placeholder="********">
+        </div>
+
+        <button class="auth-btn" id="action-btn" onclick="handleAuth()">دخول</button>
+        
+        <div class="toggle-text" onclick="toggleMode()">
+            <span id="toggle-link">ليس لديك حساب؟ انقر هنا لإنشاء حساب جديد</span>
+        </div>
     </div>
 
-    <!-- نموذج البريد وكلمة المرور -->
-    <form id="login-form" style="display: flex; flex-direction: column; gap: 12px;">
-      <input type="email" id="login-email" placeholder="البريد الإلكتروني" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: #0c0d12; color: #fff; box-sizing: border-box;">
-      <input type="password" id="login-password" placeholder="كلمة المرور" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: #0c0d12; color: #fff; box-sizing: border-box;">
-      <button type="submit" style="width: 100%; padding: 12px; border-radius: 8px; border: none; background: var(--accent-gold); color: #000; font-weight: bold; cursor: pointer;">دخول</button>
-    </form>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDwecoLNEfzLufKWKFK4ps6PqqjE2EIXEQ",
+            authDomain: "loot-play-71c16.firebaseapp.com",
+            databaseURL: "https://loot-play-71c16-default-rtdb.firebaseio.com",
+            projectId: "loot-play-71c16",
+            storageBucket: "loot-play-71c16.firebasestorage.app",
+            appId: "1:477272517069:web:72ab9748e4afc97f5dfc84"
+        };
 
-    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
 
-    <form id="signup-form" style="display: flex; flex-direction: column; gap: 12px;">
-      <h3 style="color: #fff; font-size: 14px; margin: 0;">إنشاء حساب جديد</h3>
-      <input type="email" id="signup-email" placeholder="البريد الإلكتروني" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: #0c0d12; color: #fff; box-sizing: border-box;">
-      <input type="password" id="signup-password" placeholder="كلمة المرور" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: #0c0d12; color: #fff; box-sizing: border-box;">
-      <button type="submit" style="width: 100%; padding: 12px; border-radius: 8px; border: none; background: #10b981; color: #fff; font-weight: bold; cursor: pointer;">إنشاء حساب</button>
-    </form>
+        let isSignUp = false;
 
-  </div>
+        function toggleMode() {
+            isSignUp = !isSignUp;
+            document.getElementById("form-title").innerText = isSignUp ? "إنشاء حساب جديد" : "تسجيل الدخول";
+            document.getElementById("action-btn").innerText = isSignUp ? "إنشاء حساب" : "دخول";
+            document.getElementById("toggle-link").innerText = isSignUp ? "لديك حساب بالفعل؟ انقر هنا لتسجيل الدخول" : "ليس لديك حساب؟ انقر هنا لإنشاء حساب جديد";
+        }
 
-  <script type="module" src="app.js"></script>
+        function handleAuth() {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            if (!email || !password) {
+                alert("الرجاء إدخال البريد وكلمة المرور");
+                return;
+            }
+
+            if (isSignUp) {
+                // إنشاء حساب جديد
+                auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    const user = user.user;
+                    // تهيئة رصيد النقاط للمستخدم الجديد في قاعدة البيانات
+                    database.ref('users/' + user.uid).set({
+                        email: user.email,
+                        points: 0
+                    });
+                    alert("تم إنشاء الحساب بنجاح!");
+                    window.location.href = "index.html";
+                })
+                .catch((error) => {
+                    alert("خطأ في الإنشاء: " + error.message);
+                });
+            } else {
+                // تسجيل الدخول
+                auth.signInWithEmailAndPassword(email, password)
+                .then(() => {
+                    window.location.href = "index.html";
+                })
+                .catch((error) => {
+                    alert("خطأ في تسجيل الدخول: تأكد من البريد وكلمة المرور");
+                });
+            }
+        }
+    </script>
 </body>
 </html>
