@@ -24,13 +24,12 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 document.addEventListener("DOMContentLoaded", () => {
-  const authForms = document.getElementById('auth-forms');
-  const userInfo = document.getElementById('user-info');
   const signupForm = document.getElementById('signup-form');
   const loginForm = document.getElementById('login-form');
   const logoutBtn = document.getElementById('logout-btn');
+  const currentPage = window.location.pathname.split("/").pop();
 
-  // إنشاء حساب
+  // إنشاء حساب جديد
   if (signupForm) {
     signupForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -40,14 +39,15 @@ document.addEventListener("DOMContentLoaded", () => {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         await sendEmailVerification(userCredential.user);
         await setDoc(doc(db, "users", userCredential.user.uid), { points: 0, createdAt: new Date() });
-        alert("تم إنشاء الحساب بنجاح! تم إرسال رسالة تأكيد إلى بريدك.");
+        alert("تم إنشاء الحساب بنجاح! جاري تحويلك للموقع...");
+        window.location.href = "index.html";
       } catch (error) {
         alert("خطأ: " + error.message);
       }
     });
   }
 
-  // تسجيل دخول
+  // تسجيل الدخول
   if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -55,49 +55,53 @@ document.addEventListener("DOMContentLoaded", () => {
       const password = document.getElementById('login-password').value;
       try {
         await signInWithEmailAndPassword(auth, email, password);
-        alert("تم تسجيل الدخول بنجاح!");
+        window.location.href = "index.html";
       } catch (error) {
-        alert("خطأ: " + error.message);
+        alert("خطأ في البيانات: " + error.message);
       }
     });
   }
 
-  // خروج
+  // تسجيل الخروج
   if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => signOut(auth));
+    logoutBtn.addEventListener('click', () => {
+      signOut(auth).then(() => {
+        window.location.href = "login.html";
+      });
+    });
   }
 
-  // مراقبة حالة المستخدم وترتيب البيانات
+  // فحص حالة الحساب والتوجيه التلقائي للحماية
   onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      if (authForms) authForms.style.display = 'none';
-      if (userInfo) userInfo.style.display = 'block';
+    if (!user) {
+      // إذا لم يكن مسجلاً وهو ليس في صفحة الدخول، حوّله لصفحة الدخول
+      if (currentPage !== "login.html" && currentPage !== "") {
+        window.location.href = "login.html";
+      }
+    } else {
+      // إذا كان مسجلاً وبداخل صفحة الدخول، حوّله للرئيسية مباشرة
+      if (currentPage === "login.html") {
+        window.location.href = "index.html";
+      }
+
+      // تحديث البيانات والنقاط
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      const points = userDoc.exists() ? (userDoc.data().points || 0) : 0;
+
+      document.querySelectorAll('#user-points, #profile-points').forEach(el => el.textContent = points);
 
       const userEmailText = document.getElementById('user-email-text');
       if (userEmailText) userEmailText.textContent = user.email;
 
-      const userDoc = await getDoc(doc(db, "users", user.uid));
-      const points = userDoc.exists() ? (userDoc.data().points || 0) : 0;
-
-      // تحديث النقاط في كافة المواضع
-      document.querySelectorAll('#user-points, #profile-points').forEach(el => el.textContent = points);
-
-      // توليد رابط الإحالة الخاص بالمستخدم
       const refInput = document.getElementById('ref-link');
       if (refInput) {
-        refInput.value = `${window.location.origin}/index.html?ref=${user.uid}`;
+        refInput.value = `${window.location.origin}/login.html?ref=${user.uid}`;
       }
 
-      // إسناد UID لجدار العروض CPALead
       const cpaIframe = document.getElementById('cpa-wall');
       if (cpaIframe) {
         cpaIframe.src = `https://www.appstorevault.mobi/wall/Fja8DpRW?subid=${user.uid}`;
       }
-    } else {
-      if (authForms) authForms.style.display = 'block';
-      if (userInfo) userInfo.style.display = 'none';
-      const refInput = document.getElementById('ref-link');
-      if (refInput) refInput.value = "يرجى تسجيل الدخول أولاً للحصول على رابطك";
     }
   });
 });
