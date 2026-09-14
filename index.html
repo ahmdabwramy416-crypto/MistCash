@@ -3,46 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MistCash - الواجهة الرئيسية</title>
-    
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <title>MistCash - الرئيسية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #0d0519; color: #ffffff; padding-bottom: 90px; }
-        
-        .top-bar {
-            background: linear-gradient(135deg, #24103f, #1a0b2e);
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #3b1568;
-            position: sticky; top: 0; z-index: 100;
-        }
+        .top-bar { background: linear-gradient(135deg, #24103f, #1a0b2e); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3b1568; position: sticky; top: 0; z-index: 100; }
         .user-profile { display: flex; align-items: center; gap: 10px; }
         .avatar { width: 40px; height: 40px; background: #7c3aed; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-        .points-card { background: linear-gradient(90deg, #f59e0b, #d97706); padding: 8px 16px; border-radius: 20px; font-weight: bold; color: #fff; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3); }
-
+        .points-card { background: linear-gradient(90deg, #f59e0b, #d97706); padding: 8px 16px; border-radius: 20px; font-weight: bold; color: #fff; }
         .container { padding: 15px; max-width: 600px; margin: 0 auto; }
-
-        .wheel-section { background: #1a0b2e; border: 1px solid #3b1568; border-radius: 16px; padding: 20px; text-align: center; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
-        .wheel-container { position: relative; width: 200px; height: 200px; margin: 15px auto; }
+        .wheel-section { background: #1a0b2e; border: 1px solid #3b1568; border-radius: 16px; padding: 20px; text-align: center; margin-bottom: 20px; }
+        .wheel-container { position: relative; width: 180px; height: 180px; margin: 15px auto; }
         .wheel { width: 100%; height: 100%; border-radius: 50%; border: 6px solid #a855f7; background: conic-gradient(#7c3aed 0deg 60deg, #4c1d95 60deg 120deg, #7c3aed 120deg 180deg, #4c1d95 180deg 240deg, #7c3aed 240deg 300deg, #4c1d95 300deg 360deg); transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); }
-        .spin-btn { background: #a855f7; color: #fff; border: none; padding: 10px 24px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4); }
-
+        .spin-btn { background: #a855f7; color: #fff; border: none; padding: 10px 24px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .section-title { font-size: 1.1rem; color: #c084fc; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-        .offer-tabs { display: flex; gap: 10px; margin-bottom: 15px; }
-        .tab-btn { flex: 1; background: #1a0b2e; border: 1px solid #3b1568; color: #aaa; padding: 10px; border-radius: 10px; cursor: pointer; font-weight: bold; text-align: center; }
-        .tab-btn.active { background: #7c3aed; color: #fff; border-color: #a855f7; }
-
-        .offer-frame-container { background: #1a0b2e; border: 1px solid #3b1568; border-radius: 16px; overflow: hidden; height: 600px; }
+        .offer-frame-container { background: #1a0b2e; border: 1px solid #3b1568; border-radius: 16px; overflow: hidden; height: 550px; }
         iframe { width: 100%; height: 100%; border: none; background: #fff; }
-
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #150727; border-top: 1px solid #3b1568; display: flex; justify-content: space-around; padding: 12px 0; z-index: 1000; }
         .nav-item { color: #8b5cf6; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 0.75rem; gap: 4px; }
         .nav-item.active { color: #c084fc; font-weight: bold; }
@@ -56,12 +33,10 @@
             <div class="avatar" id="avatar">U</div>
             <div>
                 <div style="font-size: 0.85rem; color: #aaa;">مرحباً بك</div>
-                <div id="user-email" style="font-size: 0.9rem; font-weight: bold;">جاري التحميل...</div>
+                <div id="user-email" style="font-size: 0.9rem; font-weight: bold;">زائر</div>
             </div>
         </div>
-        <div class="points-card">
-            🪙 <span id="user-points">0</span>
-        </div>
+        <div class="points-card">🪙 <span id="user-points">0</span></div>
     </div>
 
     <div class="container">
@@ -73,13 +48,7 @@
             <button class="spin-btn" id="spin-button" onclick="spinWheel()">أدر العجلة الآن</button>
         </div>
 
-        <div class="section-title"><i class="fa-solid fa-list-check"></i> شركات العروض والمهام</div>
-        <div class="offer-tabs">
-            <div class="tab-btn active" onclick="switchWall('cpalead', this)">CPALead</div>
-            <div class="tab-btn" onclick="switchWall('wall2', this)">شركة 2</div>
-            <div class="tab-btn" onclick="switchWall('wall3', this)">شركة 3</div>
-        </div>
-
+        <div class="section-title"><i class="fa-solid fa-list-check"></i> العروض المتاحة (CPALead)</div>
         <div class="offer-frame-container">
             <iframe id="offerwall-frame" src=""></iframe>
         </div>
@@ -93,70 +62,33 @@
     </div>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDwecoLNEfzLufKWKFK4ps6PqqjE2EIXEQ",
-            authDomain: "loot-play-71c16.firebaseapp.com",
-            databaseURL: "https://loot-play-71c16-default-rtdb.firebaseio.com",
-            projectId: "loot-play-71c16",
-            storageBucket: "loot-play-71c16.firebasestorage.app",
-            appId: "1:477272517069:web:72ab9748e4afc97f5dfc84"
-        };
+        const email = localStorage.getItem("user_email");
+        const uid = localStorage.getItem("user_uid");
+        let points = parseInt(localStorage.getItem("user_points") || "0");
 
-        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const database = firebase.database();
+        if (!email || !uid) {
+            window.location.href = "login.html";
+        } else {
+            document.getElementById("user-email").innerText = email.split('@')[0];
+            document.getElementById("avatar").innerText = email.charAt(0).toUpperCase();
+            document.getElementById("user-points").innerText = points;
 
-        let currentUid = null;
-
-        // التحقق من حالة المستخدم بدون إحداث حلقة تحويل مزعجة
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                currentUid = user.uid;
-                document.getElementById("user-email").innerText = user.email ? user.email.split('@')[0] : "مستخدم";
-                document.getElementById("avatar").innerText = user.email ? user.email.charAt(0).toUpperCase() : "U";
-
-                database.ref('users/' + currentUid + '/points').on('value', (snapshot) => {
-                    document.getElementById("user-points").innerText = snapshot.val() || 0;
-                });
-
-                switchWall('cpalead');
-            } else {
-                // التوجيه إلى صفحة تسجيل الدخول فقط إذا لم يكن مسجلاً حقاً
-                window.location.href = "login.html";
-            }
-        });
-
-        function switchWall(provider, element) {
-            if(element) {
-                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-                element.classList.add('active');
-            }
-            
-            const frame = document.getElementById("offerwall-frame");
-            if (provider === 'cpalead') {
-                frame.src = `https://main.cpalead.com/generic_offer_wall.php?pub=761899&subid=${currentUid || 'guest'}`;
-            } else {
-                frame.src = `about:blank`;
-            }
+            // تحميل جدار عروض CPALead مع الـ UID الخاص بالمستخدم لتتبع أرباحه
+            document.getElementById("offerwall-frame").src = `https://main.cpalead.com/generic_offer_wall.php?pub=761899&subid=${uid}`;
         }
 
         function spinWheel() {
-            if (!currentUid) {
-                alert("الرجاء تسجيل الدخول أولاً!");
-                return;
-            }
             const btn = document.getElementById("spin-button");
             btn.disabled = true;
             const randomDegree = Math.floor(Math.random() * 360) + 1440;
-            const wheel = document.getElementById("wheel");
-            wheel.style.transform = `rotate(${randomDegree}deg)`;
+            document.getElementById("wheel").style.transform = `rotate(${randomDegree}deg)`;
 
             setTimeout(() => {
-                const pointsWon = Math.floor(Math.random() * 50) + 10;
-                alert(`مبروك! لقد فزت بـ ${pointsWon} نقطة!`);
-                database.ref('users/' + currentUid + '/points').transaction((points) => {
-                    return (points || 0) + pointsWon;
-                });
+                const won = Math.floor(Math.random() * 30) + 10;
+                points += won;
+                localStorage.setItem("user_points", points);
+                document.getElementById("user-points").innerText = points;
+                alert(`مبروك! ربحت ${won} نقطة.`);
                 btn.disabled = false;
             }, 4000);
         }
