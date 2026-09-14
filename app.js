@@ -7,7 +7,8 @@ import {
   onAuthStateChanged,
   sendEmailVerification,
   GoogleAuthProvider,
-  signInWithPopup
+  signInWithRedirect,
+  getRedirectResult
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
@@ -42,33 +43,38 @@ document.addEventListener("DOMContentLoaded", () => {
   const path = window.location.pathname;
   const isLoginPage = path.includes("login.html");
 
+  // معالجة العودة بعد اختيار حساب جوجل
+  getRedirectResult(auth).then(async (result) => {
+    if (result && result.user) {
+      const user = result.user;
+      const userDocRef = doc(db, "users", user.uid);
+      const userDoc = await getDoc(userDocRef);
+
+      if (!userDoc.exists()) {
+        await setDoc(userDocRef, { points: 0, createdAt: new Date() });
+
+        const savedReferrer = localStorage.getItem('lootplay_referrer');
+        if (savedReferrer && savedReferrer !== user.uid) {
+          try {
+            const refUserRef = doc(db, "users", savedReferrer);
+            await updateDoc(refUserRef, { points: increment(100) });
+            localStorage.removeItem('lootplay_referrer');
+          } catch (err) {}
+        }
+      }
+      window.location.href = "index.html";
+    }
+  }).catch((error) => {
+    alert("خطأ في تسجيل الدخول بـ Google: " + error.message);
+  });
+
   // عند الضغط على زر Google
   if (googleBtn) {
     googleBtn.addEventListener('click', async () => {
       try {
-        const result = await signInWithPopup(auth, googleProvider);
-        const user = result.user;
-
-        // التحقق وإنشاء ملف للمستخدم إذا كان جديداً
-        const userDocRef = doc(db, "users", user.uid);
-        const userDoc = await getDoc(userDocRef);
-
-        if (!userDoc.exists()) {
-          await setDoc(userDocRef, { points: 0, createdAt: new Date() });
-
-          const savedReferrer = localStorage.getItem('lootplay_referrer');
-          if (savedReferrer && savedReferrer !== user.uid) {
-            try {
-              const refUserRef = doc(db, "users", savedReferrer);
-              await updateDoc(refUserRef, { points: increment(100) });
-              localStorage.removeItem('lootplay_referrer');
-            } catch (err) {}
-          }
-        }
-
-        window.location.href = "index.html";
+        await signInWithRedirect(auth, googleProvider);
       } catch (error) {
-        alert("حدث خطأ أثناء تسجيل الدخول: " + error.message);
+        alert("خطأ أثناء الاتصال بجوجل: " + error.message);
       }
     });
   }
