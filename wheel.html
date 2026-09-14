@@ -12,37 +12,31 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      margin-top: 30px;
+      padding: 30px 15px;
     }
-    .wheel {
-      width: 260px;
-      height: 260px;
-      border-radius: 50%;
-      border: 8px solid var(--accent-gold);
-      background: conic-gradient(#f59e0b 0 60deg, #181a24 60deg 120deg, #fbbf24 120deg 180deg, #181a24 180deg 240deg, #f59e0b 240deg 300deg, #181a24 300deg 360deg);
+    .wheel-box {
       position: relative;
-      transition: transform 4s cubic-bezier(0.15, 0.99, 0.18, 0.99);
-      box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+      width: 280px;
+      height: 280px;
+      margin: 20px 0;
     }
-    .spin-btn {
-      margin-top: 30px;
-      background: linear-gradient(135deg, #f59e0b, #fbbf24);
-      color: #000;
-      border: none;
-      padding: 14px 40px;
-      font-size: 18px;
-      font-weight: bold;
-      border-radius: 30px;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+    canvas {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 5px solid var(--accent-yellow);
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
     }
     .pointer {
-      width: 0; 
-      height: 0; 
-      border-left: 15px solid transparent;
-      border-right: 15px solid transparent;
-      border-top: 25px solid #fff;
-      margin-bottom: -10px;
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 12px solid transparent;
+      border-right: 12px solid transparent;
+      border-top: 24px solid #ef4444;
       z-index: 10;
     }
   </style>
@@ -58,13 +52,17 @@
   </header>
 
   <main class="wheel-container">
-    <h2 style="color: var(--accent-yellow); margin-bottom: 10px;">عجلة الحظ اليومية 🎡</h2>
-    <p style="color: #aaa; font-size: 13px;">أدر العجلة واكسب نقاطاً إضافية يومياً!</p>
+    <h2 style="color: #fff; margin-bottom: 5px;">عجلة الحظ اليومية 🎡</h2>
+    <p style="color: #aaa; font-size: 13px;">أدر العجلة واكسب نقاطاً مجانية فورية!</p>
 
-    <div class="pointer"></div>
-    <div class="wheel" id="wheel"></div>
+    <div class="wheel-box">
+      <div class="pointer"></div>
+      <canvas id="wheel-canvas" width="300" height="300"></canvas>
+    </div>
 
-    <button class="spin-btn" id="spin-btn">أدر العجلة الآن!</button>
+    <button id="spin-btn" style="padding: 12px 40px; border-radius: 10px; border: none; background: var(--accent-gold); color: #000; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s;">
+      تدوير (مجاني)
+    </button>
   </main>
 
   <nav class="bottom-nav">
