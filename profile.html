@@ -3,112 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MistCash - حسابي</title>
-    
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <title>الملف الشخصي - MistCash</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #0d0519; color: #ffffff; padding-bottom: 90px; }
-        
-        .top-bar {
-            background: linear-gradient(135deg, #24103f, #1a0b2e);
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #3b1568;
-            position: sticky; top: 0; z-index: 100;
-        }
-
-        .container { padding: 15px; max-width: 600px; margin: 0 auto; }
-
-        /* Profile Card */
-        .profile-card { background: #1a0b2e; border: 1px solid #3b1568; border-radius: 16px; padding: 25px; text-align: center; margin-top: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .big-avatar { width: 80px; height: 80px; background: linear-gradient(135deg, #a855f7, #7c3aed); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold; margin: 0 auto 15px auto; box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4); }
-        .user-email-title { font-size: 1.1rem; font-weight: bold; color: #e9d5ff; margin-bottom: 5px; }
-        .user-uid { font-size: 0.8rem; color: #aaa; margin-bottom: 20px; font-family: monospace; }
-
-        .stat-box { background: #0d0519; border: 1px solid #3b1568; border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .stat-title { color: #c084fc; font-weight: bold; font-size: 0.95rem; }
-        .stat-val { color: #f59e0b; font-weight: bold; font-size: 1.1rem; }
-
-        .logout-btn { background: #ef4444; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1rem; margin-top: 10px; }
-
-        /* Bottom Navigation */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #150727; border-top: 1px solid #3b1568; display: flex; justify-content: space-around; padding: 12px 0; z-index: 1000; }
-        .nav-item { color: #8b5cf6; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 0.75rem; gap: 4px; }
-        .nav-item.active { color: #c084fc; font-weight: bold; }
-        .nav-item i { font-size: 1.2rem; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', Tahoma, sans-serif; }
+        body { background-color: #0d0519; color: #ffffff; display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px; }
+        .profile-card { background: #1a0b2e; border: 1px solid #3b1568; border-radius: 16px; padding: 30px; width: 100%; max-width: 400px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); text-align: center; }
+        .avatar { width: 90px; height: 90px; border-radius: 50%; border: 3px solid #c084fc; margin-bottom: 15px; object-fit: cover; }
+        h2 { color: #c084fc; margin-bottom: 10px; font-size: 1.4rem; }
+        p { color: #aaa; font-size: 0.95rem; margin-bottom: 20px; }
+        .points-box { background: #2a1147; padding: 12px; border-radius: 10px; margin-bottom: 20px; font-size: 1.1rem; color: #4ade80; font-weight: bold; }
+        .btn { display: block; width: 100%; padding: 12px; background: #7c3aed; color: white; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; text-decoration: none; margin-top: 10px; transition: 0.3s; }
+        .btn:hover { background: #6d28d9; }
+        .logout-btn { background: #ef4444; }
+        .logout-btn:hover { background: #dc2626; }
     </style>
 </head>
 <body>
 
-    <div class="top-bar">
-        <h3 style="color: #c084fc;"><i class="fa-solid fa-user"></i> حسابي الشخصي</h3>
-    </div>
+    <div class="profile-card">
+        <!-- صورة البروفايل المستخرجة من جوجل -->
+        <img id="userAvatar" src="https://via.placeholder.com/90" alt="صورة المستخدم" class="avatar">
+        
+        <h2 id="userName">جاري التحميل...</h2>
+        <p id="userEmail">...</p>
 
-    <div class="container">
-        <div class="profile-card">
-            <div class="big-avatar" id="avatar">U</div>
-            <div class="user-email-title" id="user-email">جاري التحميل...</div>
-            <div class="user-uid" id="user-id">UID: ...</div>
-
-            <div class="stat-box">
-                <span class="stat-title"><i class="fa-solid fa-coins"></i> إجمالي النقاط</span>
-                <span class="stat-val" id="user-points">0</span>
-            </div>
-
-            <button class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</button>
+        <div class="points-box">
+            رصيدك: <span id="userPoints">0</span> نقطة
         </div>
-    </div>
 
-    <!-- Bottom Navigation -->
-    <div class="bottom-nav">
-        <a href="index.html" class="nav-item"><i class="fa-solid fa-house"></i>الرئيسية</a>
-        <a href="rewards.html" class="nav-item"><i class="fa-solid fa-gift"></i>المكافآت</a>
-        <a href="referral.html" class="nav-item"><i class="fa-solid fa-user-plus"></i>الدعوة</a>
-        <a href="profile.html" class="nav-item active"><i class="fa-solid fa-user"></i>حسابي</a>
+        <a href="index.html" class="btn">العودة إلى الرئيسية وعروض الربح</a>
+        <button onclick="logout()" class="btn logout-btn">تسجيل الخروج</button>
     </div>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDwecoLNEfzLufKWKFK4ps6PqqjE2EIXEQ",
-            authDomain: "loot-play-71c16.firebaseapp.com",
-            databaseURL: "https://loot-play-71c16-default-rtdb.firebaseio.com",
-            projectId: "loot-play-71c16",
-            storageBucket: "loot-play-71c16.firebasestorage.app",
-            appId: "1:477272517069:web:72ab9748e4afc97f5dfc84"
-        };
-
-        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const database = firebase.database();
-
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                const uid = user.uid;
-                document.getElementById("user-email").innerText = user.email;
-                document.getElementById("user-id").innerText = "ID: " + uid;
-                document.getElementById("avatar").innerText = user.email.charAt(0).toUpperCase();
-
-                database.ref('users/' + uid + '/points').on('value', (snapshot) => {
-                    document.getElementById("user-points").innerText = snapshot.val() || 0;
-                });
-            } else {
-                window.location.href = "login.html";
+        // التحقق مما إذا كان المستخدم مسجل الدخول أم لا
+        const isLoggedIn = localStorage.getItem("is_logged_in");
+        if (!isLoggedIn) {
+            // إذا لم يكن مسجلاً، يتم توجيهه لصفحة تسجيل الدخول فوراً
+            window.location.href = "login.html";
+        } else {
+            // جلب البيانات المخزنة وعرضها في الصفحة
+            document.getElementById("userName").innerText = localStorage.getItem("user_name") || "مستخدم MistCash";
+            document.getElementById("userEmail").innerText = localStorage.getItem("user_email") || "";
+            
+            const userPicture = localStorage.getItem("user_picture");
+            if (userPicture) {
+                document.getElementById("userAvatar").src = userPicture;
             }
-        });
 
+            // عرض النقاط (افتراضياً 0 أو القيمة المحفوظة مسبقاً)
+            const points = localStorage.getItem("user_points") || "0";
+            document.getElementById("userPoints").innerText = points;
+        }
+
+        // دالة تسجيل الخروج وحذف البيانات المحلية
         function logout() {
-            auth.signOut().then(() => {
-                window.location.href = "login.html";
-            });
+            localStorage.clear();
+            window.location.href = "login.html";
         }
     </script>
+
 </body>
 </html>
