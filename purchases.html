@@ -4,35 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>سجل المشتريات - MistCash</title>
+    <link rel="stylesheet" href="style.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', Tahoma, sans-serif; }
-        body { background-color: #0d0519; color: #ffffff; padding: 20px; }
-        .card { background: #1a0b2e; border: 1px solid #3b1568; border-radius: 16px; padding: 25px; max-width: 600px; margin: 0 auto 20px auto; }
-        h2 { color: #eab308; text-align: center; margin-bottom: 20px; }
-        .purchase-item { background: #2a1147; padding: 15px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #4c1d95; display: flex; justify-content: space-between; align-items: center; }
-        .code { color: #4ade80; font-weight: bold; background: #0d0519; padding: 5px 10px; border-radius: 6px; }
-        .back-btn { display: block; width: 100%; max-width: 200px; margin: 20px auto; background: #7c3aed; color: #fff; text-align: center; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: bold; }
+        .purchase-item { background: #0c0a00; padding: 15px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #eab308; display: flex; justify-content: space-between; align-items: center; }
+        .code { color: #eab308; font-weight: bold; background: #2e2800; padding: 6px 12px; border-radius: 6px; border: 1px solid #eab308; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2>سجل المشتريات والهدايا</h2>
-        <div id="purchasesList">
-            <p style="text-align: center; color: #aaa;">جاري التحميل...</p>
+
+    <div class="header container">
+        <h2>سجل المشتريات</h2>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h3 style="margin-bottom: 15px; text-align: center;">الهدايا والأكواد المستبدلة</h3>
+            <div id="purchasesList">
+                <p style="text-align: center; color: #cbd5e1;">جاري التحميل...</p>
+            </div>
         </div>
     </div>
-    <a href="index.html" class="back-btn">العودة للرئيسية</a>
+
+    <!-- شريط التنقل السفلي -->
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span>الرئيسية</a>
+        <a href="referral.html" class="nav-item"><span class="nav-icon">👥</span>الدعوات</a>
+        <a href="store.html" class="nav-item"><span class="nav-icon">🎁</span>المتجر</a>
+        <a href="purchases.html" class="nav-item active"><span class="nav-icon">📦</span>المشتريات</a>
+        <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span>حسابي</a>
+    </div>
 
     <script>
-        if (localStorage.getItem("is_logged_in") !== "true") {
-            window.location.href = "login.html";
-        }
-
+        if (localStorage.getItem("is_logged_in") !== "true") { window.location.href = "login.html"; }
         const purchases = JSON.parse(localStorage.getItem("user_purchases") || "[]");
         const listContainer = document.getElementById("purchasesList");
 
         if (purchases.length === 0) {
-            listContainer.innerHTML = '<p style="text-align: center; color: #aaa;">ليس لديك أي مشتريات حتى الآن. توجه للمتجر وابدأ الاستبدال!</p>';
+            listContainer.innerHTML = '<p style="text-align: center; color: #cbd5e1;">ليس لديك أي مشتريات حتى الآن. توجه للمتجر وابدأ الاستبدال!</p>';
         } else {
             listContainer.innerHTML = "";
             purchases.forEach(p => {
@@ -40,7 +48,7 @@
                     <div class="purchase-item">
                         <div>
                             <strong>${p.item}</strong>
-                            <div style="font-size: 0.8rem; color: #aaa; margin-top: 3px;">التاريخ: ${p.date}</div>
+                            <div style="font-size: 0.8rem; color: #cbd5e1; margin-top: 3px;">التاريخ: ${p.date}</div>
                         </div>
                         <div class="code">${p.code}</div>
                     </div>
