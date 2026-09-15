@@ -14,9 +14,14 @@
     <div class="container" style="width: 100%;">
         <div class="card" style="text-align: center;">
             <h2>اربح 50 نقطة لكل صديق</h2>
-            <p style="color: #cbd5e1; margin-top: 10px; font-size: 0.95rem;">شارك رابط الإحالة الخاص بك، واكسب نقاطاً حقيقية عندما يسجل أصدقاؤك:</p>
+            <p style="color: #cbd5e1; margin-top: 10px; font-size: 0.95rem;">شارك رابط الإحالة الخاص بك، واكسب نقاطاً حقيقية عندما يسجل أصدقاؤك من خلاله:</p>
             <input type="text" id="refLink" readonly>
-            <button onclick="copyLink()" class="btn-yellow">نسخ رابط الدعوة</button>
+            <button onclick="copyLink()" class="btn-yellow" style="margin-bottom: 15px;">نسخ رابط الدعوة</button>
+            
+            <div style="background: #2e2800; padding: 12px; border-radius: 8px; border: 1px solid #eab308; margin-top: 10px;">
+                <p style="font-size: 0.9rem; color: #fff;">أرباح الإحالات غير المضافة: <span id="refBonusPoints" style="color: #eab308; font-weight: bold;">0</span> نقطة</p>
+                <button onclick="claimRefPoints()" class="btn-yellow" style="margin-top: 10px; padding: 8px; font-size: 0.9rem;">تحويل الأرباح لرصيدي</button>
+            </div>
         </div>
     </div>
 
@@ -31,15 +36,35 @@
 
     <script>
         if (localStorage.getItem("is_logged_in") !== "true") { window.location.href = "login.html"; }
+        
         const userEmail = localStorage.getItem("user_email") || "user";
         const uniqueCode = btoa(userEmail).substring(0, 8);
         document.getElementById("refLink").value = `https://ahmdabwramy416-crypto.github.io/MistCash/login.html?ref=${uniqueCode}`;
+
+        // جلب أرباح الإحالة الخاصة بهذا المستخدم
+        const bonusKey = "ref_bonus_" + uniqueCode;
+        let pendingBonus = parseInt(localStorage.getItem(bonusKey) || "0");
+        document.getElementById("refBonusPoints").innerText = pendingBonus;
 
         function copyLink() {
             const copyText = document.getElementById("refLink");
             copyText.select();
             navigator.clipboard.writeText(copyText.value);
             alert("تم نسخ رابط الدعوة بنجاح!");
+        }
+
+        function claimRefPoints() {
+            let bonus = parseInt(localStorage.getItem(bonusKey) || "0");
+            if (bonus <= 0) {
+                alert("لا توجد أرباح إحالة جديدة للتحويل حالياً. شارك الرابط مع أصدقائك!");
+                return;
+            }
+            let currentPoints = parseInt(localStorage.getItem("user_points") || "0");
+            currentPoints += bonus;
+            localStorage.setItem("user_points", currentPoints);
+            localStorage.setItem(bonusKey, "0");
+            document.getElementById("refBonusPoints").innerText = "0";
+            alert(`تم تحويل ${bonus} نقطة بنجاح إلى رصيدك الأساسي!`);
         }
     </script>
 </body>
