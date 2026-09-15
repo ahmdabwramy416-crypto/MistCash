@@ -3,40 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>متجر الهدايا - MistCash</title>
+    <title>المتجر - Gamer Pro</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-top: 20px; }
+        .store-grid { display: grid; gap: 15px; margin-bottom: 25px; }
+        .store-card { background: #1a1700; border: 1px solid #eab308; padding: 15px; border-radius: 12px; text-align: center; }
+        .store-card h3 { color: #eab308; margin-bottom: 8px; }
+        .store-card p { color: #cbd5e1; font-size: 0.9rem; margin-bottom: 12px; }
     </style>
 </head>
 <body>
 
-    <div class="header container">
-        <h2>متجر المكافآت</h2>
-        <div class="points-box">الرصيد: <span id="userPoints">0</span> نقطة</div>
+    <div class="header container" style="display: flex; justify-content: space-between; align-items: center; padding: 15px;">
+        <h2>المتجر</h2>
+        <div class="points-box" style="background: #1a1700; border: 1px solid #eab308; padding: 8px 15px; border-radius: 8px; color: #eab308; font-weight: bold;">
+            النقاط: <span id="userPoints" style="color: #fff;">0</span>
+        </div>
     </div>
 
     <div class="container">
-        <div class="grid">
-            <div class="card" style="text-align: center;">
-                <h3>60 شدة ببجي موبايل</h3>
-                <p style="color: #cbd5e1; margin: 10px 0;">التكلفة: 500 نقطة</p>
-                <button onclick="buyItem('60 شدة ببجي موبايل', 500)" class="btn-yellow">استبدال الآن</button>
+        <div class="store-grid">
+            <!-- عنصر 1: شدات ببجي -->
+            <div class="store-card">
+                <h3>60 شدة ببجي (UC)</h3>
+                <p>السعر: 1000 نقطة</p>
+                <button onclick="requestReward('60 شدة ببجي', 1000)" class="btn-yellow" style="width: 100%; padding: 10px; background: #eab308; border: none; font-weight: bold; border-radius: 8px; cursor: pointer;">استبدال الآن</button>
             </div>
-            <div class="card" style="text-align: center;">
-                <h3>100 جوهرة فري فاير</h3>
-                <p style="color: #cbd5e1; margin: 10px 0;">التكلفة: 400 نقطة</p>
-                <button onclick="buyItem('100 جوهرة فري فاير', 400)" class="btn-yellow">استبدال الآن</button>
-            </div>
-            <div class="card" style="text-align: center;">
+
+            <!-- عنصر 2: بطاقة جوجل بلاي -->
+            <div class="store-card">
                 <h3>بطاقة جوجل بلاي 10$</h3>
-                <p style="color: #cbd5e1; margin: 10px 0;">التكلفة: 1000 نقطة</p>
-                <button onclick="buyItem('بطاقة جوجل بلاي 10$', 1000)" class="btn-yellow">استبدال الآن</button>
+                <p>السعر: 5000 نقطة</p>
+                <button onclick="requestReward('بطاقة جوجل بلاي 10$', 5000)" class="btn-yellow" style="width: 100%; padding: 10px; background: #eab308; border: none; font-weight: bold; border-radius: 8px; cursor: pointer;">استبدال الآن</button>
             </div>
-            <div class="card" style="text-align: center;">
-                <h3>بطاقة أمزون 10$</h3>
-                <p style="color: #cbd5e1; margin: 10px 0;">التكلفة: 900 نقطة</p>
-                <button onclick="buyItem('بطاقة أمزون 10$', 900)" class="btn-yellow">استبدال الآن</button>
+
+            <!-- عنصر 3: جواهر فري فاير -->
+            <div class="store-card">
+                <h3>100 جوهرة فري فاير</h3>
+                <p>السعر: 800 نقطة</p>
+                <button onclick="requestReward('100 جوهرة فري فاير', 800)" class="btn-yellow" style="width: 100%; padding: 10px; background: #eab308; border: none; font-weight: bold; border-radius: 8px; cursor: pointer;">استبدال الآن</button>
             </div>
         </div>
     </div>
@@ -45,40 +50,94 @@
     <div class="bottom-nav">
         <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span>الرئيسية</a>
         <a href="referral.html" class="nav-item"><span class="nav-icon">👥</span>الدعوات</a>
-        <a href="store.html" class="nav-item active"><span class="nav-icon">🎁</span>المتجر</a>
+        <a href="store.html" class="nav-item active"><span class="nav-icon">🔥</span>المتجر</a>
         <a href="purchases.html" class="nav-item"><span class="nav-icon">📦</span>المشتريات</a>
         <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span>حسابي</a>
     </div>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, updateDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyB6rnXLMDlvy0Eezc7MkdmP334EzPTKlGE",
+          authDomain: "mistcash-9a71c.firebaseapp.com",
+          projectId: "mistcash-9a71c",
+          storageBucket: "mistcash-9a71c.firebasestorage.app",
+          messagingSenderId: "819929785371",
+          appId: "1:819929785371:web:396e322f83319016bb44be",
+          measurementId: "G-FGBZZ1P9W6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
         if (localStorage.getItem("is_logged_in") !== "true") { window.location.href = "login.html"; }
-        
+
         const userEmail = localStorage.getItem("user_email");
         const pointsKey = "points_" + userEmail;
-        const purchasesKey = "purchases_" + userEmail;
 
-        function updatePoints() {
+        function updatePointsDisplay() {
             let currentVal = localStorage.getItem(pointsKey) || "0";
             document.getElementById("userPoints").innerText = currentVal;
         }
-        updatePoints();
+        updatePointsDisplay();
 
-        function buyItem(itemName, cost) {
-            let points = parseInt(localStorage.getItem(pointsKey) || "0");
-            if (points < cost) {
-                alert("عذراً، رصيدك غير كافي لإتمام عملية الاستبدال!");
+        // ⚠️ ضع هنا بيانات بوت تليجرام الخاص بك (Token و Chat ID) لتصلك الإشعارات عند كل طلب شراء
+        const TELEGRAM_BOT_TOKEN = "أدخل_توكن_البوت_هنا"; 
+        const TELEGRAM_CHAT_ID = "أدخل_رقم_الـ_Chat_ID_هنا"; 
+
+        window.requestReward = async function(rewardName, cost) {
+            let currentPoints = parseInt(localStorage.getItem(pointsKey) || "0");
+
+            if (currentPoints < cost) {
+                alert("عذراً، رصيدك من النقاط غير كافٍ لطلب هذه الجائزة!");
                 return;
             }
-            points -= cost;
-            localStorage.setItem(pointsKey, points);
-            updatePoints();
 
-            const randomCode = 'MIST-' + Math.random().toString(36).substring(2, 10).toUpperCase();
-            let purchases = JSON.parse(localStorage.getItem(purchasesKey) || "[]");
-            purchases.push({ item: itemName, code: randomCode, date: new Date().toLocaleDateString() });
-            localStorage.setItem(purchasesKey, JSON.stringify(purchases));
+            if (!confirm(`هل أنت متأكد من رغبتك في استبدال ${cost} نقطة بـ (${rewardName})؟`)) {
+                return;
+            }
 
-            alert(`مبروك! تمت عملية الاستبدال بنجاح.\nكود الهدية الحقيقي: ${randomCode}\nتم حفظ الكود في صفحة المشتريات.`);
+            currentPoints -= cost;
+            localStorage.setItem(pointsKey, currentPoints);
+            updatePointsDisplay();
+
+            try {
+                // 1. تحديث النقاط الجديدة في جدول المستخدمين بقاعدة البيانات
+                const userRef = doc(db, "users", userEmail);
+                await updateDoc(userRef, { points: currentPoints });
+
+                // 2. تسجيل الطلب في جدول الطلبات (withdrawals)
+                await addDoc(collection(db, "withdrawals"), {
+                    email: userEmail,
+                    reward: rewardName,
+                    cost: cost,
+                    status: "قيد المعالجة (انتظار الإرسال)",
+                    date: new Date().toLocaleString(),
+                    promoCode: ""
+                });
+
+                // 3. إرسال إشعار فوري إلى بوت تليجرام
+                if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID && TELEGRAM_BOT_TOKEN !== "أدخل_توكن_البوت_هنا") {
+                    const message = `🔔 طلب استبدال جديد!\n\n👤 المستخدم: ${userEmail}\n🎁 الجائزة: ${rewardName}\n💰 التكلفة: ${cost} نقطة`;
+                    fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            chat_id: TELEGRAM_CHAT_ID,
+                            text: message
+                        })
+                    }).catch(err => console.log("Telegram error:", err));
+                }
+
+                alert("تم تقديم طلبك بنجاح! سيتم مراجعة الطلب وإرسال الكود إليك قريباً في صفحة المشتريات.");
+                window.location.href = "purchases.html";
+
+            } catch (err) {
+                console.error("خطأ أثناء إرسال الطلب:", err);
+                alert("حدث خطأ ما، يرجى المحاولة مرة أخرى.");
+            }
         }
     </script>
 </body>
