@@ -19,7 +19,7 @@
     </div>
 
     <div class="container">
-        <!-- 3 أزرار لشركات العروض (تم ربط الزر الأول بـ CPALead الحقيقي) -->
+        <!-- 3 أزرار لشركات العروض -->
         <div class="card" style="text-align: center;">
             <h3 style="margin-bottom: 15px;">شركات حائط العروض</h3>
             <div class="offers-grid">
@@ -51,7 +51,15 @@
 
     <script>
         if (localStorage.getItem("is_logged_in") !== "true") { window.location.href = "login.html"; }
-        function updatePoints() { document.getElementById("userPoints").innerText = localStorage.getItem("user_points") || "0"; }
+        
+        const userEmail = localStorage.getItem("user_email");
+        const pointsKey = "points_" + userEmail;
+
+        function updatePoints() {
+            let currentVal = localStorage.getItem(pointsKey) || "0";
+            document.getElementById("userPoints").innerText = currentVal;
+            localStorage.setItem("user_points", currentVal);
+        }
         updatePoints();
 
         let isSpinning = false;
@@ -68,11 +76,15 @@
             setTimeout(() => {
                 const rewards = [10, 20, 50, 100, 5, 25];
                 const wonPoints = rewards[Math.floor(Math.random() * rewards.length)];
-                let currentPoints = parseInt(localStorage.getItem("user_points") || "0");
+                
+                let currentPoints = parseInt(localStorage.getItem(pointsKey) || "0");
                 currentPoints += wonPoints;
-                localStorage.setItem("user_points", currentPoints);
+                
+                // حفظ النقاط بشكل دائم ومباشر في المفتاح الخاص بالمستخدم
+                localStorage.setItem(pointsKey, currentPoints);
                 updatePoints();
-                resultText.innerText = `مبروك! ربحت ${wonPoints} نقطة حقيقية!`;
+                
+                resultText.innerText = `مبروك! ربحت ${wonPoints} نقطة وتم حفظها في رصيدك!`;
                 isSpinning = false;
             }, 4000);
         }
