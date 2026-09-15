@@ -5,16 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الرئيسية - MistCash</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        body { display: flex; flex-direction: column; justify-content: flex-start; align-items: center; min-height: 90vh; padding: 15px; margin-bottom: 70px; }
+        .container { width: 100%; max-width: 450px; text-align: center; }
+        .card { background: #1a1700; border: 2px solid #eab308; border-radius: 16px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(234, 179, 8, 0.2); }
+        h2 { color: #eab308; margin-bottom: 10px; font-size: 1.6rem; }
+        p { color: #cbd5e1; font-size: 0.95rem; line-height: 1.5; }
+        .btn-yellow { background: #eab308; color: #000; font-weight: bold; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; width: 100%; font-size: 1rem; margin-top: 15px; transition: 0.3s; }
+        .btn-yellow:hover { background: #ca9a04; }
+        .offers-section { display: grid; grid-template-columns: 1fr; gap: 15px; }
+    </style>
 </head>
 <body>
-    <div class="container" style="text-align: center; padding: 20px;">
+    <div class="container">
         <h2>مرحباً بك في MistCash</h2>
-        <p>رصيدك الحالي: <span id="userPoints" style="color: #eab308; font-weight: bold;">0</span> نقطة</p>
+        <p style="margin-bottom: 20px;">رصيد حسابك الحالي: <span id="userPoints" style="color: #eab308; font-weight: bold; font-size: 1.2rem;">0</span> نقطة</p>
         
-        <div class="card" style="margin-top: 20px; padding: 20px; background: #1a1700; border: 1px solid #eab308; border-radius: 12px;">
+        <!-- قسم عجلة الحظ اليومية -->
+        <div class="card">
             <h3>عجلة الحظ اليومية</h3>
-            <p style="color: #cbd5e1; font-size: 0.9rem;">اضغط لدوران العجلة واربح نقاطاً مجانية كل 24 ساعة!</p>
-            <button onclick="spinWheel()" class="btn-yellow" style="margin-top: 15px; padding: 10px 20px;">اضغط لربح النقاط</button>
+            <p>اضغط لدوران العجلة واربح نقاطاً مجانية كل 24 ساعة!</p>
+            <button onclick="spinWheel()" class="btn-yellow">دوران العجلة (اربح نقاط)</button>
+        </div>
+
+        <!-- قسم العروض وشركة CPALead -->
+        <div class="card">
+            <h3>حائط العروض (CPALead)</h3>
+            <p>أكمل المهام والعروض واجمع آلاف النقاط يومياً!</p>
+            <button onclick="openCPALeadOffers()" class="btn-yellow" style="background: #2563eb; color: #fff;">عرض عروض CPALead</button>
         </div>
     </div>
 
@@ -51,11 +69,11 @@
         const userEmail = localStorage.getItem("user_email");
         const pointsKey = "points_" + userEmail;
         
-        // عرض النقاط الحالية محلياً
-        let currentPoints = parseInt(localStorage.getItem(pointsKey) || "0");
+        // عرض النقاط الحالية للمستخدم
+        let currentPoints = parseInt(localStorage.getItem(pointsKey) || localStorage.getItem("user_points") || "0");
         document.getElementById("userPoints").innerText = currentPoints;
 
-        // دالة إرسال 10% لصاحب الدعوة تلقائياً
+        // دالة إرسال عمولة 10% لصاحب الدعوة تلقائياً في السحابة
         async function sendReferralCommission(earnedPoints) {
             const inviterRefCode = localStorage.getItem("my_inviter_ref_code");
             if (inviterRefCode && earnedPoints > 0) {
@@ -71,17 +89,18 @@
             }
         }
 
-        // تجربة تدوير العجلة لربح النقاط
+        // تفاعل عجلة الحظ
         window.spinWheel = async function() {
-            let wonPoints = 50; // مثال: ربح 50 نقطة من العجلة
+            // يمكنك ربط كود العجلة القديم الخاص بك هنا، حالياً تمنح 50 نقطة تجريبية
+            let wonPoints = 50; 
             currentPoints += wonPoints;
 
-            // تحديث النقاط محلياً
+            // تحديث محلياً
             localStorage.setItem(pointsKey, currentPoints);
             localStorage.setItem("user_points", currentPoints);
             document.getElementById("userPoints").innerText = currentPoints;
 
-            // تحديث النقاط في سحابة Firebase للمستخدم نفسه
+            // تحديث سحابياً في Firebase
             try {
                 const userRef = doc(db, "users", userEmail);
                 await updateDoc(userRef, { points: currentPoints });
@@ -89,10 +108,16 @@
                 console.error("خطأ في تحديث النقاط بالسحابة:", err);
             }
 
-            // إرسال 10% لصاحب الدعوة أوتوماتيكياً!
+            // إرسال 10% لصاحب الدعوة أوتوماتيكياً
             await sendReferralCommission(wonPoints);
 
             alert(`مبروك! لقد ربحت ${wonPoints} نقطة وأضيفت لرصيدك.`);
+        }
+
+        // زر فتح عروض CPALead (ضع رابط حائط العروض الخاص بك هنا)
+        window.openCPALeadOffers = function() {
+            // استبدل الرابط أدناه برابط العروض الخاص بك من CPALead
+            window.location.href = "store.html"; 
         }
     </script>
 </body>
