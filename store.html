@@ -1,4 +1,4 @@
-ج<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -52,23 +52,31 @@
 
     <script>
         if (localStorage.getItem("is_logged_in") !== "true") { window.location.href = "login.html"; }
-        function updatePoints() { document.getElementById("userPoints").innerText = localStorage.getItem("user_points") || "0"; }
+        
+        const userEmail = localStorage.getItem("user_email");
+        const pointsKey = "points_" + userEmail;
+        const purchasesKey = "purchases_" + userEmail;
+
+        function updatePoints() {
+            let currentVal = localStorage.getItem(pointsKey) || "0";
+            document.getElementById("userPoints").innerText = currentVal;
+        }
         updatePoints();
 
         function buyItem(itemName, cost) {
-            let points = parseInt(localStorage.getItem("user_points") || "0");
+            let points = parseInt(localStorage.getItem(pointsKey) || "0");
             if (points < cost) {
                 alert("عذراً، رصيدك غير كافي لإتمام عملية الاستبدال!");
                 return;
             }
             points -= cost;
-            localStorage.setItem("user_points", points);
+            localStorage.setItem(pointsKey, points);
             updatePoints();
 
             const randomCode = 'MIST-' + Math.random().toString(36).substring(2, 10).toUpperCase();
-            let purchases = JSON.parse(localStorage.getItem("user_purchases") || "[]");
+            let purchases = JSON.parse(localStorage.getItem(purchasesKey) || "[]");
             purchases.push({ item: itemName, code: randomCode, date: new Date().toLocaleDateString() });
-            localStorage.setItem("user_purchases", JSON.stringify(purchases));
+            localStorage.setItem(purchasesKey, JSON.stringify(purchases));
 
             alert(`مبروك! تمت عملية الاستبدال بنجاح.\nكود الهدية الحقيقي: ${randomCode}\nتم حفظ الكود في صفحة المشتريات.`);
         }
