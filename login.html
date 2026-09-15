@@ -3,48 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MistCash - تسجيل الدخول</title>
+    <title>تسجيل الدخول - MistCash</title>
+    <!-- استدعاء مكتبة تسجيل الدخول من جوجل -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #0d0519; color: #ffffff; display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px; }
-        .auth-container { background: #1a0b2e; border: 1px solid #3b1568; border-radius: 16px; padding: 30px; width: 100%; max-width: 400px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); text-align: center; }
-        h2 { color: #c084fc; margin-bottom: 20px; font-size: 1.5rem; }
-        .input-group { margin-bottom: 15px; text-align: right; }
-        label { display: block; font-size: 0.85rem; color: #e9d5ff; margin-bottom: 5px; }
-        input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #4c1d95; background: #0d0519; color: white; font-size: 1rem; }
-        input:focus { outline: none; border-color: #a855f7; }
-        .auth-btn { background: #7c3aed; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; width: 100%; cursor: pointer; font-size: 1rem; margin-top: 10px; transition: 0.2s; }
-        .auth-btn:hover { background: #9333ea; }
+        body {
+            font-family: 'Cairo', Tahoma, sans-serif;
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-card {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 25px;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="auth-container">
-        <h2>تسجيل الدخول / إنشاء حساب</h2>
+    <div class="login-card">
+        <h2>تسجيل الدخول إلى MistCash</h2>
+        <p>سجل دخولك باستخدام حساب جوجل للوصول إلى مكافآتك</p>
         
-        <div class="input-group">
-            <label>البريد الإلكتروني</label>
-            <input type="email" id="email" placeholder="example@gmail.com">
+        <!-- إعداد حاوية زر جوجل -->
+        <div class="button-container">
+            <div id="g_id_onload"
+                 data-client_id="855781354859-0kf6q6rsi1al5n4ej3pg1o61blsouvdm.apps.googleusercontent.com"
+                 data-callback="handleCredentialResponse"
+                 data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin"
+                 data-type="standard"
+                 data-size="large"
+                 data-theme="outline"
+                 data-text="sign_in_with"
+                 data-shape="rectangular"
+                 data-logo_alignment="left">
+            </div>
         </div>
-
-        <button class="auth-btn" onclick="fastLogin()">دخول للموقع</button>
     </div>
 
     <script>
-        function fastLogin() {
-            const email = document.getElementById("email").value;
-            if (!email) {
-                alert("الرجاء إدخال البريد الإلكتروني");
-                return;
-            }
-            // توليد معرف فريد للمستخدم وحفظه محلياً ليعمل مع عروض CPALead
-            let uid = 'user_' + Math.random().toString(36).substring(2, 9);
-            localStorage.setItem("user_email", email);
-            localStorage.setItem("user_uid", uid);
-            localStorage.setItem("user_points", "0");
+        // هذه الدالة تعمل تلقائياً عند نجاح تسجيل الدخول بجوجل
+        function handleCredentialResponse(response) {
+            console.EncodedToken = response.credential;
             
-            window.location.href = "index.html";
+            // فك تشفير البيانات البسيطة للاستفادة منها (اسم المستخدم، البريد، الصورة)
+            const responsePayload = parseJwt(response.credential);
+            
+            // تخزين بيانات المستخدم محلياً في المتصفح
+            localStorage.setItem("user_name", responsePayload.name);
+            localStorage.setItem("user_email", responsePayload.email);
+            localStorage.setItem("user_picture", responsePayload.picture);
+            localStorage.setItem("is_logged_in", "true");
+
+            // التوجيه إلى صفحة الملف الشخصي أو الرئيسية بعد الدخول الناجح
+            window.location.href = "profile.html";
+        }
+
+        // دالة مساعدة لفك تشفير بيانات رمز جوجل (JWT)
+        function parseJwt(token) {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
         }
     </script>
+
 </body>
 </html>
