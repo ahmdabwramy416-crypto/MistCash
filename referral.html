@@ -13,8 +13,8 @@
 <body>
     <div class="container" style="width: 100%;">
         <div class="card" style="text-align: center;">
-            <h2>اربح 50 نقطة لكل صديق</h2>
-            <p style="color: #cbd5e1; margin-top: 10px; font-size: 0.95rem;">شارك رابط الإحالة الخاص بك، واكسب نقاطاً حقيقية عندما يسجل أصدقاؤك من خلاله:</p>
+            <h2>نظام الإحالات (10% أرباح مدى الحياة)</h2>
+            <p style="color: #cbd5e1; margin-top: 10px; font-size: 0.95rem;">شارك رابط الإحالة الخاص بك، واكسب عمولة <strong>10%</strong> من كل نقطة يجمعها أصدقاؤك عندما يسجلون من خلاله:</p>
             <input type="text" id="refLink" readonly>
             <button onclick="copyLink()" class="btn-yellow" style="margin-bottom: 15px;">نسخ رابط الدعوة</button>
             
@@ -64,7 +64,7 @@
         const bonusDocRef = doc(db, "referrals_bonus", uniqueCode);
         const userDocRef = doc(db, "users", userEmail);
 
-        // جلب الأرباح المعلقة من السحابة مباشرة
+        // جلب الأرباح المعلقة من السحابة
         async function fetchBonus() {
             try {
                 const docSnap = await getDoc(bonusDocRef);
@@ -83,17 +83,17 @@
             copyText.select();
             copyText.setSelectionRange(0, 99999);
             navigator.clipboard.writeText(copyText.value);
-            alert("تم نسخ رابط الدعوة بنجاح!");
+            alert("تم نسخ رابط الدعوة بنجاح! شاركه مع أصدقائك لكسب 10% من أرباحهم.");
         }
 
         window.claimRefPoints = async function() {
             if (pendingBonusValue <= 0) {
-                alert("لا توجد أرباح إحالة جديدة للتحويل حالياً. شارك الرابط مع أصدقائك!");
+                alert("لا توجد أرباح إحالة جديدة للتحويل حالياً.");
                 return;
             }
 
             try {
-                // تحديث الرصيد في مستند المستخدم بـ Firestore وزيادة النقاط
+                // إضافة الأرباح إلى رصيد المستخدم الأساسي في Firestore
                 await updateDoc(userDocRef, {
                     points: increment(pendingBonusValue)
                 });
@@ -103,7 +103,7 @@
                     bonus: 0
                 });
 
-                // تحديث التخزين المحلي والواجهة
+                // تحديث المتصفح المحلي
                 let currentLocalPoints = parseInt(localStorage.getItem("user_points") || "0") + pendingBonusValue;
                 localStorage.setItem("user_points", currentLocalPoints);
                 localStorage.setItem("points_" + userEmail, currentLocalPoints);
@@ -113,7 +113,7 @@
                 document.getElementById("refBonusPoints").innerText = "0";
             } catch (err) {
                 console.error("Error claiming points:", err.message);
-                alert("حدث خطأ أثناء تحويل النقاط، يجدر التأكد من الاتصال بالإنترنت.");
+                alert("حدث خطأ أثناء تحويل النقاط، يرجى التحقق من اتصال الإنترنت.");
             }
         }
     </script>
