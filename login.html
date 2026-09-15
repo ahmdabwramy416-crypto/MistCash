@@ -33,6 +33,13 @@
             window.location.href = "index.html"; 
         }
 
+        // دالة لالتقاط كود الإحالة من رابط الصفحة (?ref=...) وحفظه مؤقتاً
+        const urlParams = new URLSearchParams(window.location.search);
+        const refCode = urlParams.get('ref');
+        if (refCode) {
+            localStorage.setItem("pending_ref_code", refCode);
+        }
+
         function handleCredentialResponse(response) {
             const payload = parseJwt(response.credential);
             const userEmail = payload.email;
@@ -43,14 +50,29 @@
             localStorage.setItem("user_picture", payload.picture || "");
             localStorage.setItem("is_logged_in", "true");
 
-            // مفتاح تخزين خاص لكل بريد إلكتروني لكي لا تضيع النقاط حتى لو تغير الحساب أو سجل خروج
+            // مفتاح تخزين خاص لكل بريد إلكتروني لكي لا تضيع النقاط
             const pointsKey = "points_" + userEmail;
             const purchasesKey = "purchases_" + userEmail;
+            const isNewUser = !localStorage.getItem(pointsKey);
 
-            if (!localStorage.getItem(pointsKey)) {
+            if (isNewUser) {
                 // منح 50 نقطة ترحيبية للمستخدم الجديد لأول مرة فقط
                 localStorage.setItem(pointsKey, "50");
+
+                // التحقق إذا كان سجل عبر رابط دعوة صديق
+                const savedRefCode = localStorage.getItem("pending_ref_code");
+                if (savedRefCode) {
+                    // زيادة 50 نقطة مكافأة لصاحب الدعوة في حسابه المعلق
+                    const inviterBonusKey = "ref_bonus_" + savedRefCode;
+                    let currentInviterBonus = parseInt(localStorage.getItem(inviterBonusKey) || "0");
+                    currentInviterBonus += 50; // مكافأة الدعوة (50 نقطة)
+                    localStorage.setItem(inviterBonusKey, currentInviterBonus.toString());
+                    
+                    // مسح الكود حتى لا تتكرر العملية لنفس المستخدم
+                    localStorage.removeItem("pending_ref_code");
+                }
             }
+
             if (!localStorage.getItem(purchasesKey)) {
                 localStorage.setItem(purchasesKey, JSON.stringify([]));
             }
