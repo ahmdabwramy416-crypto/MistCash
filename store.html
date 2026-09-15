@@ -23,11 +23,11 @@
 
     <div class="container">
         <div class="store-grid">
-            <!-- عنصر 1: شدات ببجي -->
+            <!-- عنصر 1: شدات ببجي (تم تعديل السعر مؤقتاً إلى 20 نقطة للتجربة) -->
             <div class="store-card">
                 <h3>60 شدة ببجي (UC)</h3>
-                <p>السعر: 1000 نقطة</p>
-                <button onclick="requestReward('60 شدة ببجي', 1000)" class="btn-yellow" style="width: 100%; padding: 10px; background: #eab308; border: none; font-weight: bold; border-radius: 8px; cursor: pointer;">استبدال الآن</button>
+                <p>السعر: <span style="color: #4ade80; font-weight: bold;">20 نقطة</span> (تجريبي)</p>
+                <button onclick="requestReward('60 شدة ببجي', 20)" class="btn-yellow" style="width: 100%; padding: 10px; background: #eab308; border: none; font-weight: bold; border-radius: 8px; cursor: pointer;">استبدال الآن</button>
             </div>
 
             <!-- عنصر 2: بطاقة جوجل بلاي -->
@@ -83,15 +83,15 @@
         }
         updatePointsDisplay();
 
-        // ⚠️ ضع هنا بيانات بوت تليجرام الخاص بك (Token و Chat ID) لتصلك الإشعارات عند كل طلب شراء
-        const TELEGRAM_BOT_TOKEN = "أدخل_توكن_البوت_هنا"; 
-        const TELEGRAM_CHAT_ID = "أدخل_رقم_الـ_Chat_ID_هنا"; 
+        // بيانات بوت التليجرام الخاص بك المضافة مسبقاً
+        const TELEGRAM_BOT_TOKEN = "8772749961:AAGcqxtBBh9MTsBlGyCCHFheeQOXLwGMhrc"; 
+        const TELEGRAM_CHAT_ID = "8767568410"; 
 
         window.requestReward = async function(rewardName, cost) {
             let currentPoints = parseInt(localStorage.getItem(pointsKey) || "0");
 
             if (currentPoints < cost) {
-                alert("عذراً، رصيدك من النقاط غير كافٍ لطلب هذه الجائزة!");
+                alert("عذراً، رصيدك من النقاط غير كافٍ لطلب هذه الجائزة! اربح بعض النقاط من عجلة الحظ أولاً.");
                 return;
             }
 
@@ -104,11 +104,11 @@
             updatePointsDisplay();
 
             try {
-                // 1. تحديث النقاط الجديدة في جدول المستخدمين بقاعدة البيانات
+                // 1. تحديث النقاط الجديدة للمستخدم في قاعدة البيانات
                 const userRef = doc(db, "users", userEmail);
                 await updateDoc(userRef, { points: currentPoints });
 
-                // 2. تسجيل الطلب في جدول الطلبات (withdrawals)
+                // 2. تسجيل طلب السحب في جدول withdrawals
                 await addDoc(collection(db, "withdrawals"), {
                     email: userEmail,
                     reward: rewardName,
@@ -118,8 +118,8 @@
                     promoCode: ""
                 });
 
-                // 3. إرسال إشعار فوري إلى بوت تليجرام
-                if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID && TELEGRAM_BOT_TOKEN !== "أدخل_توكن_البوت_هنا") {
+                // 3. إرسال إشعار فوري إلى بوت تليجرام الخاص بك
+                if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
                     const message = `🔔 طلب استبدال جديد!\n\n👤 المستخدم: ${userEmail}\n🎁 الجائزة: ${rewardName}\n💰 التكلفة: ${cost} نقطة`;
                     fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
                         method: "POST",
@@ -131,7 +131,7 @@
                     }).catch(err => console.log("Telegram error:", err));
                 }
 
-                alert("تم تقديم طلبك بنجاح! سيتم مراجعة الطلب وإرسال الكود إليك قريباً في صفحة المشتريات.");
+                alert("تم تقديم طلبك بنجاح! سيتم إرسال الإشعار لتليجرام وتوجيهك لصفحة المشتريات.");
                 window.location.href = "purchases.html";
 
             } catch (err) {
