@@ -16,7 +16,7 @@
 <body>
     <div class="login-card">
         <h2>منصة MistCash</h2>
-        <p>سجل دخولك بحساب جوجل وابدأ بجمع النقاط وسحب الهدايا مجاناً!</p>
+        <p>سجل دخولك بحساب جوجل وابدأ فوراً بجمع النقاط وسحب الهدايا مجاناً!</p>
         <div style="display: flex; justify-content: center;">
             <div id="g_id_onload"
                  data-client_id="855781354859-0kf6q6rsi1al5n4ej3pg1o61blsouvdm.apps.googleusercontent.com"
@@ -29,16 +29,38 @@
 
     <script>
         if (localStorage.getItem("is_logged_in") === "true") { window.location.href = "index.html"; }
+
         function handleCredentialResponse(response) {
             const payload = parseJwt(response.credential);
+            const userEmail = payload.email;
+            
             localStorage.setItem("user_name", payload.name);
-            localStorage.setItem("user_email", payload.email);
+            localStorage.setItem("user_email", userEmail);
             localStorage.setItem("user_picture", payload.picture || "");
             localStorage.setItem("is_logged_in", "true");
-            if (!localStorage.getItem("user_points")) localStorage.setItem("user_points", "50");
-            if (!localStorage.getItem("user_purchases")) localStorage.setItem("user_purchases", JSON.stringify([]));
+
+            // إذا كان المستخدم جديداً تماماً (لم يتم تخزين نقاط له مسبقاً)
+            if (!localStorage.getItem("user_points")) {
+                // منح نقاط ترحيبية للمستخدم الجديد (مثلاً 50 نقطة)
+                localStorage.setItem("user_points", "50");
+                
+                // التحقق مما إذا كان قد سجل عبر رابط إحالة
+                const urlParams = new URLSearchParams(window.location.search);
+                const refCode = urlParams.get("ref");
+                if (refCode) {
+                    // هنا يتم محاكاة منح نقاط إضافية أو تسجيل الإحالة
+                    let currentRefPoints = parseInt(localStorage.getItem("ref_bonus_" + refCode) || "0");
+                    localStorage.setItem("ref_bonus_" + refCode, currentRefPoints + 50);
+                }
+            }
+
+            if (!localStorage.getItem("user_purchases")) {
+                localStorage.setItem("user_purchases", JSON.stringify([]));
+            }
+
             window.location.href = "index.html";
         }
+
         function parseJwt(token) {
             var base64Url = token.split('.')[1];
             var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
