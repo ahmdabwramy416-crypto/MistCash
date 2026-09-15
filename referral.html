@@ -3,127 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MistCash - دعوة الأصدقاء</title>
-    
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <title>دعوة الأصدقاء - MistCash</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #0d0519; color: #ffffff; padding-bottom: 90px; }
-        
-        /* Header */
-        .top-bar {
-            background: linear-gradient(135deg, #24103f, #1a0b2e);
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #3b1568;
-            position: sticky; top: 0; z-index: 100;
-        }
-        .points-card { background: linear-gradient(90deg, #f59e0b, #d97706); padding: 8px 16px; border-radius: 20px; font-weight: bold; color: #fff; }
-
-        .container { padding: 15px; max-width: 600px; margin: 0 auto; text-align: center; }
-
-        /* Referral Card */
-        .ref-card { background: #1a0b2e; border: 1px solid #3b1568; border-radius: 16px; padding: 20px; margin-top: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .ref-card i { font-size: 3rem; color: #a855f7; margin-bottom: 10px; }
-        .ref-title { font-size: 1.3rem; font-weight: bold; color: #c084fc; margin-bottom: 8px; }
-        .ref-desc { color: #aaa; font-size: 0.9rem; margin-bottom: 20px; line-height: 1.5; }
-
-        /* Code Box */
-        .box-title { text-align: right; font-size: 0.85rem; color: #c084fc; margin-bottom: 5px; font-weight: bold; }
-        .input-box { background: #0d0519; border: 1px solid #7c3aed; border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .code-text { font-family: monospace; font-size: 1.1rem; color: #f59e0b; font-weight: bold; word-break: break-all; }
-        .copy-btn { background: #7c3aed; color: white; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: bold; }
-
-        /* Bottom Navigation */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #150727; border-top: 1px solid #3b1568; display: flex; justify-content: space-around; padding: 12px 0; z-index: 1000; }
-        .nav-item { color: #8b5cf6; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 0.75rem; gap: 4px; }
-        .nav-item.active { color: #c084fc; font-weight: bold; }
-        .nav-item i { font-size: 1.2rem; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', Tahoma, sans-serif; }
+        body { background-color: #0d0519; color: #ffffff; padding: 20px; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .card { background: #1a0b2e; border: 1px solid #3b1568; border-radius: 16px; padding: 30px; width: 100%; max-width: 450px; text-align: center; }
+        h2 { color: #eab308; margin-bottom: 15px; }
+        p { color: #cbd5e1; font-size: 0.95rem; margin-bottom: 20px; line-height: 1.6; }
+        input { width: 100%; padding: 12px; background: #2a1147; border: 1px solid #4c1d95; color: #fff; border-radius: 8px; text-align: center; margin-bottom: 15px; font-size: 0.9rem; }
+        .btn { display: block; width: 100%; padding: 12px; background: #7c3aed; color: white; border: none; border-radius: 8px; text-decoration: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn:hover { background: #6d28d9; }
     </style>
 </head>
 <body>
-
-    <div class="top-bar">
-        <h3 style="color: #c084fc;"><i class="fa-solid fa-user-plus"></i> نظام الإحالة</h3>
-        <div class="points-card">
-            🪙 <span id="user-points">0</span>
-        </div>
-    </div>
-
-    <div class="container">
-        <div class="ref-card">
-            <i class="fa-solid fa-users-rays"></i>
-            <div class="ref-title">ادعُ أصدقاءك واربح النقاط!</div>
-            <div class="ref-desc">احصل على <b>50 نقطة</b> فورية لكل صديق يقوم بالتسجيل في الموقع عن طريق كود أو رابط الدعوة الخاص بك.</div>
-
-            <!-- Code Box -->
-            <div class="box-title">كود الدعوة الخاص بك:</div>
-            <div class="input-box">
-                <span class="code-text" id="ref-code">جاري التحميل...</span>
-                <button class="copy-btn" onclick="copyText('ref-code')"><i class="fa-solid fa-copy"></i> نسخ</button>
-            </div>
-
-            <!-- Link Box -->
-            <div class="box-title">رابط الدعوة المباشر:</div>
-            <div class="input-box">
-                <span class="code-text" id="ref-link" style="font-size: 0.8rem;">جاري التحميل...</span>
-                <button class="copy-btn" onclick="copyText('ref-link')"><i class="fa-solid fa-copy"></i> نسخ</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bottom Navigation -->
-    <div class="bottom-nav">
-        <a href="index.html" class="nav-item"><i class="fa-solid fa-house"></i>الرئيسية</a>
-        <a href="rewards.html" class="nav-item"><i class="fa-solid fa-gift"></i>المكافآت</a>
-        <a href="referral.html" class="nav-item active"><i class="fa-solid fa-user-plus"></i>الدعوة</a>
-        <a href="profile.html" class="nav-item"><i class="fa-solid fa-user"></i>حسابي</a>
+    <div class="card">
+        <h2>اربح 50 نقطة لكل صديق</h2>
+        <p>قم بمشاركة رابط الإحالة الخاص بك مع أصدقائك، واكسب نقاطاً فورية عندما يسجلون في الموقع!</p>
+        
+        <input type="text" id="refLink" readonly>
+        <button onclick="copyLink()" class="btn" style="background: #eab308; color: #0d0519;">نسخ الرابط</button>
+        <a href="index.html" class="btn">العودة للرئيسية</a>
     </div>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDwecoLNEfzLufKWKFK4ps6PqqjE2EIXEQ",
-            authDomain: "loot-play-71c16.firebaseapp.com",
-            databaseURL: "https://loot-play-71c16-default-rtdb.firebaseio.com",
-            projectId: "loot-play-71c16",
-            storageBucket: "loot-play-71c16.firebasestorage.app",
-            appId: "1:477272517069:web:72ab9748e4afc97f5dfc84"
-        };
+        if (localStorage.getItem("is_logged_in") !== "true") {
+            window.location.href = "login.html";
+        }
+        
+        // توليد رابط إحالة خاص يعتمد على بريد المستخدم
+        const userEmail = localStorage.getItem("user_email") || "user";
+        const uniqueCode = btoa(userEmail).substring(0, 8);
+        const refUrl = `https://ahmdabwramy416-crypto.github.io/MistCash/login.html?ref=${uniqueCode}`;
+        document.getElementById("refLink").value = refUrl;
 
-        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const database = firebase.database();
-
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                const uid = user.uid;
-                
-                database.ref('users/' + uid + '/points').on('value', (snapshot) => {
-                    document.getElementById("user-points").innerText = snapshot.val() || 0;
-                });
-
-                // إظهار كود الدعوة ورابط الدعوة
-                document.getElementById("ref-code").innerText = uid.substring(0, 8).toUpperCase();
-                const inviteUrl = `${window.location.origin}/login.html?ref=${uid}`;
-                document.getElementById("ref-link").innerText = inviteUrl;
-
-            } else {
-                window.location.href = "login.html";
-            }
-        });
-
-        function copyText(elementId) {
-            const text = document.getElementById(elementId).innerText;
-            navigator.clipboard.writeText(text).then(() => {
-                alert("تم نسخ النص بنجاح!");
-            });
+        function copyLink() {
+            const copyText = document.getElementById("refLink");
+            copyText.select();
+            navigator.clipboard.writeText(copyText.value);
+            alert("تم نسخ رابط الدعوة بنجاح!");
         }
     </script>
 </body>
