@@ -16,7 +16,7 @@
 <body>
     <div class="login-card">
         <h2>منصة MistCash</h2>
-        <p>سجل دخولك بحساب جوجل وابدأ بجمع النقاط وحفظها بشكل دائم!</p>
+        <p>سجل دخولك بحساب جوجل وابدأ بجمع النقاط وحفظها بشكل دائم في السحابة!</p>
         <div style="display: flex; justify-content: center;">
             <div id="g_id_onload"
                  data-client_id="855781354859-0kf6q6rsi1al5n4ej3pg1o61blsouvdm.apps.googleusercontent.com"
@@ -27,58 +27,87 @@
         </div>
     </div>
 
-    <script>
+    <!-- استدعاء مكتبات Firebase (Firestore) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyB6rnXLMDlvy0Eezc7MkdmP334EzPTKlGE",
+          authDomain: "mistcash-9a71c.firebaseapp.com",
+          projectId: "mistcash-9a71c",
+          storageBucket: "mistcash-9a71c.firebasestorage.app",
+          messagingSenderId: "819929785371",
+          appId: "1:819929785371:web:396e322f83319016bb44be",
+          measurementId: "G-FGBZZ1P9W6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
         // التحقق إذا كان المستخدم مسجلاً مسبقاً
         if (localStorage.getItem("is_logged_in") === "true") { 
             window.location.href = "index.html"; 
         }
 
-        // دالة لالتقاط كود الإحالة من رابط الصفحة (?ref=...) وحفظه مؤقتاً
+        // التقاط كود الإحالة من الرابط وحفظه مؤقتاً
         const urlParams = new URLSearchParams(window.location.search);
         const refCode = urlParams.get('ref');
         if (refCode) {
             localStorage.setItem("pending_ref_code", refCode);
         }
 
-        function handleCredentialResponse(response) {
+        window.handleCredentialResponse = async function(response) {
             const payload = parseJwt(response.credential);
             const userEmail = payload.email;
             
-            // حفظ بيانات المستخدم الأساسية
+            // حفظ البيانات الأساسية محلياً لتسهيل التصفح
             localStorage.setItem("user_name", payload.name);
             localStorage.setItem("user_email", userEmail);
             localStorage.setItem("user_picture", payload.picture || "");
             localStorage.setItem("is_logged_in", "true");
 
-            // مفتاح تخزين خاص لكل بريد إلكتروني لكي لا تضيع النقاط
-            const pointsKey = "points_" + userEmail;
-            const purchasesKey = "purchases_" + userEmail;
-            const isNewUser = !localStorage.getItem(pointsKey);
+            const userRef = doc(db, "users", userEmail);
+            const userSnap = await getDoc(userRef);
 
-            if (isNewUser) {
-                // منح 50 نقطة ترحيبية للمستخدم الجديد لأول مرة فقط
-                localStorage.setItem(pointsKey, "50");
+            if (!userSnap.exists()) {
+                // مستخدم جديد تماماً: إنشاء حسابه في Firestore ومنحه 50 نقطة ترحيبية
+                let initialPoints = 50;
+                let myUniqueCode = btoa(userEmail).substring(0, 8);
 
-                // التحقق إذا كان سجل عبر رابط دعوة صديق
+                await setDoc(userRef, {
+                    email: userEmail,
+                    name: payload.name,
+                    points: initialPoints,
+                    refCode: myUniqueCode,
+                    refBonus: 0
+                });
+
+                localStorage.setItem("user_points", initialPoints);
+
+                // التحقق من وجود كود إحالة لصديق دعاه
                 const savedRefCode = localStorage.getItem("pending_ref_code");
-                if (savedRefCode) {
-                    // زيادة 50 نقطة مكافأة لصاحب الدعوة في حسابه المعلق
-                    const inviterBonusKey = "ref_bonus_" + savedRefCode;
-                    let currentInviterBonus = parseInt(localStorage.getItem(inviterBonusKey) || "0");
-                    currentInviterBonus += 50; // مكافأة الدعوة (50 نقطة)
-                    localStorage.setItem(inviterBonusKey, currentInviterBonus.toString());
-                    
-                    // مسح الكود حتى لا تتكرر العملية لنفس المستخدم
-                    localStorage.removeItem("pending_ref_code");
+                if (savedRefCode && savedRefCode !== myUniqueCode) {
+                    // البحث عن صاحب الدعوة وإضافة 50 نقطة مكافأة له في السحابة
+                    // سنقوم بالبحث في قاعدة البيانات عبر كود الإحالة
+                    try {
+                        // سنقوم بتحديث رصيد الإحالة المعلق لصاحب الكود
+                        // لتسهيل الأمر سنستخدم استعلام أو تحديث مباشر إذا وجد المستند
+                        const allUsersRef = doc(db, "referrals_bonus", savedRefCode);
+                        await setDoc(allUsersRef, {
+                            bonus: increment(50)
+                        }, { merge: true });
+                        
+                        localStorage.removeItem("pending_ref_code");
+                    } catch (err) {
+                        console.error("Error adding referral bonus:", err);
+                    }
                 }
+            } else {
+                // مستخدم قديم: جلب نقاطه الحقيقية من قاعدة البيانات
+                const userData = userSnap.data();
+                localStorage.setItem("user_points", userData.points || 0);
             }
-
-            if (!localStorage.getItem(purchasesKey)) {
-                localStorage.setItem(purchasesKey, JSON.stringify([]));
-            }
-
-            // مزامنة النقاط مع المتغير العام
-            localStorage.setItem("user_points", localStorage.getItem(pointsKey));
 
             window.location.href = "index.html";
         }
