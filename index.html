@@ -4,92 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الرئيسية - MistCash</title>
+    <link rel="stylesheet" href="style.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', Tahoma, sans-serif; }
-        body { background-color: #0d0519; color: #ffffff; padding: 20px; }
-        .header { display: flex; justify-content: space-between; align-items: center; background: #1a0b2e; padding: 15px 25px; border-radius: 12px; border: 1px solid #3b1568; margin-bottom: 25px; }
-        .points-box { background: #2a1147; color: #4ade80; padding: 8px 16px; border-radius: 8px; font-weight: bold; border: 1px solid #4c1d95; }
-        .nav-buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
-        .btn { background: #7c3aed; color: white; padding: 15px; border-radius: 12px; text-align: center; text-decoration: none; font-weight: bold; transition: 0.3s; border: none; cursor: pointer; display: block; }
-        .btn:hover { background: #6d28d9; transform: translateY(-2px); }
-        .offer-wall-btn { background: #eab308; color: #0d0519; }
-        .offer-wall-btn:hover { background: #ca8a04; }
-        .section-card { background: #1a0b2e; border: 1px solid #3b1568; border-radius: 16px; padding: 25px; text-align: center; margin-bottom: 30px; }
-        .wheel-container { position: relative; width: 250px; height: 250px; margin: 20px auto; border-radius: 50%; border: 6px solid #eab308; background: conic-gradient(#7c3aed 0deg 90deg, #4c1d95 90deg 180deg, #7c3aed 180deg 270deg, #4c1d95 270deg 360deg); display: flex; align-items: center; justify-content: center; transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); }
-        .wheel-center { background: #0d0519; color: #eab308; width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 3px solid #eab308; cursor: pointer; }
-        .logout-btn { background: #ef4444; width: 100%; max-width: 200px; margin: 20px auto; display: block; }
+        .offers-grid { display: grid; gap: 12px; margin-bottom: 25px; }
+        .wheel-container { position: relative; width: 220px; height: 220px; margin: 15px auto; border-radius: 50%; border: 6px solid #eab308; background: conic-gradient(#eab308 0deg 90deg, #ca8a04 90deg 180deg, #eab308 180deg 270deg, #ca8a04 270deg 360deg); display: flex; align-items: center; justify-content: center; transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); }
+        .wheel-center { background: #0c0a00; color: #eab308; width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 3px solid #eab308; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <!-- أعلى الصفحة: النقاط -->
-    <div class="header">
+    <div class="header container">
         <h2>MistCash</h2>
         <div class="points-box">الرصيد: <span id="userPoints">0</span> نقطة</div>
     </div>
 
-    <!-- الأزرار الأربعة للانتقال -->
-    <div class="nav-buttons">
-        <a href="https://www.cpalead.com/wall/YOUR_SLUG" target="_blank" class="btn offer-wall-btn">1. شركة العروض (CPALead)</a>
-        <a href="referral.html" class="btn">2. صفحة الدعوات والأصدقاء</a>
-        <a href="profile.html" class="btn">3. الملف الشخصي</a>
-        <a href="store.html" class="btn">4. متجر استبدال الهدايا</a>
-    </div>
-
-    <!-- زر إضافي لصفحة المشتريات -->
-    <a href="purchases.html" class="btn" style="background: #0284c7; margin-bottom: 30px;">سجل المشتريات السابقة</a>
-
-    <!-- أسفل الصفحة: عجلة الحظ الحقيقية -->
-    <div class="section-card">
-        <h3>عجلة الحظ اليومية</h3>
-        <p style="color: #aaa; font-size: 0.9rem; margin-top: 5px;">اضغط على الدائرة لتدوير العجلة واربح حتى 100 نقطة!</p>
-        
-        <div class="wheel-container" id="wheel">
-            <div class="wheel-center" onclick="spinWheel()">اضغط</div>
+    <div class="container">
+        <!-- 3 أزرار لشركات العروض -->
+        <div class="card" style="text-align: center;">
+            <h3 style="margin-bottom: 15px;">شركات حائط العروض</h3>
+            <div class="offers-grid">
+                <a href="https://www.cpalead.com/wall/YOUR_SLUG_1" target="_blank" class="btn-yellow">1. شركة CPALead للعروض</a>
+                <a href="https://www.offerwall2.com/YOUR_SLUG_2" target="_blank" class="btn-yellow">2. شركة OfferWall الثانية</a>
+                <a href="https://www.offerwall3.com/YOUR_SLUG_3" target="_blank" class="btn-yellow">3. شركة AdGate / عروض إضافية</a>
+            </div>
         </div>
-        <p id="wheelResult" style="color: #4ade80; font-weight: bold; margin-top: 10px;"></p>
+
+        <!-- عجلة الحظ الحقيقية -->
+        <div class="card" style="text-align: center;">
+            <h3>عجلة الحظ اليومية</h3>
+            <p style="color: #cbd5e1; font-size: 0.85rem; margin-top: 5px;">اضغط على الدائرة لتدوير العجلة واربح نقاطاً حقيقية!</p>
+            <div class="wheel-container" id="wheel">
+                <div class="wheel-center" onclick="spinWheel()">ابدأ</div>
+            </div>
+            <p id="wheelResult" style="color: #eab308; font-weight: bold; margin-top: 10px;"></p>
+        </div>
     </div>
 
-    <button onclick="logout()" class="btn logout-btn">تسجيل الخروج</button>
+    <!-- شريط التنقل السفلي -->
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item active"><span class="nav-icon">🏠</span>الرئيسية</a>
+        <a href="referral.html" class="nav-item"><span class="nav-icon">👥</span>الدعوات</a>
+        <a href="store.html" class="nav-item"><span class="nav-icon">🎁</span>المتجر</a>
+        <a href="purchases.html" class="nav-item"><span class="nav-icon">📦</span>المشتريات</a>
+        <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span>حسابي</a>
+    </div>
 
     <script>
-        if (localStorage.getItem("is_logged_in") !== "true") {
-            window.location.href = "login.html";
-        }
-        function updatePointsDisplay() {
-            document.getElementById("userPoints").innerText = localStorage.getItem("user_points") || "0";
-        }
-        updatePointsDisplay();
+        if (localStorage.getItem("is_logged_in") !== "true") { window.location.href = "login.html"; }
+        function updatePoints() { document.getElementById("userPoints").innerText = localStorage.getItem("user_points") || "0"; }
+        updatePoints();
 
         let isSpinning = false;
         function spinWheel() {
             if (isSpinning) return;
             isSpinning = true;
-            
             const wheel = document.getElementById("wheel");
             const resultText = document.getElementById("wheelResult");
-            resultText.innerText = "جاري تدور العجلة...";
+            resultText.innerText = "جاري تدوير العجلة...";
             
-            const randomDegree = Math.floor(Math.random * 360) + 1440; // لفات عشوائية
+            const randomDegree = Math.floor(Math.random() * 360) + 1440;
             wheel.style.transform = `rotate(${randomDegree}deg)`;
 
             setTimeout(() => {
-                const rewards = [10, 25, 50, 100, 5, 20];
+                const rewards = [10, 20, 50, 100, 5, 25];
                 const wonPoints = rewards[Math.floor(Math.random() * rewards.length)];
-                
                 let currentPoints = parseInt(localStorage.getItem("user_points") || "0");
                 currentPoints += wonPoints;
                 localStorage.setItem("user_points", currentPoints);
-                
-                updatePointsDisplay();
-                resultText.innerText = `مبروك! لقد ربحت ${wonPoints} نقطة!`;
+                updatePoints();
+                resultText.innerText = `مبروك! ربحت ${wonPoints} نقطة حقيقية!`;
                 isSpinning = false;
             }, 4000);
-        }
-
-        function logout() {
-            localStorage.clear();
-            window.location.href = "login.html";
         }
     </script>
 </body>
