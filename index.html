@@ -10,7 +10,7 @@
         
         /* حاوية عجلة الحظ */
         .wheel-box { position: relative; width: 240px; height: 240px; margin: 25px auto 15px auto; }
-
+        
         /* سهم المؤشر في الأعلى */
         .wheel-pointer {
             position: absolute;
@@ -27,26 +27,26 @@
         }
 
         /* تصميم عجلة الحظ مع تقسيمات وجوائز واضحة */
-        .wheel-container { 
-            position: relative; 
-            width: 100%; 
-            height: 100%; 
-            border-radius: 50%; 
-            border: 6px solid #eab308; 
+        .wheel-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 6px solid #eab308;
             background: conic-gradient(
-                #eab308 0deg 60deg, 
-                #ca8a04 60deg 120deg, 
-                #eab308 120deg 180deg, 
-                #ca8a04 180deg 240deg, 
-                #eab308 240deg 300deg, 
+                #eab308 0deg 60deg,
+                #ca8a04 60deg 120deg,
+                #eab308 120deg 180deg,
+                #ca8a04 180deg 240deg,
+                #eab308 240deg 300deg,
                 #ca8a04 300deg 360deg
-            ); 
+            );
             box-shadow: 0 0 20px rgba(234, 179, 8, 0.4);
-            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); 
+            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
         }
-        
-        /* الأرقام الموزعة على أقسام العجلة */
-        .wheel-slice { position: absolute; width: 100%; height: 100%; text-align: center; font-weight: bold; font-size: 1.1rem; color: #fff; text-shadow: 1px 1px 2px #000; }
+
+        /* الأرقام الموزعة على أقسام المجلة */
+        .wheel-slice { position: absolute; width: 100%; height: 100%; text-align: center; font-weight: bold; font-size: 1.2rem; }
         .s1 { transform: rotate(30deg); padding-top: 10px; }
         .s2 { transform: rotate(90deg); padding-top: 10px; }
         .s3 { transform: rotate(150deg); padding-top: 10px; }
@@ -54,10 +54,10 @@
         .s5 { transform: rotate(270deg); padding-top: 10px; }
         .s6 { transform: rotate(330deg); padding-top: 10px; }
 
-        .wheel-center { 
+        .wheel-center {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: #0c0a00; color: #eab308; width: 70px; height: 70px; 
-            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            background: #0c0a00; color: #eab308; width: 70px; height: 70px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
             font-weight: bold; border: 3px solid #eab308; cursor: pointer; z-index: 10;
             box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
@@ -67,24 +67,25 @@
 
     <div class="header container">
         <h2>Gamer Pro</h2>
-        <div class="points-box">الرصيد: <span id="userPoints">0</span> نقطة</div>
+        <div class="points-box">نقطة: <span id="userPoints">0</span> الرصيد: <span id="userEmailDisplay"></span></div>
     </div>
 
     <div class="container">
-        <!-- 3 أزرار لشركات العروض -->
+        <!-- أزرار لشركات العروض 3 -->
         <div class="card" style="text-align: center;">
             <h3 style="margin-bottom: 15px;">شركات حائط العروض</h3>
             <div class="offers-grid">
-                <a href="https://www.lnksforyou.com/wall/2qQGUmC" target="_blank" class="btn-yellow">1. عروض CPALead الأساسية</a>
-                <a href="#" target="_blank" class="btn-yellow">2. شركة OfferWall الثانية</a>
-                <a href="#" target="_blank" class="btn-yellow">3. شركة AdGate / عروض إضافية</a>
+                <!-- تم إضافة id هنا لكي يتم تحديث الرابط تلقائياً بالبريد -->
+                <a href="https://www.lnksforyou.com/wall/2qQGUmC" id="cpalead-link" target="_blank" class="btn-yellow">1. عروض CPALead</a>
+                <a href="#" target="_blank" class="btn-yellow">2. OfferWall الثانية</a>
+                <a href="#" target="_blank" class="btn-yellow">3. AdGate عروض إضافية</a>
             </div>
         </div>
 
         <!-- عجلة الحظ مع السهم والأرقام -->
         <div class="card" style="text-align: center;">
             <h3>عجلة الحظ اليومية</h3>
-            <p style="color: #cbd5e1; font-size: 0.85rem; margin-top: 5px;">ادور العجلة مرة واحدة كل 24 ساعة واربح حتى 100 نقطة!</p>
+            <p style="color: #cbd5e1; font-size: 0.85rem; margin-top: 5px;">تدور المجلة مرة واحدة كل 24 ساعة واربح حتى 100 نقطة!</p>
             
             <div class="wheel-box">
                 <!-- السهم الدلالي في الأعلى -->
@@ -100,7 +101,7 @@
                     <div class="wheel-center" onclick="spinWheel()">ابدأ</div>
                 </div>
             </div>
-            
+
             <p id="wheelResult" style="color: #eab308; font-weight: bold; margin-top: 15px;"></p>
         </div>
     </div>
@@ -109,17 +110,25 @@
     <div class="bottom-nav">
         <a href="index.html" class="nav-item active"><span class="nav-icon">🏠</span>الرئيسية</a>
         <a href="referral.html" class="nav-item"><span class="nav-icon">👥</span>الدعوات</a>
-        <a href="store.html" class="nav-item"><span class="nav-icon">🎁</span>المتجر</a>
+        <a href="store.html" class="nav-item"><span class="nav-icon">🔥</span>المتجر</a>
         <a href="purchases.html" class="nav-item"><span class="nav-icon">📦</span>المشتريات</a>
         <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span>حسابي</a>
     </div>
 
     <script>
         if (localStorage.getItem("is_logged_in") !== "true") { window.location.href = "login.html"; }
-        
+
         const userEmail = localStorage.getItem("user_email");
         const pointsKey = "points_" + userEmail;
         const lastSpinKey = "last_spin_" + userEmail;
+
+        // تحديث رابط CPALead ليحتوي على بريد المستخدم الحالي (subid) تلقائياً
+        if (userEmail) {
+            const cpaleadLink = document.getElementById("cpalead-link");
+            if (cpaleadLink) {
+                cpaleadLink.href = "https://www.lnksforyou.com/wall/2qQGUmC?subid=" + encodeURIComponent(userEmail);
+            }
+        }
 
         function updatePoints() {
             let currentVal = localStorage.getItem(pointsKey) || "0";
@@ -128,14 +137,14 @@
         }
         updatePoints();
 
-        // التحقق عند فتح الصفحة إذا كان المستخدم قد استخدم العجلة اليوم
+        // التحقق عند فتح الصفحة إذا كان المستخدم قد استخدم المجلة اليوم
         function checkSpinAvailability() {
             const lastSpinDate = localStorage.getItem(lastSpinKey);
-            const today = new Date().toDateString();
+            const today = new Date().toISOString();
             const resultText = document.getElementById("wheelResult");
 
             if (lastSpinDate === today) {
-                resultText.innerText = "لقد قمت بتدوير العجلة اليوم. ننتظرك غداً محاولة جديدة!";
+                resultText.innerText = "لقد قمت بتدوير المجلة اليوم، تنتظرك غداً محاولة جديدة!";
             }
         }
         checkSpinAvailability();
@@ -144,19 +153,19 @@
         function spinWheel() {
             if (isSpinning) return;
 
-            // التحقق من تاريخ آخر تدوير للعجلة
+            // التحقق من تاريخ آخر تدوير للمجلة
             const lastSpinDate = localStorage.getItem(lastSpinKey);
-            const today = new Date().toDateString();
+            const today = new Date().toISOString();
             const resultText = document.getElementById("wheelResult");
 
             if (lastSpinDate === today) {
-                alert("عذراً، يمكنك تدوير عجلة الحظ مرة واحدة فقط كل 24 ساعة!");
+                alert("عذراً! يمكنك تدوير المجلة مرة واحدة فقط كل 24 ساعة");
                 return;
             }
 
             isSpinning = true;
-            resultText.innerText = "جاري تدوير العجلة...";
-            
+            resultText.innerText = "جاري تدور المجلة...";
+
             const wheel = document.getElementById("wheel");
             const randomDegree = Math.floor(Math.random() * 360) + 1440;
             wheel.style.transform = `rotate(${randomDegree}deg)`;
@@ -164,16 +173,16 @@
             setTimeout(() => {
                 const rewards = [10, 20, 50, 100, 5, 25];
                 const wonPoints = rewards[Math.floor(Math.random() * rewards.length)];
-                
+
                 let currentPoints = parseInt(localStorage.getItem(pointsKey) || "0");
                 currentPoints += wonPoints;
-                
+
                 // حفظ النقاط وتسجيل تاريخ اليوم لمنع التكرار
                 localStorage.setItem(pointsKey, currentPoints);
                 localStorage.setItem(lastSpinKey, today);
-                
+
                 updatePoints();
-                resultText.innerText = `مبروك! ربحت ${wonPoints} نقطة وتم إضافتها لرصيدك!`;
+                resultText.innerText = `مبروك! ريحت وتم إضافتها لرصيدك ${wonPoints} نقطة`;
                 isSpinning = false;
             }, 4000);
         }
