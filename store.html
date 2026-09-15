@@ -1,83 +1,76 @@
-<!DOCTYPE html>
+ج<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>متجر الهدايا - MistCash</title>
+    <link rel="stylesheet" href="style.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', Tahoma, sans-serif; }
-        body { background-color: #0d0519; color: #ffffff; padding: 20px; }
-        .header { display: flex; justify-content: space-between; align-items: center; background: #1a0b2e; padding: 15px 25px; border-radius: 12px; border: 1px solid #3b1568; margin-bottom: 25px; }
-        .points-box { background: #2a1147; color: #4ade80; padding: 8px 16px; border-radius: 8px; font-weight: bold; border: 1px solid #4c1d95; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .item-card { background: #1a0b2e; border: 1px solid #3b1568; border-radius: 16px; padding: 20px; text-align: center; }
-        .item-card h3 { color: #eab308; margin-bottom: 10px; }
-        .item-card p { color: #aaa; font-size: 0.9rem; margin-bottom: 15px; }
-        .buy-btn { background: #7c3aed; color: #fff; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; }
-        .buy-btn:hover { background: #6d28d9; }
-        .back-btn { display: block; width: 100%; max-width: 200px; margin: 0 auto; background: #475569; color: #fff; text-align: center; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: bold; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-    <div class="header">
+    <div class="header container">
         <h2>متجر المكافآت</h2>
         <div class="points-box">الرصيد: <span id="userPoints">0</span> نقطة</div>
     </div>
 
-    <div class="grid">
-        <div class="item-card">
-            <h3>60 شدة ببجي موبايل</h3>
-            <p>التكلفة: 500 نقطة</p>
-            <button onclick="buyItem('60 شدة ببجي موبايل', 500)" class="buy-btn">استبدال الآن</button>
-        </div>
-        <div class="item-card">
-            <h3>100 جوهرة فري فاير</h3>
-            <p>التكلفة: 400 نقطة</p>
-            <button onclick="buyItem('100 جوهرة فري فاير', 400)" class="buy-btn">استبدال الآن</button>
-        </div>
-        <div class="item-card">
-            <h3>بطاقة جوجل بلاي 10$</h3>
-            <p>التكلفة: 1000 نقطة</p>
-            <button onclick="buyItem('بطاقة جوجل بلاي 10$', 1000)" class="buy-btn">استبدال الآن</button>
-        </div>
-        <div class="item-card">
-            <h3>بطاقة هدايا أمزون 10$</h3>
-            <p>التكلفة: 900 نقطة</p>
-            <button onclick="buyItem('بطاقة أمزون 10$', 900)" class="buy-btn">استبدال الآن</button>
+    <div class="container">
+        <div class="grid">
+            <div class="card" style="text-align: center;">
+                <h3>60 شدة ببجي موبايل</h3>
+                <p style="color: #cbd5e1; margin: 10px 0;">التكلفة: 500 نقطة</p>
+                <button onclick="buyItem('60 شدة ببجي موبايل', 500)" class="btn-yellow">استبدال الآن</button>
+            </div>
+            <div class="card" style="text-align: center;">
+                <h3>100 جوهرة فري فاير</h3>
+                <p style="color: #cbd5e1; margin: 10px 0;">التكلفة: 400 نقطة</p>
+                <button onclick="buyItem('100 جوهرة فري فاير', 400)" class="btn-yellow">استبدال الآن</button>
+            </div>
+            <div class="card" style="text-align: center;">
+                <h3>بطاقة جوجل بلاي 10$</h3>
+                <p style="color: #cbd5e1; margin: 10px 0;">التكلفة: 1000 نقطة</p>
+                <button onclick="buyItem('بطاقة جوجل بلاي 10$', 1000)" class="btn-yellow">استبدال الآن</button>
+            </div>
+            <div class="card" style="text-align: center;">
+                <h3>بطاقة أمزون 10$</h3>
+                <p style="color: #cbd5e1; margin: 10px 0;">التكلفة: 900 نقطة</p>
+                <button onclick="buyItem('بطاقة أمزون 10$', 900)" class="btn-yellow">استبدال الآن</button>
+            </div>
         </div>
     </div>
 
-    <a href="index.html" class="back-btn">العودة للرئيسية</a>
+    <!-- شريط التنقل السفلي -->
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span>الرئيسية</a>
+        <a href="referral.html" class="nav-item"><span class="nav-icon">👥</span>الدعوات</a>
+        <a href="store.html" class="nav-item active"><span class="nav-icon">🎁</span>المتجر</a>
+        <a href="purchases.html" class="nav-item"><span class="nav-icon">📦</span>المشتريات</a>
+        <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span>حسابي</a>
+    </div>
 
     <script>
-        if (localStorage.getItem("is_logged_in") !== "true") {
-            window.location.href = "login.html";
-        }
-        function updatePoints() {
-            document.getElementById("userPoints").innerText = localStorage.getItem("user_points") || "0";
-        }
+        if (localStorage.getItem("is_logged_in") !== "true") { window.location.href = "login.html"; }
+        function updatePoints() { document.getElementById("userPoints").innerText = localStorage.getItem("user_points") || "0"; }
         updatePoints();
 
         function buyItem(itemName, cost) {
             let points = parseInt(localStorage.getItem("user_points") || "0");
             if (points < cost) {
-                alert("عذراً، رصيدك غير كافي لإتمام هذه الشراء!");
+                alert("عذراً، رصيدك غير كافي لإتمام عملية الاستبدال!");
                 return;
             }
-
             points -= cost;
             localStorage.setItem("user_points", points);
             updatePoints();
 
-            // توليد كود هدية عشوائي حقيقي وتسجيله في المشتريات
             const randomCode = 'MIST-' + Math.random().toString(36).substring(2, 10).toUpperCase();
-            
             let purchases = JSON.parse(localStorage.getItem("user_purchases") || "[]");
             purchases.push({ item: itemName, code: randomCode, date: new Date().toLocaleDateString() });
             localStorage.setItem("user_purchases", JSON.stringify(purchases));
 
-            alert(`مبروك! تمت عملية الشراء بنجاح.\nكود الهدية الخاص بك: ${randomCode}\nتم حفظ الكود في صفحة المشتريات.`);
+            alert(`مبروك! تمت عملية الاستبدال بنجاح.\nكود الهدية الحقيقي: ${randomCode}\nتم حفظ الكود في صفحة المشتريات.`);
         }
     </script>
 </body>
