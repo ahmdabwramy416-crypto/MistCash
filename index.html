@@ -3,94 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MistCash - الرئيسية</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>الرئيسية - MistCash</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #0d0519; color: #ffffff; padding-bottom: 90px; }
-        .top-bar { background: linear-gradient(135deg, #24103f, #1a0b2e); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3b1568; position: sticky; top: 0; z-index: 100; }
-        .user-profile { display: flex; align-items: center; gap: 10px; }
-        .avatar { width: 40px; height: 40px; background: #7c3aed; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-        .points-card { background: linear-gradient(90deg, #f59e0b, #d97706); padding: 8px 16px; border-radius: 20px; font-weight: bold; color: #fff; }
-        .container { padding: 15px; max-width: 600px; margin: 0 auto; }
-        .wheel-section { background: #1a0b2e; border: 1px solid #3b1568; border-radius: 16px; padding: 20px; text-align: center; margin-bottom: 20px; }
-        .wheel-container { position: relative; width: 180px; height: 180px; margin: 15px auto; }
-        .wheel { width: 100%; height: 100%; border-radius: 50%; border: 6px solid #a855f7; background: conic-gradient(#7c3aed 0deg 60deg, #4c1d95 60deg 120deg, #7c3aed 120deg 180deg, #4c1d95 180deg 240deg, #7c3aed 240deg 300deg, #4c1d95 300deg 360deg); transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); }
-        .spin-btn { background: #a855f7; color: #fff; border: none; padding: 10px 24px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .section-title { font-size: 1.1rem; color: #c084fc; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-        .offer-frame-container { background: #1a0b2e; border: 1px solid #3b1568; border-radius: 16px; overflow: hidden; height: 550px; }
-        iframe { width: 100%; height: 100%; border: none; background: #fff; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #150727; border-top: 1px solid #3b1568; display: flex; justify-content: space-around; padding: 12px 0; z-index: 1000; }
-        .nav-item { color: #8b5cf6; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 0.75rem; gap: 4px; }
-        .nav-item.active { color: #c084fc; font-weight: bold; }
-        .nav-item i { font-size: 1.2rem; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', Tahoma, sans-serif; }
+        body { background-color: #0d0519; color: #ffffff; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; background: #1a0b2e; padding: 15px 25px; border-radius: 12px; border: 1px solid #3b1568; margin-bottom: 25px; }
+        .points-box { background: #2a1147; color: #4ade80; padding: 8px 16px; border-radius: 8px; font-weight: bold; border: 1px solid #4c1d95; }
+        .nav-buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .btn { background: #7c3aed; color: white; padding: 15px; border-radius: 12px; text-align: center; text-decoration: none; font-weight: bold; transition: 0.3s; border: none; cursor: pointer; display: block; }
+        .btn:hover { background: #6d28d9; transform: translateY(-2px); }
+        .offer-wall-btn { background: #eab308; color: #0d0519; }
+        .offer-wall-btn:hover { background: #ca8a04; }
+        .section-card { background: #1a0b2e; border: 1px solid #3b1568; border-radius: 16px; padding: 25px; text-align: center; margin-bottom: 30px; }
+        .wheel-container { position: relative; width: 250px; height: 250px; margin: 20px auto; border-radius: 50%; border: 6px solid #eab308; background: conic-gradient(#7c3aed 0deg 90deg, #4c1d95 90deg 180deg, #7c3aed 180deg 270deg, #4c1d95 270deg 360deg); display: flex; align-items: center; justify-content: center; transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); }
+        .wheel-center { background: #0d0519; color: #eab308; width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 3px solid #eab308; cursor: pointer; }
+        .logout-btn { background: #ef4444; width: 100%; max-width: 200px; margin: 20px auto; display: block; }
     </style>
 </head>
 <body>
 
-    <div class="top-bar">
-        <div class="user-profile">
-            <div class="avatar" id="avatar">U</div>
-            <div>
-                <div style="font-size: 0.85rem; color: #aaa;">مرحباً بك</div>
-                <div id="user-email" style="font-size: 0.9rem; font-weight: bold;">زائر</div>
-            </div>
-        </div>
-        <div class="points-card">🪙 <span id="user-points">0</span></div>
+    <!-- أعلى الصفحة: النقاط -->
+    <div class="header">
+        <h2>MistCash</h2>
+        <div class="points-box">الرصيد: <span id="userPoints">0</span> نقطة</div>
     </div>
 
-    <div class="container">
-        <div class="wheel-section">
-            <div class="section-title"><i class="fa-solid fa-spinner"></i> عجلة الحظ اليومية</div>
-            <div class="wheel-container">
-                <div class="wheel" id="wheel"></div>
-            </div>
-            <button class="spin-btn" id="spin-button" onclick="spinWheel()">أدر العجلة الآن</button>
-        </div>
-
-        <div class="section-title"><i class="fa-solid fa-list-check"></i> العروض المتاحة (CPALead)</div>
-        <div class="offer-frame-container">
-            <iframe id="offerwall-frame" src=""></iframe>
-        </div>
+    <!-- الأزرار الأربعة للانتقال -->
+    <div class="nav-buttons">
+        <a href="https://www.cpalead.com/wall/YOUR_SLUG" target="_blank" class="btn offer-wall-btn">1. شركة العروض (CPALead)</a>
+        <a href="referral.html" class="btn">2. صفحة الدعوات والأصدقاء</a>
+        <a href="profile.html" class="btn">3. الملف الشخصي</a>
+        <a href="store.html" class="btn">4. متجر استبدال الهدايا</a>
     </div>
 
-    <div class="bottom-nav">
-        <a href="index.html" class="nav-item active"><i class="fa-solid fa-house"></i>الرئيسية</a>
-        <a href="rewards.html" class="nav-item"><i class="fa-solid fa-gift"></i>المكافآت</a>
-        <a href="referral.html" class="nav-item"><i class="fa-solid fa-user-plus"></i>الدعوة</a>
-        <a href="profile.html" class="nav-item"><i class="fa-solid fa-user"></i>حسابي</a>
+    <!-- زر إضافي لصفحة المشتريات -->
+    <a href="purchases.html" class="btn" style="background: #0284c7; margin-bottom: 30px;">سجل المشتريات السابقة</a>
+
+    <!-- أسفل الصفحة: عجلة الحظ الحقيقية -->
+    <div class="section-card">
+        <h3>عجلة الحظ اليومية</h3>
+        <p style="color: #aaa; font-size: 0.9rem; margin-top: 5px;">اضغط على الدائرة لتدوير العجلة واربح حتى 100 نقطة!</p>
+        
+        <div class="wheel-container" id="wheel">
+            <div class="wheel-center" onclick="spinWheel()">اضغط</div>
+        </div>
+        <p id="wheelResult" style="color: #4ade80; font-weight: bold; margin-top: 10px;"></p>
     </div>
+
+    <button onclick="logout()" class="btn logout-btn">تسجيل الخروج</button>
 
     <script>
-        const email = localStorage.getItem("user_email");
-        const uid = localStorage.getItem("user_uid");
-        let points = parseInt(localStorage.getItem("user_points") || "0");
-
-        if (!email || !uid) {
+        if (localStorage.getItem("is_logged_in") !== "true") {
             window.location.href = "login.html";
-        } else {
-            document.getElementById("user-email").innerText = email.split('@')[0];
-            document.getElementById("avatar").innerText = email.charAt(0).toUpperCase();
-            document.getElementById("user-points").innerText = points;
-
-            // تحميل جدار عروض CPALead مع الـ UID الخاص بالمستخدم
-            document.getElementById("offerwall-frame").src = `https://main.cpalead.com/generic_offer_wall.php?pub=761899&subid=${uid}`;
         }
+        function updatePointsDisplay() {
+            document.getElementById("userPoints").innerText = localStorage.getItem("user_points") || "0";
+        }
+        updatePointsDisplay();
 
+        let isSpinning = false;
         function spinWheel() {
-            const btn = document.getElementById("spin-button");
-            btn.disabled = true;
-            const randomDegree = Math.floor(Math.random() * 360) + 1440;
-            document.getElementById("wheel").style.transform = `rotate(${randomDegree}deg)`;
+            if (isSpinning) return;
+            isSpinning = true;
+            
+            const wheel = document.getElementById("wheel");
+            const resultText = document.getElementById("wheelResult");
+            resultText.innerText = "جاري تدور العجلة...";
+            
+            const randomDegree = Math.floor(Math.random * 360) + 1440; // لفات عشوائية
+            wheel.style.transform = `rotate(${randomDegree}deg)`;
 
             setTimeout(() => {
-                const won = Math.floor(Math.random() * 30) + 10;
-                points += won;
-                localStorage.setItem("user_points", points);
-                document.getElementById("user-points").innerText = points;
-                alert(`مبروك! ربحت ${won} نقطة.`);
-                btn.disabled = false;
+                const rewards = [10, 25, 50, 100, 5, 20];
+                const wonPoints = rewards[Math.floor(Math.random() * rewards.length)];
+                
+                let currentPoints = parseInt(localStorage.getItem("user_points") || "0");
+                currentPoints += wonPoints;
+                localStorage.setItem("user_points", currentPoints);
+                
+                updatePointsDisplay();
+                resultText.innerText = `مبروك! لقد ربحت ${wonPoints} نقطة!`;
+                isSpinning = false;
             }, 4000);
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = "login.html";
         }
     </script>
 </body>
