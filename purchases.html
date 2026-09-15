@@ -3,24 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سجل المشتريات - MistCash</title>
+    <title>المشتريات - Gamer Pro</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .purchase-item { background: #0c0a00; padding: 15px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #eab308; display: flex; justify-content: space-between; align-items: center; }
-        .code { color: #eab308; font-weight: bold; background: #2e2800; padding: 6px 12px; border-radius: 6px; border: 1px solid #eab308; }
+        .purchase-card { background: #1a1700; border: 1px solid #eab308; padding: 15px; border-radius: 12px; margin-bottom: 12px; text-align: right; }
+        .purchase-card h4 { color: #eab308; margin-bottom: 5px; }
+        .purchase-card p { color: #cbd5e1; font-size: 0.9rem; margin: 4px 0; }
+        .code-box { background: #0c0a00; color: #4ade80; padding: 8px; border-radius: 6px; font-family: monospace; margin-top: 8px; border: 1px dashed #4ade80; }
     </style>
 </head>
 <body>
 
-    <div class="header container">
-        <h2>سجل المشتريات</h2>
+    <div class="header container" style="display: flex; justify-content: space-between; align-items: center; padding: 15px;">
+        <h2>سجل المشتريات والطلبات</h2>
+        <div class="points-box" style="background: #1a1700; border: 1px solid #eab308; padding: 8px 15px; border-radius: 8px; color: #eab308; font-weight: bold;">
+            النقاط: <span id="userPoints" style="color: #fff;">0</span>
+        </div>
     </div>
 
     <div class="container">
-        <div class="card">
-            <h3 style="margin-bottom: 15px; text-align: center;">الهدايا والأكواد المستبدلة</h3>
+        <div class="card" style="margin-bottom: 20px;">
+            <h3 style="text-align: center; margin-bottom: 15px; color: #eab308;">طلبات الاستبدال الخاصة بك</h3>
             <div id="purchasesList">
-                <p style="text-align: center; color: #cbd5e1;">جاري التحميل...</p>
+                <p style="text-align: center; color: #cbd5e1;">جاري تحميل طلباتك...</p>
             </div>
         </div>
     </div>
@@ -29,35 +34,76 @@
     <div class="bottom-nav">
         <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span>الرئيسية</a>
         <a href="referral.html" class="nav-item"><span class="nav-icon">👥</span>الدعوات</a>
-        <a href="store.html" class="nav-item"><span class="nav-icon">🎁</span>المتجر</a>
+        <a href="store.html" class="nav-item"><span class="nav-icon">🔥</span>المتجر</a>
         <a href="purchases.html" class="nav-item active"><span class="nav-icon">📦</span>المشتريات</a>
         <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span>حسابي</a>
     </div>
 
-    <script>
-        if (localStorage.getItem("is_logged_in") !== "true") { window.location.href = "login.html"; }
-        
-        const userEmail = localStorage.getItem("user_email");
-        const purchasesKey = "purchases_" + userEmail;
-        const purchases = JSON.parse(localStorage.getItem(purchasesKey) || "[]");
-        const listContainer = document.getElementById("purchasesList");
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        if (purchases.length === 0) {
-            listContainer.innerHTML = '<p style="text-align: center; color: #cbd5e1;">ليس لديك أي مشتريات حتى الآن. توجه للمتجر وابدأ الاستبدال!</p>';
-        } else {
-            listContainer.innerHTML = "";
-            purchases.forEach(p => {
-                listContainer.innerHTML += `
-                    <div class="purchase-item">
-                        <div>
-                            <strong>${p.item}</strong>
-                            <div style="font-size: 0.8rem; color: #cbd5e1; margin-top: 3px;">التاريخ: ${p.date}</div>
-                        </div>
-                        <div class="code">${p.code}</div>
-                    </div>
-                `;
-            });
+        const firebaseConfig = {
+          apiKey: "AIzaSyB6rnXLMDlvy0Eezc7MkdmP334EzPTKlGE",
+          authDomain: "mistcash-9a71c.firebaseapp.com",
+          projectId: "mistcash-9a71c",
+          storageBucket: "mistcash-9a71c.firebasestorage.app",
+          messagingSenderId: "819929785371",
+          appId: "1:819929785371:web:396e322f83319016bb44be",
+          measurementId: "G-FGBZZ1P9W6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        if (localStorage.getItem("is_logged_in") !== "true") { window.location.href = "login.html"; }
+
+        const userEmail = localStorage.getItem("user_email");
+        const pointsKey = "points_" + userEmail;
+
+        document.getElementById("userPoints").innerText = localStorage.getItem(pointsKey) || "0";
+
+        async function loadPurchases() {
+            const listContainer = document.getElementById("purchasesList");
+            try {
+                const q = query(collection(db, "withdrawals"), where("email", "==", userEmail));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    listContainer.innerHTML = `<p style="text-align: center; color: #cbd5e1;">ليس لديك أي طلبات سحب حتى الآن.</p>`;
+                    return;
+                }
+
+                let html = "";
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    let statusColor = data.status.includes("تم") ? "#4ade80" : "#facc15";
+                    
+                    html += `
+                        <div class="purchase-card">
+                            <h4>${data.reward}</h4>
+                            <p>التكلفة: <b>${data.cost} نقطة</b></p>
+                            <p>تاريخ الطلب: ${data.date}</p>
+                            <p>الحالة: <span style="color: ${statusColor}; font-weight: bold;">${data.status}</span></p>
+                    `;
+
+                    // إذا قمت أنت بإضافة الكود من لوحة التحكم أو تم إرساله، سيظهر له هنا
+                    if (data.promoCode) {
+                        html += `<div class="code-box">كود الهدية: ${data.promoCode}</div>`;
+                    }
+
+                    html += `</div>`;
+                });
+
+                listContainer.innerHTML = html;
+
+            } catch (err) {
+                console.error("خطأ في جلب المشتريات:", err);
+                listContainer.innerHTML = `<p style="text-align: center; color: #ef4444;">حدث خطأ في تحميل الطلبات.</p>`;
+            }
         }
+
+        loadPurchases();
     </script>
 </body>
 </html>
