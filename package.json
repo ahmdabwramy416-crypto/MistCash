@@ -1,0 +1,8 @@
+{
+  "name": "mistcash",
+  "version": "1.0.0",
+  "description": "MistCash Reward Platform",
+  "dependencies": {
+    "firebase-admin": "^12.0.0"
+  }
+}
