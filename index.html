@@ -115,7 +115,24 @@
         <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span>حسابي</a>
     </div>
 
-    <script>
+    <!-- جافاسكريبت مع ربط سحابة Firebase ونظام الإحالة 10% -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, updateDoc, setDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyB6rnXLMDlvy0Eezc7MkdmP334EzPTKlGE",
+          authDomain: "mistcash-9a71c.firebaseapp.com",
+          projectId: "mistcash-9a71c",
+          storageBucket: "mistcash-9a71c.firebasestorage.app",
+          messagingSenderId: "819929785371",
+          appId: "1:819929785371:web:396e322f83319016bb44be",
+          measurementId: "G-FGBZZ1P9W6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
         if (localStorage.getItem("is_logged_in") !== "true") { window.location.href = "login.html"; }
 
         const userEmail = localStorage.getItem("user_email");
@@ -127,14 +144,42 @@
             if (cpaleadLink) {
                 cpaleadLink.href = "https://www.lnksforyou.com/wall/2qQGUmC?subid=" + encodeURIComponent(userEmail);
             }
+            const emailDisplay = document.getElementById("userEmailDisplay");
+            if (emailDisplay) {
+                emailDisplay.innerText = userEmail;
+            }
         }
 
-        function updatePoints() {
+        async function updatePoints() {
             let currentVal = localStorage.getItem(pointsKey) || "0";
             document.getElementById("userPoints").innerText = currentVal;
             localStorage.setItem("user_points", currentVal);
+
+            // تحديث النقاط سحابياً في Firebase لضمان التزامن
+            try {
+                const userRef = doc(db, "users", userEmail);
+                await updateDoc(userRef, { points: parseInt(currentVal) });
+            } catch (err) {
+                console.error("خطأ في تحديث النقاط بالسحابة:", err);
+            }
         }
         updatePoints();
+
+        // دالة إرسال عمولة 10% لصاحب الدعوة في السحابة
+        async function sendReferralCommission(earnedPoints) {
+            const inviterRefCode = localStorage.getItem("my_inviter_ref_code");
+            if (inviterRefCode && earnedPoints > 0) {
+                const commission = Math.floor(earnedPoints * 0.10); // احتساب 10%
+                if (commission > 0) {
+                    try {
+                        const bonusRef = doc(db, "referrals_bonus", inviterRefCode);
+                        await setDoc(bonusRef, { bonus: increment(commission) }, { merge: true });
+                    } catch (err) {
+                        console.error("خطأ في إرسال العمولة:", err);
+                    }
+                }
+            }
+        }
 
         function checkSpinAvailability() {
             const lastSpinTime = localStorage.getItem(lastSpinKey);
@@ -155,7 +200,7 @@
         checkSpinAvailability();
 
         let isSpinning = false;
-        function spinWheel() {
+        window.spinWheel = async function() {
             if (isSpinning) return;
 
             const lastSpinTime = localStorage.getItem(lastSpinKey);
@@ -174,7 +219,6 @@
             isSpinning = true;
             resultText.innerText = "جاري تدوير المجلة...";
 
-            // ترتيب الجوائز المتوافق تماماً مع أماكنها البصرية على العجلة (من الأعلى وباتجاه عقارب الساعة)
             const rewards = [20, 50, 100, 5, 25, 10];
             const randomIndex = Math.floor(Math.random() * rewards.length);
             const wonPoints = rewards[randomIndex];
@@ -185,7 +229,7 @@
             const wheel = document.getElementById("wheel");
             wheel.style.transform = `rotate(${targetDegree}deg)`;
 
-            setTimeout(() => {
+            setTimeout(async () => {
                 let currentPoints = parseInt(localStorage.getItem(pointsKey) || "0");
                 currentPoints += wonPoints;
 
@@ -193,7 +237,11 @@
                 localStorage.setItem(pointsKey, currentPoints);
                 localStorage.setItem(lastSpinKey, currentTime.toString());
 
-                updatePoints();
+                await updatePoints();
+                
+                // إرسال 10% أوتوماتيكياً لصاحب الدعوة في السحابة
+                await sendReferralCommission(wonPoints);
+
                 resultText.innerText = `مبروك! ربحت وتم إضافتها لرصيدك ${wonPoints} نقطة`;
                 isSpinning = false;
             }, 4000);
