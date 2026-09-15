@@ -3,17 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الرئيسية - MistCash</title>
+    <title>الرئيسية - Gamer Pro</title>
     <link rel="stylesheet" href="style.css">
     <style>
         .offers-grid { display: grid; gap: 12px; margin-bottom: 25px; }
         
+        /* حاوية عجلة الحظ */
+        .wheel-box { position: relative; width: 240px; height: 240px; margin: 25px auto 15px auto; }
+
+        /* سهم المؤشر في الأعلى */
+        .wheel-pointer {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-top: 22px solid #ef4444; /* لون أحمر بارز للمؤشر */
+            z-index: 20;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5));
+        }
+
         /* تصميم عجلة الحظ مع تقسيمات وجوائز واضحة */
         .wheel-container { 
             position: relative; 
-            width: 240px; 
-            height: 240px; 
-            margin: 15px auto; 
+            width: 100%; 
+            height: 100%; 
             border-radius: 50%; 
             border: 6px solid #eab308; 
             background: conic-gradient(
@@ -49,7 +66,7 @@
 <body>
 
     <div class="header container">
-        <h2>MistCash</h2>
+        <h2>Gamer Pro</h2>
         <div class="points-box">الرصيد: <span id="userPoints">0</span> نقطة</div>
     </div>
 
@@ -64,19 +81,24 @@
             </div>
         </div>
 
-        <!-- عجلة الحظ مع الأرقام -->
+        <!-- عجلة الحظ مع السهم والأرقام -->
         <div class="card" style="text-align: center;">
             <h3>عجلة الحظ اليومية</h3>
             <p style="color: #cbd5e1; font-size: 0.85rem; margin-top: 5px;">ادور العجلة مرة واحدة كل 24 ساعة واربح حتى 100 نقطة!</p>
             
-            <div class="wheel-container" id="wheel">
-                <div class="wheel-slice s1">10</div>
-                <div class="wheel-slice s2">20</div>
-                <div class="wheel-slice s3">50</div>
-                <div class="wheel-slice s4">100</div>
-                <div class="wheel-slice s5">5</div>
-                <div class="wheel-slice s6">25</div>
-                <div class="wheel-center" onclick="spinWheel()">ابدأ</div>
+            <div class="wheel-box">
+                <!-- السهم الدلالي في الأعلى -->
+                <div class="wheel-pointer"></div>
+                
+                <div class="wheel-container" id="wheel">
+                    <div class="wheel-slice s1">10</div>
+                    <div class="wheel-slice s2">20</div>
+                    <div class="wheel-slice s3">50</div>
+                    <div class="wheel-slice s4">100</div>
+                    <div class="wheel-slice s5">5</div>
+                    <div class="wheel-slice s6">25</div>
+                    <div class="wheel-center" onclick="spinWheel()">ابدأ</div>
+                </div>
             </div>
             
             <p id="wheelResult" style="color: #eab308; font-weight: bold; margin-top: 15px;"></p>
@@ -122,7 +144,7 @@
         function spinWheel() {
             if (isSpinning) return;
 
-            // التحقق من تاريخ آخر تددير للعجلة
+            // التحقق من تاريخ آخر تدوير للعجلة
             const lastSpinDate = localStorage.getItem(lastSpinKey);
             const today = new Date().toDateString();
             const resultText = document.getElementById("wheelResult");
