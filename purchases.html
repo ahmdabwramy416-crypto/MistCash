@@ -36,7 +36,10 @@
 
     <script>
         if (localStorage.getItem("is_logged_in") !== "true") { window.location.href = "login.html"; }
-        const purchases = JSON.parse(localStorage.getItem("user_purchases") || "[]");
+        
+        const userEmail = localStorage.getItem("user_email");
+        const purchasesKey = "purchases_" + userEmail;
+        const purchases = JSON.parse(localStorage.getItem(purchasesKey) || "[]");
         const listContainer = document.getElementById("purchasesList");
 
         if (purchases.length === 0) {
