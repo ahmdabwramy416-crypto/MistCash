@@ -23,7 +23,7 @@
 
     <div class="container">
         <div class="store-grid">
-            <!-- عنصر 1: شدات ببجي (تم تعديل السعر مؤقتاً إلى 20 نقطة للتجربة) -->
+            <!-- عنصر 1: شدات ببجي (تجريبي 20 نقطة) -->
             <div class="store-card">
                 <h3>60 شدة ببجي (UC)</h3>
                 <p>السعر: <span style="color: #4ade80; font-weight: bold;">20 نقطة</span> (تجريبي)</p>
@@ -57,7 +57,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, updateDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, updateDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyB6rnXLMDlvy0Eezc7MkdmP334EzPTKlGE",
@@ -83,7 +83,6 @@
         }
         updatePointsDisplay();
 
-        // بيانات بوت التليجرام الخاص بك المضافة مسبقاً
         const TELEGRAM_BOT_TOKEN = "8772749961:AAGcqxtBBh9MTsBlGyCCHFheeQOXLwGMhrc"; 
         const TELEGRAM_CHAT_ID = "8767568410"; 
 
@@ -91,7 +90,7 @@
             let currentPoints = parseInt(localStorage.getItem(pointsKey) || "0");
 
             if (currentPoints < cost) {
-                alert("عذراً، رصيدك من النقاط غير كافٍ لطلب هذه الجائزة! اربح بعض النقاط من عجلة الحظ أولاً.");
+                alert("عذراً، رصيدك من النقاط غير كافٍ لطلب هذه الجائزة!");
                 return;
             }
 
@@ -99,16 +98,8 @@
                 return;
             }
 
-            currentPoints -= cost;
-            localStorage.setItem(pointsKey, currentPoints);
-            updatePointsDisplay();
-
             try {
-                // 1. تحديث النقاط الجديدة للمستخدم في قاعدة البيانات
-                const userRef = doc(db, "users", userEmail);
-                await updateDoc(userRef, { points: currentPoints });
-
-                // 2. تسجيل طلب السحب في جدول withdrawals
+                // 1. تسجيل الطلب في جدول withdrawals أولاً
                 await addDoc(collection(db, "withdrawals"), {
                     email: userEmail,
                     reward: rewardName,
@@ -118,7 +109,16 @@
                     promoCode: ""
                 });
 
-                // 3. إرسال إشعار فوري إلى بوت تليجرام الخاص بك
+                // 2. تحديث النقاط في قاعدة البيانات (استخدام setDoc مع merge لضمان عدم فشل العملية إذا لم يكن المستند موجوداً)
+                const userRef = doc(db, "users", userEmail);
+                let newPoints = currentPoints - cost;
+                await setDoc(userRef, { points: newPoints }, { merge: true });
+
+                // 3. تحديث التخزين المحلي والنقاط المعروضة
+                localStorage.setItem(pointsKey, newPoints);
+                updatePointsDisplay();
+
+                // 4. إرسال إشعار فوري إلى بوت تليجرام
                 if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
                     const message = `🔔 طلب استبدال جديد!\n\n👤 المستخدم: ${userEmail}\n🎁 الجائزة: ${rewardName}\n💰 التكلفة: ${cost} نقطة`;
                     fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
@@ -131,12 +131,12 @@
                     }).catch(err => console.log("Telegram error:", err));
                 }
 
-                alert("تم تقديم طلبك بنجاح! سيتم إرسال الإشعار لتليجرام وتوجيهك لصفحة المشتريات.");
+                alert("تم تقديم طلبك بنجاح! سيتم مراجعته وإرساله قريباً.");
                 window.location.href = "purchases.html";
 
             } catch (err) {
-                console.error("خطأ أثناء إرسال الطلب:", err);
-                alert("حدث خطأ ما، يرجى المحاولة مرة أخرى.");
+                console.error("Firebase Error details:", err);
+                alert("حدث خطأ في قاعدة البيانات: " + err.message);
             }
         }
     </script>
