@@ -26,7 +26,7 @@
             filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5));
         }
 
-        /* تصميم عجلة الحظ مع تقسيمات وجوائز واضحة */
+        /* تصميم عجلة الحظ مع تقسيمات وجوائز واضحة (6 أقسام، كل قسم 60 درجة) */
         .wheel-container {
             position: relative;
             width: 100%;
@@ -71,11 +71,11 @@
     </div>
 
     <div class="container">
-        <!-- أزرار لشركات العروض 3 -->
+        <!-- أزرار لشركات العروض -->
         <div class="card" style="text-align: center;">
             <h3 style="margin-bottom: 15px;">شركات حائط العروض</h3>
             <div class="offers-grid">
-                <!-- تم إضافة id هنا لكي يتم تحديث الرابط تلقائياً بالبريد -->
+                <!-- رابط CPALead محدث ديناميكياً بريد المستخدم -->
                 <a href="https://www.lnksforyou.com/wall/2qQGUmC" id="cpalead-link" target="_blank" class="btn-yellow">1. عروض CPALead</a>
                 <a href="#" target="_blank" class="btn-yellow">2. OfferWall الثانية</a>
                 <a href="#" target="_blank" class="btn-yellow">3. AdGate عروض إضافية</a>
@@ -120,9 +120,8 @@
 
         const userEmail = localStorage.getItem("user_email");
         const pointsKey = "points_" + userEmail;
-        const lastSpinKey = "last_spin_" + userEmail;
+        const lastSpinKey = "last_spin_time_" + userEmail;
 
-        // تحديث رابط CPALead ليحتوي على بريد المستخدم الحالي (subid) تلقائياً
         if (userEmail) {
             const cpaleadLink = document.getElementById("cpalead-link");
             if (cpaleadLink) {
@@ -137,15 +136,21 @@
         }
         updatePoints();
 
-        // التحقق عند فتح الصفحة إذا كان المستخدم قد استخدم المجلة اليوم
         function checkSpinAvailability() {
-            const lastSpinDate = localStorage.getItem(lastSpinKey);
-            const today = new Date().toISOString();
+            const lastSpinTime = localStorage.getItem(lastSpinKey);
             const resultText = document.getElementById("wheelResult");
 
-            if (lastSpinDate === today) {
-                resultText.innerText = "لقد قمت بتدوير المجلة اليوم، تنتظرك غداً محاولة جديدة!";
+            if (lastSpinTime) {
+                const now = new Date().getTime();
+                const elapsedHours = (now - parseInt(lastSpinTime)) / (1000 * 60 * 60);
+
+                if (elapsedHours < 24) {
+                    const remainingHours = Math.ceil(24 - elapsedHours);
+                    resultText.innerText = `لقد قمت بتدوير المجلة اليوم! يمكنك المحاولة مرة أخرى بعد ${remainingHours} ساعة.`;
+                    return false;
+                }
             }
+            return true;
         }
         checkSpinAvailability();
 
@@ -153,36 +158,46 @@
         function spinWheel() {
             if (isSpinning) return;
 
-            // التحقق من تاريخ آخر تدوير للمجلة
-            const lastSpinDate = localStorage.getItem(lastSpinKey);
-            const today = new Date().toISOString();
+            const lastSpinTime = localStorage.getItem(lastSpinKey);
             const resultText = document.getElementById("wheelResult");
 
-            if (lastSpinDate === today) {
-                alert("عذراً! يمكنك تدوير المجلة مرة واحدة فقط كل 24 ساعة");
-                return;
+            if (lastSpinTime) {
+                const now = new Date().getTime();
+                const elapsedHours = (now - parseInt(lastSpinTime)) / (1000 * 60 * 60);
+                if (elapsedHours < 24) {
+                    const remainingHours = Math.ceil(24 - elapsedHours);
+                    alert(`عذراً! يمكنك تدوير المجلة مرة واحدة كل 24 ساعة. متبقي ${remainingHours} ساعة.`);
+                    return;
+                }
             }
 
             isSpinning = true;
-            resultText.innerText = "جاري تدور المجلة...";
+            resultText.innerText = "جاري تدوير المجلة...";
+
+            // تحديد الجائزة عشوائياً أولاً من الأقسام الستة المتاحة في العجلة
+            const rewards = [10, 20, 50, 100, 5, 25];
+            const randomIndex = Math.floor(Math.random() * rewards.length);
+            const wonPoints = rewards[randomIndex];
+
+            // حساب الزاوية المطلوبة لكي يتوقف السهم בדיוק على القسم المختار
+            // كل قسم يمثل 60 درجة (360 / 6)
+            const degreesPerSlice = 60;
+            // إضافة عدة دورات كاملة (1440 درجة = 4 لفات) لإعطاء شكل الحركة الحقيقية
+            const targetDegree = 1440 + (randomIndex * degreesPerSlice) + 30;
 
             const wheel = document.getElementById("wheel");
-            const randomDegree = Math.floor(Math.random() * 360) + 1440;
-            wheel.style.transform = `rotate(${randomDegree}deg)`;
+            wheel.style.transform = `rotate(${targetDegree}deg)`;
 
             setTimeout(() => {
-                const rewards = [10, 20, 50, 100, 5, 25];
-                const wonPoints = rewards[Math.floor(Math.random() * rewards.length)];
-
                 let currentPoints = parseInt(localStorage.getItem(pointsKey) || "0");
                 currentPoints += wonPoints;
 
-                // حفظ النقاط وتسجيل تاريخ اليوم لمنع التكرار
+                const currentTime = new Date().getTime();
                 localStorage.setItem(pointsKey, currentPoints);
-                localStorage.setItem(lastSpinKey, today);
+                localStorage.setItem(lastSpinKey, currentTime.toString());
 
                 updatePoints();
-                resultText.innerText = `مبروك! ريحت وتم إضافتها لرصيدك ${wonPoints} نقطة`;
+                resultText.innerText = `مبروك! ربحت وتم إضافتها لرصيدك ${wonPoints} نقطة`;
                 isSpinning = false;
             }, 4000);
         }
