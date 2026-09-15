@@ -3,106 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الرئيسية - Gamer Pro</title>
+    <title>الرئيسية - MistCash</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        .offers-grid { display: grid; gap: 12px; margin-bottom: 25px; }
-        
-        /* حاوية عجلة الحظ */
-        .wheel-box { position: relative; width: 240px; height: 240px; margin: 25px auto 15px auto; }
-        
-        /* سهم المؤشر في الأعلى */
-        .wheel-pointer {
-            position: absolute;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 12px solid transparent;
-            border-right: 12px solid transparent;
-            border-top: 22px solid #ef4444; /* لون أحمر بارز للمؤشر */
-            z-index: 20;
-            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5));
-        }
-
-        /* تصميم عجلة الحظ - متطابق مع الأماكن البصرية تماماً */
-        .wheel-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 6px solid #eab308;
-            background: conic-gradient(
-                #eab308 0deg 60deg,
-                #ca8a04 60deg 120deg,
-                #eab308 120deg 180deg,
-                #ca8a04 180deg 240deg,
-                #eab308 240deg 300deg,
-                #ca8a04 300deg 360deg
-            );
-            box-shadow: 0 0 20px rgba(234, 179, 8, 0.4);
-            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
-        }
-
-        /* الأرقام الموزعة على الأقسام بناءً على الصورة تماماً */
-        .wheel-slice { position: absolute; width: 100%; height: 100%; text-align: center; font-weight: bold; font-size: 1.2rem; }
-        .s1 { transform: rotate(30deg); padding-top: 10px; }   /* 20 */
-        .s2 { transform: rotate(90deg); padding-top: 10px; }   /* 50 */
-        .s3 { transform: rotate(150deg); padding-top: 10px; } /* 100 */
-        .s4 { transform: rotate(210deg); padding-top: 10px; } /* 5 */
-        .s5 { transform: rotate(270deg); padding-top: 10px; } /* 25 */
-        .s6 { transform: rotate(330deg); padding-top: 10px; } /* 10 */
-
-        .wheel-center {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: #0c0a00; color: #eab308; width: 70px; height: 70px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-weight: bold; border: 3px solid #eab308; cursor: pointer; z-index: 10;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-        }
-    </style>
 </head>
 <body>
-
-    <div class="header container">
-        <h2>Gamer Pro</h2>
-        <div class="points-box">نقطة: <span id="userPoints">0</span> الرصيد: <span id="userEmailDisplay"></span></div>
-    </div>
-
-    <div class="container">
-        <!-- أزرار لشركات العروض -->
-        <div class="card" style="text-align: center;">
-            <h3 style="margin-bottom: 15px;">شركات حائط العروض</h3>
-            <div class="offers-grid">
-                <!-- رابط CPALead محدث ديناميكياً بريد المستخدم -->
-                <a href="https://www.lnksforyou.com/wall/2qQGUmC" id="cpalead-link" target="_blank" class="btn-yellow">1. عروض CPALead</a>
-                <a href="#" target="_blank" class="btn-yellow">2. OfferWall الثانية</a>
-                <a href="#" target="_blank" class="btn-yellow">3. AdGate عروض إضافية</a>
-            </div>
-        </div>
-
-        <!-- عجلة الحظ مع السهم والأرقام -->
-        <div class="card" style="text-align: center;">
+    <div class="container" style="text-align: center; padding: 20px;">
+        <h2>مرحباً بك في MistCash</h2>
+        <p>رصيدك الحالي: <span id="userPoints" style="color: #eab308; font-weight: bold;">0</span> نقطة</p>
+        
+        <div class="card" style="margin-top: 20px; padding: 20px; background: #1a1700; border: 1px solid #eab308; border-radius: 12px;">
             <h3>عجلة الحظ اليومية</h3>
-            <p style="color: #cbd5e1; font-size: 0.85rem; margin-top: 5px;">تدور المجلة مرة واحدة كل 24 ساعة واربح حتى 100 نقطة!</p>
-            
-            <div class="wheel-box">
-                <!-- السهم الدلالي في الأعلى -->
-                <div class="wheel-pointer"></div>
-                
-                <div class="wheel-container" id="wheel">
-                    <div class="wheel-slice s1">20</div>
-                    <div class="wheel-slice s2">50</div>
-                    <div class="wheel-slice s3">100</div>
-                    <div class="wheel-slice s4">5</div>
-                    <div class="wheel-slice s5">25</div>
-                    <div class="wheel-slice s6">10</div>
-                    <div class="wheel-center" onclick="spinWheel()">ابدأ</div>
-                </div>
-            </div>
-
-            <p id="wheelResult" style="color: #eab308; font-weight: bold; margin-top: 15px;"></p>
+            <p style="color: #cbd5e1; font-size: 0.9rem;">اضغط لدوران العجلة واربح نقاطاً مجانية كل 24 ساعة!</p>
+            <button onclick="spinWheel()" class="btn-yellow" style="margin-top: 15px; padding: 10px 20px;">اضغط لربح النقاط</button>
         </div>
     </div>
 
@@ -110,93 +22,77 @@
     <div class="bottom-nav">
         <a href="index.html" class="nav-item active"><span class="nav-icon">🏠</span>الرئيسية</a>
         <a href="referral.html" class="nav-item"><span class="nav-icon">👥</span>الدعوات</a>
-        <a href="store.html" class="nav-item"><span class="nav-icon">🔥</span>المتجر</a>
+        <a href="store.html" class="nav-item"><span class="nav-icon">🎁</span>المتجر</a>
         <a href="purchases.html" class="nav-item"><span class="nav-icon">📦</span>المشتريات</a>
         <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span>حسابي</a>
     </div>
 
-    <script>
-        if (localStorage.getItem("is_logged_in") !== "true") { window.location.href = "login.html"; }
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, updateDoc, setDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyB6rnXLMDlvy0Eezc7MkdmP334EzPTKlGE",
+          authDomain: "mistcash-9a71c.firebaseapp.com",
+          projectId: "mistcash-9a71c",
+          storageBucket: "mistcash-9a71c.firebasestorage.app",
+          messagingSenderId: "819929785371",
+          appId: "1:819929785371:web:396e322f83319016bb44be",
+          measurementId: "G-FGBZZ1P9W6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        if (localStorage.getItem("is_logged_in") !== "true") { 
+            window.location.href = "login.html"; 
+        }
 
         const userEmail = localStorage.getItem("user_email");
         const pointsKey = "points_" + userEmail;
-        const lastSpinKey = "last_spin_time_" + userEmail;
+        
+        // عرض النقاط الحالية محلياً
+        let currentPoints = parseInt(localStorage.getItem(pointsKey) || "0");
+        document.getElementById("userPoints").innerText = currentPoints;
 
-        if (userEmail) {
-            const cpaleadLink = document.getElementById("cpalead-link");
-            if (cpaleadLink) {
-                cpaleadLink.href = "https://www.lnksforyou.com/wall/2qQGUmC?subid=" + encodeURIComponent(userEmail);
-            }
-        }
-
-        function updatePoints() {
-            let currentVal = localStorage.getItem(pointsKey) || "0";
-            document.getElementById("userPoints").innerText = currentVal;
-            localStorage.setItem("user_points", currentVal);
-        }
-        updatePoints();
-
-        function checkSpinAvailability() {
-            const lastSpinTime = localStorage.getItem(lastSpinKey);
-            const resultText = document.getElementById("wheelResult");
-
-            if (lastSpinTime) {
-                const now = new Date().getTime();
-                const elapsedHours = (now - parseInt(lastSpinTime)) / (1000 * 60 * 60);
-
-                if (elapsedHours < 24) {
-                    const remainingHours = Math.ceil(24 - elapsedHours);
-                    resultText.innerText = `لقد قمت بتدوير المجلة اليوم! يمكنك المحاولة مرة أخرى بعد ${remainingHours} ساعة.`;
-                    return false;
+        // دالة إرسال 10% لصاحب الدعوة تلقائياً
+        async function sendReferralCommission(earnedPoints) {
+            const inviterRefCode = localStorage.getItem("my_inviter_ref_code");
+            if (inviterRefCode && earnedPoints > 0) {
+                const commission = Math.floor(earnedPoints * 0.10); // احتساب 10%
+                if (commission > 0) {
+                    try {
+                        const bonusRef = doc(db, "referrals_bonus", inviterRefCode);
+                        await setDoc(bonusRef, { bonus: increment(commission) }, { merge: true });
+                    } catch (err) {
+                        console.error("خطأ في إرسال العمولة:", err);
+                    }
                 }
             }
-            return true;
         }
-        checkSpinAvailability();
 
-        let isSpinning = false;
-        function spinWheel() {
-            if (isSpinning) return;
+        // تجربة تدوير العجلة لربح النقاط
+        window.spinWheel = async function() {
+            let wonPoints = 50; // مثال: ربح 50 نقطة من العجلة
+            currentPoints += wonPoints;
 
-            const lastSpinTime = localStorage.getItem(lastSpinKey);
-            const resultText = document.getElementById("wheelResult");
+            // تحديث النقاط محلياً
+            localStorage.setItem(pointsKey, currentPoints);
+            localStorage.setItem("user_points", currentPoints);
+            document.getElementById("userPoints").innerText = currentPoints;
 
-            if (lastSpinTime) {
-                const now = new Date().getTime();
-                const elapsedHours = (now - parseInt(lastSpinTime)) / (1000 * 60 * 60);
-                if (elapsedHours < 24) {
-                    const remainingHours = Math.ceil(24 - elapsedHours);
-                    alert(`عذراً! يمكنك تدوير المجلة مرة واحدة كل 24 ساعة. متبقي ${remainingHours} ساعة.`);
-                    return;
-                }
+            // تحديث النقاط في سحابة Firebase للمستخدم نفسه
+            try {
+                const userRef = doc(db, "users", userEmail);
+                await updateDoc(userRef, { points: currentPoints });
+            } catch (err) {
+                console.error("خطأ في تحديث النقاط بالسحابة:", err);
             }
 
-            isSpinning = true;
-            resultText.innerText = "جاري تدوير المجلة...";
+            // إرسال 10% لصاحب الدعوة أوتوماتيكياً!
+            await sendReferralCommission(wonPoints);
 
-            // ترتيب الجوائز المتوافق تماماً مع أماكنها البصرية على العجلة (من الأعلى وباتجاه عقارب الساعة)
-            const rewards = [20, 50, 100, 5, 25, 10];
-            const randomIndex = Math.floor(Math.random() * rewards.length);
-            const wonPoints = rewards[randomIndex];
-
-            const degreesPerSlice = 60;
-            const targetDegree = 1440 + (randomIndex * degreesPerSlice);
-
-            const wheel = document.getElementById("wheel");
-            wheel.style.transform = `rotate(${targetDegree}deg)`;
-
-            setTimeout(() => {
-                let currentPoints = parseInt(localStorage.getItem(pointsKey) || "0");
-                currentPoints += wonPoints;
-
-                const currentTime = new Date().getTime();
-                localStorage.setItem(pointsKey, currentPoints);
-                localStorage.setItem(lastSpinKey, currentTime.toString());
-
-                updatePoints();
-                resultText.innerText = `مبروك! ربحت وتم إضافتها لرصيدك ${wonPoints} نقطة`;
-                isSpinning = false;
-            }, 4000);
+            alert(`مبروك! لقد ربحت ${wonPoints} نقطة وأضيفت لرصيدك.`);
         }
     </script>
 </body>
