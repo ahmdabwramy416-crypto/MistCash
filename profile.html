@@ -17,6 +17,7 @@
             <h2 id="name" style="margin-bottom: 5px;">جاري التحميل...</h2>
             <p id="email" style="color: #cbd5e1; font-size: 0.9rem; margin-bottom: 20px;">...</p>
             <div class="points-box" style="margin-bottom: 20px; display: inline-block;">رصيدك الحالي: <span id="points">0</span> نقطة</div>
+            <br>
             <button onclick="logout()" class="btn-yellow" style="background: #dc2626; color: #fff; box-shadow: none;">تسجيل الخروج</button>
         </div>
     </div>
@@ -32,14 +33,24 @@
 
     <script>
         if (localStorage.getItem("is_logged_in") !== "true") { window.location.href = "login.html"; }
+        
+        const userEmail = localStorage.getItem("user_email");
+        const pointsKey = "points_" + userEmail;
+
         document.getElementById("name").innerText = localStorage.getItem("user_name");
-        document.getElementById("email").innerText = localStorage.getItem("user_email");
-        document.getElementById("points").innerText = localStorage.getItem("user_points") || "0";
+        document.getElementById("email").innerText = userEmail;
+        document.getElementById("points").innerText = localStorage.getItem(pointsKey) || "0";
+        
         const pic = localStorage.getItem("user_picture");
         if (pic) document.getElementById("avatar").src = pic;
 
         function logout() {
-            localStorage.clear();
+            // نقوم فقط بإلغاء حالة تسجيل الدخول الحالية دون مسح مفاتيح النقاط الخاصة بالإيميل
+            localStorage.removeItem("is_logged_in");
+            localStorage.removeItem("user_name");
+            localStorage.removeItem("user_email");
+            localStorage.removeItem("user_picture");
+            
             window.location.href = "login.html";
         }
     </script>
