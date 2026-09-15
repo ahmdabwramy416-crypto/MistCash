@@ -1,5 +1,5 @@
 import { getApps, initializeApp, cert } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
+import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 
 if (!getApps().length) {
   initializeApp({
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     }
 
     await userRef.update({
-      balance: admin.firestore.FieldValue.increment(payout)
+      balance: FieldValue.increment(payout)
     });
 
     return res.status(200).send('OK');
