@@ -26,7 +26,7 @@
             filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5));
         }
 
-        /* تصميم عجلة الحظ مع تقسيمات وجوائز واضحة (6 أقسام، كل قسم 60 درجة) */
+        /* تصميم عجلة الحظ - متطابق مع الأماكن البصرية تماماً */
         .wheel-container {
             position: relative;
             width: 100%;
@@ -45,14 +45,14 @@
             transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
         }
 
-        /* الأرقام الموزعة على أقسام المجلة */
+        /* الأرقام الموزعة على الأقسام بناءً على الصورة تماماً */
         .wheel-slice { position: absolute; width: 100%; height: 100%; text-align: center; font-weight: bold; font-size: 1.2rem; }
-        .s1 { transform: rotate(30deg); padding-top: 10px; }
-        .s2 { transform: rotate(90deg); padding-top: 10px; }
-        .s3 { transform: rotate(150deg); padding-top: 10px; }
-        .s4 { transform: rotate(210deg); padding-top: 10px; }
-        .s5 { transform: rotate(270deg); padding-top: 10px; }
-        .s6 { transform: rotate(330deg); padding-top: 10px; }
+        .s1 { transform: rotate(30deg); padding-top: 10px; }   /* 20 */
+        .s2 { transform: rotate(90deg); padding-top: 10px; }   /* 50 */
+        .s3 { transform: rotate(150deg); padding-top: 10px; } /* 100 */
+        .s4 { transform: rotate(210deg); padding-top: 10px; } /* 5 */
+        .s5 { transform: rotate(270deg); padding-top: 10px; } /* 25 */
+        .s6 { transform: rotate(330deg); padding-top: 10px; } /* 10 */
 
         .wheel-center {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -92,12 +92,12 @@
                 <div class="wheel-pointer"></div>
                 
                 <div class="wheel-container" id="wheel">
-                    <div class="wheel-slice s1">10</div>
-                    <div class="wheel-slice s2">20</div>
-                    <div class="wheel-slice s3">50</div>
-                    <div class="wheel-slice s4">100</div>
-                    <div class="wheel-slice s5">5</div>
-                    <div class="wheel-slice s6">25</div>
+                    <div class="wheel-slice s1">20</div>
+                    <div class="wheel-slice s2">50</div>
+                    <div class="wheel-slice s3">100</div>
+                    <div class="wheel-slice s4">5</div>
+                    <div class="wheel-slice s5">25</div>
+                    <div class="wheel-slice s6">10</div>
                     <div class="wheel-center" onclick="spinWheel()">ابدأ</div>
                 </div>
             </div>
@@ -174,16 +174,13 @@
             isSpinning = true;
             resultText.innerText = "جاري تدوير المجلة...";
 
-            // تحديد الجائزة عشوائياً أولاً من الأقسام الستة المتاحة في العجلة
-            const rewards = [10, 20, 50, 100, 5, 25];
+            // ترتيب الجوائز المتوافق تماماً مع أماكنها البصرية على العجلة (من الأعلى وباتجاه عقارب الساعة)
+            const rewards = [20, 50, 100, 5, 25, 10];
             const randomIndex = Math.floor(Math.random() * rewards.length);
             const wonPoints = rewards[randomIndex];
 
-            // حساب الزاوية المطلوبة لكي يتوقف السهم בדיוק على القسم المختار
-            // كل قسم يمثل 60 درجة (360 / 6)
             const degreesPerSlice = 60;
-            // إضافة عدة دورات كاملة (1440 درجة = 4 لفات) لإعطاء شكل الحركة الحقيقية
-            const targetDegree = 1440 + (randomIndex * degreesPerSlice) + 30;
+            const targetDegree = 1440 + (randomIndex * degreesPerSlice);
 
             const wheel = document.getElementById("wheel");
             wheel.style.transform = `rotate(${targetDegree}deg)`;
