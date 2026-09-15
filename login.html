@@ -7,42 +7,21 @@
     <!-- استدعاء مكتبة تسجيل الدخول من جوجل -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
-        body {
-            font-family: 'Cairo', Tahoma, sans-serif;
-            background-color: #f4f6f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .login-card {
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            width: 100%;
-            max-width: 400px;
-        }
-        h2 {
-            color: #333;
-            margin-bottom: 25px;
-        }
-        .button-container {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', Tahoma, sans-serif; }
+        body { background-color: #0d0519; color: #ffffff; display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px; }
+        .login-card { background: #1a0b2e; border: 1px solid #3b1568; border-radius: 16px; padding: 30px; width: 100%; max-width: 400px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); text-align: center; }
+        h2 { color: #c084fc; margin-bottom: 15px; font-size: 1.5rem; }
+        p { color: #aaa; font-size: 0.9rem; margin-bottom: 25px; }
+        .button-container { display: flex; justify-content: center; margin-top: 15px; }
     </style>
 </head>
 <body>
 
     <div class="login-card">
         <h2>تسجيل الدخول إلى MistCash</h2>
-        <p>سجل دخولك باستخدام حساب جوجل للوصول إلى مكافآتك</p>
+        <p>سجل دخولك باستخدام حساب جوجل للوصول إلى مكافآتك ونقاطك</p>
         
-        <!-- إعداد حاوية زر جوجل -->
+        <!-- حاوية زر جوجل -->
         <div class="button-container">
             <div id="g_id_onload"
                  data-client_id="855781354859-0kf6q6rsi1al5n4ej3pg1o61blsouvdm.apps.googleusercontent.com"
@@ -61,24 +40,28 @@
     </div>
 
     <script>
-        // هذه الدالة تعمل تلقائياً عند نجاح تسجيل الدخول بجوجل
-        function handleCredentialResponse(response) {
-            console.EncodedToken = response.credential;
-            
-            // فك تشفير البيانات البسيطة للاستفادة منها (اسم المستخدم، البريد، الصورة)
-            const responsePayload = parseJwt(response.credential);
-            
-            // تخزين بيانات المستخدم محلياً في المتصفح
-            localStorage.setItem("user_name", responsePayload.name);
-            localStorage.setItem("user_email", responsePayload.email);
-            localStorage.setItem("user_picture", responsePayload.picture);
-            localStorage.setItem("is_logged_in", "true");
-
-            // التوجيه إلى صفحة الملف الشخصي أو الرئيسية بعد الدخول الناجح
+        // التحقق المسبق: إذا كان مسجلاً مسبقاً، وجهه للبروفايل فوراً دون الحاجة لإعادة الضغط
+        if (localStorage.getItem("is_logged_in") === "true") {
             window.location.href = "profile.html";
         }
 
-        // دالة مساعدة لفك تشفير بيانات رمز جوجل (JWT)
+        function handleCredentialResponse(response) {
+            const responsePayload = parseJwt(response.credential);
+            
+            // تخزين بيانات المستخدم بشكل دائم في الـ localStorage
+            localStorage.setItem("user_name", responsePayload.name);
+            localStorage.setItem("user_email", responsePayload.email);
+            localStorage.setItem("user_picture", responsePayload.picture || "");
+            localStorage.setItem("is_logged_in", "true");
+            
+            if (!localStorage.getItem("user_points")) {
+                localStorage.setItem("user_points", "0");
+            }
+
+            // الانتقال الفوري لصفحة الملف الشخصي
+            window.location.href = "profile.html";
+        }
+
         function parseJwt(token) {
             var base64Url = token.split('.')[1];
             var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
