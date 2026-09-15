@@ -4,36 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الملف الشخصي - MistCash</title>
+    <link rel="stylesheet" href="style.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', Tahoma, sans-serif; }
-        body { background-color: #0d0519; color: #ffffff; display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px; }
-        .card { background: #1a0b2e; border: 1px solid #3b1568; border-radius: 16px; padding: 30px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
+        body { display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 80vh; }
         .avatar { width: 90px; height: 90px; border-radius: 50%; border: 3px solid #eab308; margin-bottom: 15px; object-fit: cover; }
-        h2 { color: #eab308; margin-bottom: 5px; }
-        p { color: #aaa; font-size: 0.9rem; margin-bottom: 20px; }
-        .badge { background: #2a1147; padding: 12px; border-radius: 10px; margin-bottom: 20px; color: #4ade80; font-weight: bold; border: 1px solid #4c1d95; }
-        .btn { display: block; width: 100%; padding: 12px; background: #7c3aed; color: white; border: none; border-radius: 8px; text-decoration: none; font-weight: bold; transition: 0.3s; }
-        .btn:hover { background: #6d28d9; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <img id="avatar" src="https://via.placeholder.com/90" alt="صورة المستخدم" class="avatar">
-        <h2 id="name">جاري التحميل...</h2>
-        <p id="email">...</p>
-        <div class="badge">رصيدك الحالي: <span id="points">0</span> نقطة</div>
-        <a href="index.html" class="btn">العودة إلى الرئيسية</a>
+    <div class="container" style="width: 100%;">
+        <div class="card" style="text-align: center;">
+            <img id="avatar" src="https://via.placeholder.com/90" alt="صورة المستخدم" class="avatar">
+            <h2 id="name" style="margin-bottom: 5px;">جاري التحميل...</h2>
+            <p id="email" style="color: #cbd5e1; font-size: 0.9rem; margin-bottom: 20px;">...</p>
+            <div class="points-box" style="margin-bottom: 20px; display: inline-block;">رصيدك الحالي: <span id="points">0</span> نقطة</div>
+            <button onclick="logout()" class="btn-yellow" style="background: #dc2626; color: #fff; box-shadow: none;">تسجيل الخروج</button>
+        </div>
+    </div>
+
+    <!-- شريط التنقل السفلي -->
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span>الرئيسية</a>
+        <a href="referral.html" class="nav-item"><span class="nav-icon">👥</span>الدعوات</a>
+        <a href="store.html" class="nav-item"><span class="nav-icon">🎁</span>المتجر</a>
+        <a href="purchases.html" class="nav-item"><span class="nav-icon">📦</span>المشتريات</a>
+        <a href="profile.html" class="nav-item active"><span class="nav-icon">👤</span>حسابي</a>
     </div>
 
     <script>
-        if (localStorage.getItem("is_logged_in") !== "true") {
+        if (localStorage.getItem("is_logged_in") !== "true") { window.location.href = "login.html"; }
+        document.getElementById("name").innerText = localStorage.getItem("user_name");
+        document.getElementById("email").innerText = localStorage.getItem("user_email");
+        document.getElementById("points").innerText = localStorage.getItem("user_points") || "0";
+        const pic = localStorage.getItem("user_picture");
+        if (pic) document.getElementById("avatar").src = pic;
+
+        function logout() {
+            localStorage.clear();
             window.location.href = "login.html";
-        } else {
-            document.getElementById("name").innerText = localStorage.getItem("user_name");
-            document.getElementById("email").innerText = localStorage.getItem("user_email");
-            document.getElementById("points").innerText = localStorage.getItem("user_points") || "0";
-            const pic = localStorage.getItem("user_picture");
-            if (pic) document.getElementById("avatar").src = pic;
         }
     </script>
 </body>
