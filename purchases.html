@@ -6,28 +6,38 @@
     <title>المشتريات - Gamer Pro</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .purchase-card { background: #1a1700; border: 1px solid #eab308; padding: 15px; border-radius: 12px; margin-bottom: 12px; text-align: right; }
+        .purchase-card {
+            background: #1a1700;
+            border: 1px solid #eab308;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
         .purchase-card h4 { color: #eab308; margin-bottom: 5px; }
-        .purchase-card p { color: #cbd5e1; font-size: 0.9rem; margin: 4px 0; }
-        .code-box { background: #0c0a00; color: #4ade80; padding: 8px; border-radius: 6px; font-family: monospace; margin-top: 8px; border: 1px dashed #4ade80; }
+        .purchase-card p { color: #cbd5e1; font-size: 0.85rem; margin: 4px 0; }
+        .promo-box {
+            background: #0f172a;
+            border: 1px dashed #4ade80;
+            padding: 8px;
+            border-radius: 6px;
+            margin-top: 8px;
+            color: #4ade80;
+            font-family: monospace;
+            font-weight: bold;
+            text-align: center;
+        }
+        .status-pending { color: #facc15; font-weight: bold; }
+        .status-sent { color: #4ade80; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div class="header container" style="display: flex; justify-content: space-between; align-items: center; padding: 15px;">
+    <div class="header container" style="padding: 15px; text-align: center;">
         <h2>سجل المشتريات والطلبات</h2>
-        <div class="points-box" style="background: #1a1700; border: 1px solid #eab308; padding: 8px 15px; border-radius: 8px; color: #eab308; font-weight: bold;">
-            النقاط: <span id="userPoints" style="color: #fff;">0</span>
-        </div>
     </div>
 
-    <div class="container">
-        <div class="card" style="margin-bottom: 20px;">
-            <h3 style="text-align: center; margin-bottom: 15px; color: #eab308;">طلبات الاستبدال الخاصة بك</h3>
-            <div id="purchasesList">
-                <p style="text-align: center; color: #cbd5e1;">جاري تحميل طلباتك...</p>
-            </div>
-        </div>
+    <div class="container" id="purchasesContainer">
+        <p style="text-align: center; color: #94a3b8;">جاري تحميل طلباتك...</p>
     </div>
 
     <!-- شريط التنقل السفلي -->
@@ -56,50 +66,52 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        if (localStorage.getItem("is_logged_in") !== "true") { window.location.href = "login.html"; }
+        if (localStorage.getItem("is_logged_in") !== "true") { 
+            window.location.href = "login.html"; 
+        }
 
         const userEmail = localStorage.getItem("user_email");
-        const pointsKey = "points_" + userEmail;
-
-        document.getElementById("userPoints").innerText = localStorage.getItem(pointsKey) || "0";
+        const container = document.getElementById("purchasesContainer");
 
         async function loadPurchases() {
-            const listContainer = document.getElementById("purchasesList");
             try {
+                // جلب الطلبات الخاصة بهذا المستخدم فقط من جدول withdrawals
                 const q = query(collection(db, "withdrawals"), where("email", "==", userEmail));
                 const querySnapshot = await getDocs(q);
 
+                container.innerHTML = "";
+
                 if (querySnapshot.empty) {
-                    listContainer.innerHTML = `<p style="text-align: center; color: #cbd5e1;">ليس لديك أي طلبات سحب حتى الآن.</p>`;
+                    container.innerHTML = `<p style="text-align: center; color: #94a3b8; margin-top: 30px;">ليس لديك أي طلبات سابقة في المتجر.</p>`;
                     return;
                 }
 
-                let html = "";
                 querySnapshot.forEach((docSnap) => {
-                    const data = docSnap.data();
-                    let statusColor = data.status.includes("تم") ? "#4ade80" : "#facc15";
+                    let data = docSnap.data();
+                    let statusClass = data.status.includes("تم") ? "status-sent" : "status-pending";
                     
-                    html += `
-                        <div class="purchase-card">
-                            <h4>${data.reward}</h4>
-                            <p>التكلفة: <b>${data.cost} نقطة</b></p>
-                            <p>تاريخ الطلب: ${data.date}</p>
-                            <p>الحالة: <span style="color: ${statusColor}; font-weight: bold;">${data.status}</span></p>
-                    `;
-
-                    // إذا قمت أنت بإضافة الكود من لوحة التحكم أو تم إرساله، سيظهر له هنا
-                    if (data.promoCode) {
-                        html += `<div class="code-box">كود الهدية: ${data.promoCode}</div>`;
+                    // إذا كان هناك كود شحن مضاف، نقوم بعرضه في صندوق خاص
+                    let promoHtml = "";
+                    if (data.promoCode && data.promoCode.trim() !== "") {
+                        promoHtml = `<div class="promo-box">كود الهدية / الشحن: ${data.promoCode}</div>`;
+                    } else {
+                        promoHtml = `<div style="font-size: 0.8rem; color: #94a3b8; margin-top: 5px;">سيظهر كود الجائزة هنا فور إرسالها من الإدارة.</div>`;
                     }
 
-                    html += `</div>`;
+                    container.innerHTML += `
+                        <div class="purchase-card">
+                            <h4>🎁 ${data.reward}</h4>
+                            <p>💰 التكلفة: ${data.cost} نقطة</p>
+                            <p>📅 التاريخ: ${data.date}</p>
+                            <p>الحالة: <span class="${statusClass}">${data.status}</span></p>
+                            ${promoHtml}
+                        </div>
+                    `;
                 });
 
-                listContainer.innerHTML = html;
-
             } catch (err) {
-                console.error("خطأ في جلب المشتريات:", err);
-                listContainer.innerHTML = `<p style="text-align: center; color: #ef4444;">حدث خطأ في تحميل الطلبات.</p>`;
+                console.error("Error loading purchases:", err);
+                container.innerHTML = `<p style="text-align: center; color: #ef4444;">حدث خطأ أثناء تحميل الطلبات.</p>`;
             }
         }
 
