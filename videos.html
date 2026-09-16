@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فيديوهات الكسب - MistCash</title>
+    <title>شاهد واكسب - MistCash</title>
     <link rel="stylesheet" href="style.css">
     <style>
         .video-card {
@@ -15,24 +15,6 @@
             text-align: center;
         }
         .video-card h3 { color: #eab308; margin-bottom: 10px; font-size: 1.1rem; }
-        .video-container {
-            position: relative;
-            width: 100%;
-            padding-bottom: 56.25%; /* نسبة أبعاد الفيديو 16:9 */
-            height: 0;
-            background: #000;
-            border-radius: 8px;
-            overflow: hidden;
-            margin-bottom: 12px;
-        }
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
         .reward-badge {
             display: inline-block;
             background: #0f172a;
@@ -43,6 +25,21 @@
             font-weight: bold;
             font-size: 0.9rem;
             margin-bottom: 12px;
+        }
+        .ad-container {
+            width: 100%;
+            min-height: 250px;
+            background: #0f172a;
+            border: 1px dashed #334155;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            position: relative;
+            overflow: hidden;
+            padding: 10px;
         }
         
         /* تنسيق شريط التنقل السفلي */
@@ -55,7 +52,7 @@
 <body>
 
     <div class="header container" style="display: flex; justify-content: space-between; align-items: center; padding: 15px;">
-        <h2>قائمة الفيديوهات</h2>
+        <h2>قسم الفيديوهات والأرباح</h2>
         <div class="points-box" style="background: #1a1700; border: 1px solid #eab308; padding: 8px 15px; border-radius: 8px; color: #eab308; font-weight: bold;">
             النقاط: <span id="userPoints" style="color: #fff;">0</span>
         </div>
@@ -63,30 +60,36 @@
 
     <div class="container" style="margin-bottom: 80px;">
         
-        <!-- الفيديو الأول -->
+        <p style="text-align: center; color: #cbd5e1; font-size: 0.85rem; margin-bottom: 15px;">
+            شاهد الإعلانات للنهاية واحصل على نقاط فورية تقودك لسحب جوائزك!
+        </p>
+
+        <!-- صندوق الإعلان الأول (مكان إعلان الشباك أو الـ Monetag / Adsterra) -->
         <div class="video-card">
-            <h3>شاهد الإعلان واكسب النقاط</h3>
-            <div class="video-container">
-                <!-- استبدل رابط الفيديو المرفق برابط فيديو يوتيوب الخاص بك -->
-                <iframe src="https://www.youtube.com/embed/tgbNymZ7vqY" allowfullscreen></iframe>
+            <h3>الإعلان الترويجي الأول (مكافأة)</h3>
+            <div class="ad-container" id="adBox1">
+                <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 10px;">اضغط على زر بدء المشاهدة لتحميل الإعلان واكتساب الأرباح والنقاط</p>
+                <!-- ضع كود سكريبت الإعلان الخاص بك هنا (مثل إعلانات Banner أو Direct Link أو Video Interstitial) -->
+                <div id="nativeAdSlot1"></div>
             </div>
-            <div class="reward-badge">🎁 الجائزة: 50 نقطة</div>
-            <button onclick="watchVideo('video_1', 50)" id="btn_video_1" class="btn-yellow" style="width: 100%; padding: 10px; background: #eab308; border: none; font-weight: bold; border-radius: 8px; cursor: pointer;">تمت المشاهدة واجمع النقاط</button>
+            <div class="reward-badge">🎁 الجائزة: 30 نقطة</div>
+            <button onclick="startWatchingAd('ad_1', 30)" id="btn_ad_1" class="btn-yellow" style="width: 100%; padding: 10px; background: #eab308; border: none; font-weight: bold; border-radius: 8px; cursor: pointer;">بدء مشاهدة الإعلان</button>
         </div>
 
-        <!-- الفيديو الثاني -->
+        <!-- صندوق الإعلان الثاني -->
         <div class="video-card">
-            <h3>فيديو ترويجي للبث والتطبيقات</h3>
-            <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/tgbNymZ7vqY" allowfullscreen></iframe>
+            <h3>الإعلان الترويجي الثاني (مكافأة)</h3>
+            <div class="ad-container" id="adBox2">
+                <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 10px;">اضغط على زر بدء المشاهدة لاكتساب النقاط</p>
+                <div id="nativeAdSlot2"></div>
             </div>
-            <div class="reward-badge">🎁 الجائزة: 50 نقطة</div>
-            <button onclick="watchVideo('video_2', 50)" id="btn_video_2" class="btn-yellow" style="width: 100%; padding: 10px; background: #eab308; border: none; font-weight: bold; border-radius: 8px; cursor: pointer;">تمت المشاهدة واجمع النقاط</button>
+            <div class="reward-badge">🎁 الجائزة: 30 نقطة</div>
+            <button onclick="startWatchingAd('ad_2', 30)" id="btn_ad_2" class="btn-yellow" style="width: 100%; padding: 10px; background: #eab308; border: none; font-weight: bold; border-radius: 8px; cursor: pointer;">بدء مشاهدة الإعلان</button>
         </div>
 
     </div>
 
-    <!-- شريط التنقل السفلي (6 أزرار) -->
+    <!-- شريط التنقل السفلي الصحيح (6 أزرار) -->
     <div class="bottom-nav">
         <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span>الرئيسية</a>
         <a href="videos.html" class="nav-item active"><span class="nav-icon">🎬</span>فيديوهات</a>
@@ -98,7 +101,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyB6rnXLMDlvy0Eezc7MkdmP334EzPTKlGE",
@@ -126,59 +129,64 @@
         }
         updatePointsDisplay();
 
-        // التحقق مما إذا كان المستخدم قد شاهد الفيديو مسبقاً (اختياري لمنع التكرار اليومي أو الدائم)
-        document.addEventListener("DOMContentLoaded", () => {
-            if (localStorage.getItem(`watched_${userEmail}_video_1`) === "true") {
-                let btn = document.getElementById("btn_video_1");
-                btn.innerText = "تمت المشاهدة مسبقاً ✓";
-                btn.style.background = "#334155";
-                btn.style.color = "#94a3b8";
-                btn.disabled = true;
-            }
-            if (localStorage.getItem(`watched_${userEmail}_video_2`) === "true") {
-                let btn = document.getElementById("btn_video_2");
-                btn.innerText = "تمت المشاهدة مسبقاً ✓";
-                btn.style.background = "#334155";
-                btn.style.color = "#94a3b8";
-                btn.disabled = true;
-            }
-        });
-
-        window.watchVideo = async function(videoId, rewardAmount) {
-            let watchedKey = `watched_${userEmail}_${videoId}`;
+        // نظام محاكاة وقت المشاهدة للإعلان (بـ 10 ثانية مثلاً) لضمان تحقيق المشاهدة لصالح أرباحك ثم منح النقاط للمستخدم
+        window.startWatchingAd = async function(adId, rewardAmount) {
+            let watchedKey = `watched_${userEmail}_${adId}`;
+            
+            // (اختياري) يمكنك التحكم بإتاحة الإعلان مرة كل 24 ساعة، أو مرة واحدة نهائياً
             if (localStorage.getItem(watchedKey) === "true") {
-                alert("لقد قمت بمشاهدة هذا الفيديو مسبقاً!");
+                alert("لقد شاهدت هذا الإعلان اليوم، عاود الكركرة لاحقاً!");
                 return;
             }
 
-            try {
-                // جلب النقاط الحالية
-                let currentPoints = parseInt(localStorage.getItem(pointsKey) || "0");
-                let newPoints = currentPoints + rewardAmount;
+            let btn = document.getElementById(`btn_${adId}`);
+            btn.disabled = true;
+            let countdown = 10; // عدد ثواني الإعلان
+            
+            btn.innerText = `جاري مشاهدة الإعلان... (${countdown}ث)`;
+            
+            // هنا يمكنك فتح رابط إعلانك الربحى في نافذة جديدة أو تفعيل سكريبت الإعلان الخاص بك:
+            // window.open("رابط_شركة_الإعلانات_الخاص_بك_هنا", "_blank");
 
-                // تحديث قاعدة البيانات في فايربيز
-                const userRef = doc(db, "users", userEmail);
-                await setDoc(userRef, { points: newPoints }, { merge: true });
+            let timer = setInterval(async () => {
+                countdown--;
+                if (countdown > 0) {
+                    btn.innerText = `جاري مشاهدة الإعلان... (${countdown}ث)`;
+                } else {
+                    clearInterval(timer);
+                    
+                    try {
+                        // جلب رصيد النقاط وتحديثه
+                        let currentPoints = parseInt(localStorage.getItem(pointsKey) || "0");
+                        let newPoints = currentPoints + rewardAmount;
 
-                // تحديث التخزين المحلي
-                localStorage.setItem(pointsKey, newPoints);
-                localStorage.setItem(watchedKey, "true");
+                        // حفظ النقاط في Firebase
+                        const userRef = doc(db, "users", userEmail);
+                        await setDoc(userRef, { points: newPoints }, { merge: true });
 
-                updatePointsDisplay();
+                        // تحديث الـ LocalStorage
+                        localStorage.setItem(pointsKey, newPoints);
+                        localStorage.setItem(watchedKey, "true");
 
-                // تغيير شكل الزر
-                let btn = document.getElementById(`btn_${videoId}`);
-                btn.innerText = "تمت المشاهدة ✓";
-                btn.style.background = "#334155";
-                btn.style.color = "#94a3b8";
-                btn.disabled = true;
+                        updatePointsDesign(adId, btn);
+                        updatePointsDisplay();
 
-                alert(`مبروك! تمت إضافة ${rewardAmount} نقطة إلى رصيدك بنجاح.`);
+                        alert(`مبروك! تم إكمال المشاهدة بنجاح وأُضيفَت ${rewardAmount} نقطة إلى رصيدك.`);
 
-            } catch (err) {
-                console.error("Error updating points:", err);
-                alert("حدث خطأ أثناء إضافة النقاط، يجيب المحاولة لاحقاً.");
-            }
+                    } catch (err) {
+                        console.error("Error adding points:", err);
+                        alert("حدث خطأ أثناء حفظ النقاط.");
+                        btn.disabled = false;
+                        btn.innerText = "بدء مشاهدة الإعلان";
+                    }
+                }
+            }, 1000);
+        }
+
+        function updatePointsDesign(adId, btn) {
+            btn.innerText = "تمت المشاهدة واكتساب النقاط ✓";
+            btn.style.background = "#334155";
+            btn.style.color = "#94a3b8";
         }
     </script>
 </body>
