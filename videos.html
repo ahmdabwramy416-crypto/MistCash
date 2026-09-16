@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الفيديوهات - Gamer Pro</title>
+    <title>فيديوهات الكسب - MistCash</title>
     <link rel="stylesheet" href="style.css">
     <style>
         .video-card {
@@ -11,13 +11,41 @@
             border: 1px solid #eab308;
             padding: 15px;
             border-radius: 12px;
-            text-align: center;
             margin-bottom: 20px;
+            text-align: center;
         }
-        .video-card h3 { color: #eab308; margin-bottom: 10px; }
-        .video-card p { color: #cbd5e1; font-size: 0.9rem; margin-bottom: 15px; }
-
-        /* تنسيق مخصص لشريط التنقل السفلي بـ 6 أزرار متساوية */
+        .video-card h3 { color: #eab308; margin-bottom: 10px; font-size: 1.1rem; }
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* نسبة أبعاد الفيديو 16:9 */
+            height: 0;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        .reward-badge {
+            display: inline-block;
+            background: #0f172a;
+            color: #4ade80;
+            border: 1px dashed #4ade80;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+        
+        /* تنسيق شريط التنقل السفلي */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1700; border-top: 2px solid #eab308; display: flex; justify-content: space-around; padding: 8px 0; z-index: 1000; box-shadow: 0 -4px 20px rgba(234, 179, 8, 0.15); }
         .nav-item { color: #cbd5e1; text-decoration: none; font-size: 0.65rem; text-align: center; display: flex; flex-direction: column; align-items: center; transition: 0.3s; flex: 1; }
         .nav-item.active, .nav-item:hover { color: #eab308; transform: translateY(-2px); }
@@ -27,22 +55,38 @@
 <body>
 
     <div class="header container" style="display: flex; justify-content: space-between; align-items: center; padding: 15px;">
-        <h2>قسم الفيديوهات</h2>
+        <h2>قائمة الفيديوهات</h2>
         <div class="points-box" style="background: #1a1700; border: 1px solid #eab308; padding: 8px 15px; border-radius: 8px; color: #eab308; font-weight: bold;">
             النقاط: <span id="userPoints" style="color: #fff;">0</span>
         </div>
     </div>
 
     <div class="container" style="margin-bottom: 80px;">
+        
+        <!-- الفيديو الأول -->
         <div class="video-card">
-            <h3>شاهد الفيديو واربح النقاط</h3>
-            <p>اضغط على الزر أدناه لمشاهدة الإعلان أو الفيديو واكسب النقاط فور إتمامه.</p>
-            <button onclick="watchVideo()" class="btn-yellow" style="width: 100%; padding: 12px; font-weight: bold; border-radius: 8px; border: none; cursor: pointer;">مشاهدة وفوز (10 نقاط)</button>
-            <p id="videoStatus" style="color: #eab308; font-weight: bold; margin-top: 12px;"></p>
+            <h3>شاهد الإعلان واكسب النقاط</h3>
+            <div class="video-container">
+                <!-- استبدل رابط الفيديو المرفق برابط فيديو يوتيوب الخاص بك -->
+                <iframe src="https://www.youtube.com/embed/tgbNymZ7vqY" allowfullscreen></iframe>
+            </div>
+            <div class="reward-badge">🎁 الجائزة: 50 نقطة</div>
+            <button onclick="watchVideo('video_1', 50)" id="btn_video_1" class="btn-yellow" style="width: 100%; padding: 10px; background: #eab308; border: none; font-weight: bold; border-radius: 8px; cursor: pointer;">تمت المشاهدة واجمع النقاط</button>
         </div>
+
+        <!-- الفيديو الثاني -->
+        <div class="video-card">
+            <h3>فيديو ترويجي للبث والتطبيقات</h3>
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/tgbNymZ7vqY" allowfullscreen></iframe>
+            </div>
+            <div class="reward-badge">🎁 الجائزة: 50 نقطة</div>
+            <button onclick="watchVideo('video_2', 50)" id="btn_video_2" class="btn-yellow" style="width: 100%; padding: 10px; background: #eab308; border: none; font-weight: bold; border-radius: 8px; cursor: pointer;">تمت المشاهدة واجمع النقاط</button>
+        </div>
+
     </div>
 
-    <!-- شريط التنقل السفلي بـ 6 أزرار مرتبة وصحيحة -->
+    <!-- شريط التنقل السفلي (6 أزرار) -->
     <div class="bottom-nav">
         <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span>الرئيسية</a>
         <a href="videos.html" class="nav-item active"><span class="nav-icon">🎬</span>فيديوهات</a>
@@ -54,7 +98,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, updateDoc, setDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyB6rnXLMDlvy0Eezc7MkdmP334EzPTKlGE",
@@ -82,32 +126,59 @@
         }
         updatePointsDisplay();
 
-        let isWatching = false;
-        window.watchVideo = async function() {
-            if (isWatching) return;
-            isWatching = true;
-            
-            const statusText = document.getElementById("videoStatus");
-            statusText.innerText = "جاري تحميل الفيديو...";
+        // التحقق مما إذا كان المستخدم قد شاهد الفيديو مسبقاً (اختياري لمنع التكرار اليومي أو الدائم)
+        document.addEventListener("DOMContentLoaded", () => {
+            if (localStorage.getItem(`watched_${userEmail}_video_1`) === "true") {
+                let btn = document.getElementById("btn_video_1");
+                btn.innerText = "تمت المشاهدة مسبقاً ✓";
+                btn.style.background = "#334155";
+                btn.style.color = "#94a3b8";
+                btn.disabled = true;
+            }
+            if (localStorage.getItem(`watched_${userEmail}_video_2`) === "true") {
+                let btn = document.getElementById("btn_video_2");
+                btn.innerText = "تمت المشاهدة مسبقاً ✓";
+                btn.style.background = "#334155";
+                btn.style.color = "#94a3b8";
+                btn.disabled = true;
+            }
+        });
 
-            setTimeout(async () => {
+        window.watchVideo = async function(videoId, rewardAmount) {
+            let watchedKey = `watched_${userEmail}_${videoId}`;
+            if (localStorage.getItem(watchedKey) === "true") {
+                alert("لقد قمت بمشاهدة هذا الفيديو مسبقاً!");
+                return;
+            }
+
+            try {
+                // جلب النقاط الحالية
                 let currentPoints = parseInt(localStorage.getItem(pointsKey) || "0");
-                let earnedPoints = 10;
-                currentPoints += earnedPoints;
+                let newPoints = currentPoints + rewardAmount;
 
-                localStorage.setItem(pointsKey, currentPoints);
+                // تحديث قاعدة البيانات في فايربيز
+                const userRef = doc(db, "users", userEmail);
+                await setDoc(userRef, { points: newPoints }, { merge: true });
+
+                // تحديث التخزين المحلي
+                localStorage.setItem(pointsKey, newPoints);
+                localStorage.setItem(watchedKey, "true");
+
                 updatePointsDisplay();
 
-                try {
-                    const userRef = doc(db, "users", userEmail);
-                    await updateDoc(userRef, { points: currentPoints });
-                } catch (err) {
-                    console.error("خطأ في تحديث نقاط الفيديو بالسحابة:", err);
-                }
+                // تغيير شكل الزر
+                let btn = document.getElementById(`btn_${videoId}`);
+                btn.innerText = "تمت المشاهدة ✓";
+                btn.style.background = "#334155";
+                btn.style.color = "#94a3b8";
+                btn.disabled = true;
 
-                statusText.innerText = `مبروك! تم إضافة ${earnedPoints} نقاط لرصيدك.`;
-                isWatching = false;
-            }, 3000);
+                alert(`مبروك! تمت إضافة ${rewardAmount} نقطة إلى رصيدك بنجاح.`);
+
+            } catch (err) {
+                console.error("Error updating points:", err);
+                alert("حدث خطأ أثناء إضافة النقاط، يجيب المحاولة لاحقاً.");
+            }
         }
     </script>
 </body>
