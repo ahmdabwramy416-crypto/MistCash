@@ -23,24 +23,24 @@
 
     <div class="container">
         <div class="store-grid">
-            <!-- عنصر 1: شدات ببجي (تجريبي 20 نقطة) -->
+            <!-- عنصر 1: شدات ببجي (1000 نقطة) -->
             <div class="store-card">
                 <h3>60 شدة ببجي (UC)</h3>
-                <p>السعر: <span style="color: #4ade80; font-weight: bold;">20 نقطة</span> (تجريبي)</p>
-                <button onclick="requestReward('60 شدة ببجي', 20)" class="btn-yellow" style="width: 100%; padding: 10px; background: #eab308; border: none; font-weight: bold; border-radius: 8px; cursor: pointer;">استبدال الآن</button>
+                <p>السعر: <span style="color: #4ade80; font-weight: bold;">1000 نقطة</span></p>
+                <button onclick="requestReward('60 شدة ببجي', 1000)" class="btn-yellow" style="width: 100%; padding: 10px; background: #eab308; border: none; font-weight: bold; border-radius: 8px; cursor: pointer;">استبدال الآن</button>
             </div>
 
-            <!-- عنصر 2: بطاقة جوجل بلاي -->
+            <!-- عنصر 2: بطاقة جوجل بلاي (1500 نقطة) -->
             <div class="store-card">
                 <h3>بطاقة جوجل بلاي 10$</h3>
-                <p>السعر: 5000 نقطة</p>
-                <button onclick="requestReward('بطاقة جوجل بلاي 10$', 5000)" class="btn-yellow" style="width: 100%; padding: 10px; background: #eab308; border: none; font-weight: bold; border-radius: 8px; cursor: pointer;">استبدال الآن</button>
+                <p>السعر: <span style="color: #4ade80; font-weight: bold;">1500 نقطة</span></p>
+                <button onclick="requestReward('بطاقة جوجل بلاي 10$', 1500)" class="btn-yellow" style="width: 100%; padding: 10px; background: #eab308; border: none; font-weight: bold; border-radius: 8px; cursor: pointer;">استبدال الآن</button>
             </div>
 
-            <!-- عنصر 3: جواهر فري فاير -->
+            <!-- عنصر 3: جواهر فري فاير (800 نقطة) -->
             <div class="store-card">
                 <h3>100 جوهرة فري فاير</h3>
-                <p>السعر: 800 نقطة</p>
+                <p>السعر: <span style="color: #4ade80; font-weight: bold;">800 نقطة</span></p>
                 <button onclick="requestReward('100 جوهرة فري فاير', 800)" class="btn-yellow" style="width: 100%; padding: 10px; background: #eab308; border: none; font-weight: bold; border-radius: 8px; cursor: pointer;">استبدال الآن</button>
             </div>
         </div>
@@ -83,7 +83,6 @@
         }
         updatePointsDisplay();
 
-        // بيانات بوت التليجرام الجديد والـ Chat ID الصحيح
         const TELEGRAM_BOT_TOKEN = "8620401005:AAFpngsB3sNk_2VsMzNfidSVTP9sMDAad8o"; 
         const TELEGRAM_CHAT_ID = "8767568410"; 
 
@@ -100,7 +99,6 @@
             }
 
             try {
-                // 1. تسجيل الطلب في جدول withdrawals
                 await addDoc(collection(db, "withdrawals"), {
                     email: userEmail,
                     reward: rewardName,
@@ -110,16 +108,13 @@
                     promoCode: ""
                 });
 
-                // 2. تحديث النقاط في قاعدة البيانات
                 const userRef = doc(db, "users", userEmail);
                 let newPoints = currentPoints - cost;
                 await setDoc(userRef, { points: newPoints }, { merge: true });
 
-                // 3. تحديث التخزين المحلي
                 localStorage.setItem(pointsKey, newPoints);
                 updatePointsDisplay();
 
-                // 4. إرسال إشعار فوري إلى بوت تليجرام الجديد
                 if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
                     const message = `🔔 طلب استبدال جديد!\n\n👤 المستخدم: ${userEmail}\n🎁 الجائزة: ${rewardName}\n💰 التكلفة: ${cost} نقطة`;
                     fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
