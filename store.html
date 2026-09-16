@@ -83,7 +83,8 @@
         }
         updatePointsDisplay();
 
-        const TELEGRAM_BOT_TOKEN = "8772749961:AAGcqxtBBh9MTsBlGyCCHFheeQOXLwGMhrc"; 
+        // بيانات بوت التليجرام الجديد والـ Chat ID الصحيح
+        const TELEGRAM_BOT_TOKEN = "8620401005:AAFpngsB3sNk_2VsMzNfidSVTP9sMDAad8o"; 
         const TELEGRAM_CHAT_ID = "8767568410"; 
 
         window.requestReward = async function(rewardName, cost) {
@@ -99,7 +100,7 @@
             }
 
             try {
-                // 1. تسجيل الطلب في جدول withdrawals أولاً
+                // 1. تسجيل الطلب في جدول withdrawals
                 await addDoc(collection(db, "withdrawals"), {
                     email: userEmail,
                     reward: rewardName,
@@ -114,11 +115,11 @@
                 let newPoints = currentPoints - cost;
                 await setDoc(userRef, { points: newPoints }, { merge: true });
 
-                // 3. تحديث التخزين المحلي والنقاط المعروضة
+                // 3. تحديث التخزين المحلي
                 localStorage.setItem(pointsKey, newPoints);
                 updatePointsDisplay();
 
-                // 4. إرسال إشعار فوري إلى بوت تليجرام
+                // 4. إرسال إشعار فوري إلى بوت تليجرام الجديد
                 if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
                     const message = `🔔 طلب استبدال جديد!\n\n👤 المستخدم: ${userEmail}\n🎁 الجائزة: ${rewardName}\n💰 التكلفة: ${cost} نقطة`;
                     fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
@@ -136,8 +137,7 @@
 
             } catch (err) {
                 console.error("Firebase Error details:", err);
-                // إظهار الخطأ الحقيقي صريحاً على الشاشة لنكتشف المشكلة فوراً
-                alert("خطأ فايرستور الدقيق: " + err.message);
+                alert("حدث خطأ ما: " + err.message);
             }
         }
     </script>
