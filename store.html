@@ -57,7 +57,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, setDoc, updateDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyB6rnXLMDlvy0Eezc7MkdmP334EzPTKlGE",
@@ -109,7 +109,7 @@
                     promoCode: ""
                 });
 
-                // 2. تحديث النقاط في قاعدة البيانات (استخدام setDoc مع merge لضمان عدم فشل العملية إذا لم يكن المستند موجوداً)
+                // 2. تحديث النقاط في قاعدة البيانات
                 const userRef = doc(db, "users", userEmail);
                 let newPoints = currentPoints - cost;
                 await setDoc(userRef, { points: newPoints }, { merge: true });
@@ -136,7 +136,8 @@
 
             } catch (err) {
                 console.error("Firebase Error details:", err);
-                alert("حدث خطأ في قاعدة البيانات: " + err.message);
+                // إظهار الخطأ الحقيقي صريحاً على الشاشة لنكتشف المشكلة فوراً
+                alert("خطأ فايرستور الدقيق: " + err.message);
             }
         }
     </script>
