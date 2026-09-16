@@ -65,29 +65,29 @@
     <div class="container" style="margin-bottom: 80px;">
         
         <p style="text-align: center; color: #cbd5e1; font-size: 0.85rem; margin-bottom: 15px;">
-            شاهد الإعلانات للنهاية واحصل على نقاط فورية تقودك لسحب جوائزك!
+            اضغط على الإعلانات متى شئت واحصل على نقاط فورية تقودك لسحب جوائزك!
         </p>
 
         <!-- صندوق الإعلان الأول -->
         <div class="video-card">
             <h3>الإعلان الترويجي الأول (مكافأة)</h3>
             <div class="ad-container" id="adBox1">
-                <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 10px;">اضغط على زر بدء المشاهدة لتفعيل الإعلان واكتساب الأرباح والنقاط</p>
+                <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 10px;">اضغط على زر المشاهدة لفتح الإعلان واكتساب النقاط فوراً</p>
                 <div id="nativeAdSlot1"></div>
             </div>
             <div class="reward-badge">🎁 الجائزة: 30 نقطة</div>
-            <button onclick="startWatchingAd('ad_1', 30)" id="btn_ad_1" class="btn-yellow" style="width: 100%; padding: 10px; background: #eab308; border: none; font-weight: bold; border-radius: 8px; cursor: pointer;">بدء مشاهدة الإعلان</button>
+            <button onclick="watchAdNow(30)" class="btn-yellow" style="width: 100%; padding: 10px; background: #eab308; border: none; font-weight: bold; border-radius: 8px; cursor: pointer;">بدء مشاهدة الإعلان</button>
         </div>
 
         <!-- صندوق الإعلان الثاني -->
         <div class="video-card">
             <h3>الإعلان الترويجي الثاني (مكافأة)</h3>
             <div class="ad-container" id="adBox2">
-                <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 10px;">اضغط على زر بدء المشاهدة لاكتساب النقاط</p>
+                <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 10px;">اضغط على زر المشاهدة لاكتساب النقاط فوراً</p>
                 <div id="nativeAdSlot2"></div>
             </div>
             <div class="reward-badge">🎁 الجائزة: 30 نقطة</div>
-            <button onclick="startWatchingAd('ad_2', 30)" id="btn_ad_2" class="btn-yellow" style="width: 100%; padding: 10px; background: #eab308; border: none; font-weight: bold; border-radius: 8px; cursor: pointer;">بدء مشاهدة الإعلان</button>
+            <button onclick="watchAdNow(30)" class="btn-yellow" style="width: 100%; padding: 10px; background: #eab308; border: none; font-weight: bold; border-radius: 8px; cursor: pointer;">بدء مشاهدة الإعلان</button>
         </div>
 
     </div>
@@ -132,62 +132,28 @@
         }
         updatePointsDisplay();
 
-        // نظام مشاهدة الإعلان وفتح الرابط المباشر (Smartlink) لجلب الأرباح
-        window.startWatchingAd = async function(adId, rewardAmount) {
-            let watchedKey = `watched_${userEmail}_${adId}`;
-            
-            if (localStorage.getItem(watchedKey) === "true") {
-                alert("لقد شاهدت هذا الإعلان اليوم، عاود الكرة لاحقاً!");
-                return;
-            }
-
-            let btn = document.getElementById(`btn_${adId}`);
-            btn.disabled = true;
-            let countdown = 10; // عدد ثواني العد التنازلي للمشاهدة
-            
-            btn.innerText = `جاري مشاهدة الإعلان... (${countdown}ث)`;
-            
-            // فتح الرابط المباشر (Smartlink) في تبويب جديد لتسجيل الأرباح في Adsterra
+        // فتح الإعلان المباشر وإضافة النقاط للمستخدم فوراً بدون قيود أو وقت
+        window.watchAdNow = async function(rewardAmount) {
+            // فتح الرابط المباشر (Smartlink) في تبويب جديد لتحقيق الأرباح
             window.open("https://www.profitableratecpmnetwork.com/ffcymsf02h?key=b1af3d21ebcaa2a8f6cb489a4c75ed11", "_blank");
 
-            let timer = setInterval(async () => {
-                countdown--;
-                if (countdown > 0) {
-                    btn.innerText = `جاري مشاهدة الإعلان... (${countdown}ث)`;
-                } else {
-                    clearInterval(timer);
-                    
-                    try {
-                        let currentPoints = parseInt(localStorage.getItem(pointsKey) || "0");
-                        let newPoints = currentPoints + rewardAmount;
+            try {
+                let currentPoints = parseInt(localStorage.getItem(pointsKey) || "0");
+                let newPoints = currentPoints + rewardAmount;
 
-                        // حفظ النقاط في قاعدة بيانات Firebase
-                        const userRef = doc(db, "users", userEmail);
-                        await setDoc(userRef, { points: newPoints }, { merge: true });
+                // تحديث النقاط في Firebase
+                const userRef = doc(db, "users", userEmail);
+                await setDoc(userRef, { points: newPoints }, { merge: true });
 
-                        // تحديث الـ LocalStorage
-                        localStorage.setItem(pointsKey, newPoints);
-                        localStorage.setItem(watchedKey, "true");
+                // تحديث الذاكرة المحلية
+                localStorage.setItem(pointsKey, newPoints);
+                updatePointsDisplay();
 
-                        updatePointsDesign(btn);
-                        updatePointsDisplay();
-
-                        alert(`مبروك! تم إكمال المشاهدة بنجاح وأُضيفَت ${rewardAmount} نقطة إلى رصيدك.`);
-
-                    } catch (err) {
-                        console.error("Error adding points:", err);
-                        alert("حدث خطأ أثناء حفظ النقاط.");
-                        btn.disabled = false;
-                        btn.innerText = "بدء مشاهدة الإعلان";
-                    }
-                }
-            }, 1000);
-        }
-
-        function updatePointsDesign(btn) {
-            btn.innerText = "تمت المشاهدة واكتساب النقاط ✓";
-            btn.style.background = "#334155";
-            btn.style.color = "#94a3b8";
+                alert(`مبروك! تمت إضافة ${rewardAmount} نقطة إلى رصيدك بنجاح.`);
+            } catch (err) {
+                console.error("Error adding points:", err);
+                alert("حدث خطأ أثناء حفظ النقاط.");
+            }
         }
     </script>
 </body>
