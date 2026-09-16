@@ -29,7 +29,7 @@ export default async function handler(req, res) {
     }
 
     await userRef.update({
-      balance: FieldValue.increment(payout)
+      points: FieldValue.increment(payout)
     });
 
     return res.status(200).send('OK');
