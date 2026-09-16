@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gamer Pro - قسم الفيديوهات</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .video-card { background: #1a1700; border: 1px solid #eab308; border-radius: 16px; padding: 20px; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); text-align: center; }
+        .video-card h3 { color: #eab308; margin-bottom: 10px; }
+        .video-card p { color: #cbd5e1; margin-bottom: 15px; font-size: 0.9rem; }
+        .btn-watch { background: #eab308; color: #0c0a00; border: none; padding: 12px 20px; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 0.95rem; width: 100%; box-shadow: 0 4px 15px rgba(234, 179, 8, 0.3); }
+        .btn-watch:hover { background: #ca8a04; transform: translateY(-2px); }
+        .header-section { text-align: center; margin-bottom: 25px; }
+        .header-section h2 { color: #eab308; margin-bottom: 8px; }
+        .header-section p { color: #cbd5e1; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <!-- الهيدر العلوي يوضح النقاط -->
+    <div class="header">
+        <span>🎬 قسم الفيديوهات</span>
+        <div class="points-box">الرصيد: <span id="user-points">0</span> نقطة</div>
+    </div>
+
+    <div class="container">
+        <div class="header-section">
+            <h2>شاهد واربح النقاط</h2>
+            <p>اختر فيديو من الأسفل وشاهده كاملاً لإضافة النقاط إلى حسابك فوراً!</p>
+        </div>
+
+        <!-- بطاقة الفيديو الأول -->
+        <div class="video-card">
+            <h3>فيديو المكافأة الترويجي #1</h3>
+            <p>شاهد الفيديو لمدة ثوانٍ واحصل على 50 نقطة.</p>
+            <button class="btn-watch" onclick="watchVideo(50)">شاهد الآن (50 نقطة)</button>
+        </div>
+
+        <!-- بطاقة الفيديو الثاني -->
+        <div class="video-card">
+            <h3>إعلان الألعاب السريع #2</h3>
+            <p>شاهد الإعلان واحصل على 30 نقطة.</p>
+            <button class="btn-watch" onclick="watchVideo(30)">شاهد الآن (30 نقطة)</button>
+        </div>
+    </div>
+
+    <!-- شريط التنقل السفلي (يحتوي على الأزرار الخمسة) -->
+    <div class="bottom-nav">
+        <a href="profile.html" class="nav-item">
+            <span class="nav-icon">🏠</span>
+            <span>الرئيسية</span>
+        </a>
+        <a href="videos.html" class="nav-item active">
+            <span class="nav-icon">🎬</span>
+            <span>فيديوهات</span>
+        </a>
+        <a href="rewards.html" class="nav-item">
+            <span class="nav-icon">🎁</span>
+            <span>العروض</span>
+        </a>
+        <!-- أضف الزرين الباقيين لديك هنا ليصبحوا 5 أزرار -->
+        <a href="spin.html" class="nav-item">
+            <span class="nav-icon">🎡</span>
+            <span>العجلة</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+            <span class="nav-icon">⚙️</span>
+            <span>الحساب</span>
+        </a>
+    </div>
+
+    <!-- سكربت Firebase وبرمجة إضافة النقاط -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // ضع إعدادات الفايربيز الخاصة بموقعك هنا
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUserUid = null;
+
+        // التحقق من تسجيل الدخول وجلب النقاط الحالية
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUserUid = user.uid;
+                fetchUserPoints(user.uid);
+            } else {
+                window.location.href = "index.html"; // توجيه لتسجيل الدخول إذا لم يكن مسجلاً
+            }
+        });
+
+        async function fetchUserPoints(uid) {
+            try {
+                const userDocRef = doc(db, "users", uid);
+                const userDoc = await getDoc(userDocRef);
+                if (userDoc.exists()) {
+                    document.getElementById("user-points").innerText = userDoc.data().points || 0;
+                }
+            } catch (error) {
+                console.error("خطأ في جلب النقاط:", error);
+            }
+        }
+
+        // دالة محاكاة مشاهدة الفيديو (يمكنك استبدالها بكود شركة الإعلانات لاحقاً)
+        window.watchVideo = async function(rewardPoints) {
+            alert("جاري تشغيل الفيديو... يرجى الانتظار حتى تنتهي الملاحظة.");
+            
+            // محاكاة انتهاء الفيديو بعد ثواني معدودة ومنح المكافأة
+            setTimeout(async () => {
+                try {
+                    const userDocRef = doc(db, "users", currentUserUid);
+                    await updateDoc(userDocRef, {
+                        points: increment(rewardPoints)
+                    });
+                    
+                    alert(`مبروك! تم إضافة ${rewardPoints} نقطة إلى رصيدك.`);
+                    fetchUserPoints(currentUserUid); // تحديث عرض النقاط فورا في الأعلى
+                } catch (error) {
+                    console.error("خطأ أثناء إضافة النقاط:", error);
+                    alert("حدث خطأ أثناء إضافة النقاط.");
+                }
+            }, 2000);
+        }
+    </script>
+
+</body>
+</html>
