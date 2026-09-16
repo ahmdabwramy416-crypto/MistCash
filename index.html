@@ -60,6 +60,12 @@
             font-weight: bold; border: 3px solid #eab308; cursor: pointer; z-index: 10;
             box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
+
+        /* تنسيق مخصص لشريط التنقل ليتسع لـ 6 أزرار بانتظام */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1700; border-top: 2px solid #eab308; display: flex; justify-content: space-around; padding: 8px 0; z-index: 1000; box-shadow: 0 -4px 20px rgba(234, 179, 8, 0.15); }
+        .nav-item { color: #cbd5e1; text-decoration: none; font-size: 0.65rem; text-align: center; display: flex; flex-direction: column; align-items: center; transition: 0.3s; flex: 1; }
+        .nav-item.active, .nav-item:hover { color: #eab308; transform: translateY(-2px); }
+        .nav-icon { font-size: 1.1rem; margin-bottom: 2px; }
     </style>
 </head>
 <body>
@@ -106,10 +112,11 @@
         </div>
     </div>
 
-    <!-- شريط التنقل السفلي -->
+    <!-- شريط التنقل السفلي المحدث (6 أزرار) -->
     <div class="bottom-nav">
         <a href="index.html" class="nav-item active"><span class="nav-icon">🏠</span>الرئيسية</a>
-        <a href="referral.html" class="nav-item"><span class="nav-icon">👥</span>الدعوات</a>
+        <a href="videos.html" class="nav-item"><span class="nav-icon">🎬</span>فيديوهات</a>
+        <a href="rewards.html" class="nav-item"><span class="nav-icon">🎁</span>العروض</a>
         <a href="store.html" class="nav-item"><span class="nav-icon">🔥</span>المتجر</a>
         <a href="purchases.html" class="nav-item"><span class="nav-icon">📦</span>المشتريات</a>
         <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span>حسابي</a>
