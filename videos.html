@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>شاهد واكسب - MistCash</title>
+    <title>فيديوهات الأرباح - MistCash</title>
     <link rel="stylesheet" href="style.css">
     
-    <!-- كود إعلانات النافذة المنبثقة (Popunder) من Adsterra -->
+    <!-- كود إعلانات Popunder من Adsterra لزيادة الأرباح في الخلفية -->
     <script src="https://pl31374678.profitableratecpmnetwork.com/4d/2d/37/4d2d37e06673f6c5c7e72fb36649fce7.js"></script>
 
     <style>
@@ -30,20 +30,22 @@
             font-size: 0.9rem;
             margin-bottom: 12px;
         }
-        .ad-container {
+        .ad-player-box {
             width: 100%;
-            min-height: 250px;
+            height: 180px;
             background: #0f172a;
-            border: 1px dashed #334155;
+            border: 2px dashed #eab308;
             border-radius: 8px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             margin-bottom: 12px;
-            position: relative;
-            overflow: hidden;
-            padding: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .ad-player-box:hover {
+            background: #1e293b;
         }
         
         /* تنسيق شريط التنقل السفلي */
@@ -56,7 +58,7 @@
 <body>
 
     <div class="header container" style="display: flex; justify-content: space-between; align-items: center; padding: 15px;">
-        <h2>قسم الفيديوهات والأرباح</h2>
+        <h2>قسم الفيديوهات الإعلانية</h2>
         <div class="points-box" style="background: #1a1700; border: 1px solid #eab308; padding: 8px 15px; border-radius: 8px; color: #eab308; font-weight: bold;">
             النقاط: <span id="userPoints" style="color: #fff;">0</span>
         </div>
@@ -65,34 +67,36 @@
     <div class="container" style="margin-bottom: 80px;">
         
         <p style="text-align: center; color: #cbd5e1; font-size: 0.85rem; margin-bottom: 15px;">
-            اضغط على الإعلانات متى شئت واحصل على نقاط فورية تقودك لسحب جوائزك!
+            اضغط على مشغل الفيديو أدناه لمشاهدة العرض الإعلاني وكسب النقاط فوراً!
         </p>
 
-        <!-- صندوق الإعلان الأول -->
+        <!-- مشغل الإعلان الترويجي الأول -->
         <div class="video-card">
-            <h3>الإعلان الترويجي الأول (مكافأة)</h3>
-            <div class="ad-container" id="adBox1">
-                <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 10px;">اضغط على زر المشاهدة لفتح الإعلان واكتساب النقاط فوراً</p>
-                <div id="nativeAdSlot1"></div>
+            <h3>فيديو الإعلان الترويجي (1)</h3>
+            <div class="ad-player-box" onclick="watchAdVideo()">
+                <span style="font-size: 3rem; margin-bottom: 5px;">▶️</span>
+                <span style="color: #eab308; font-weight: bold;">اضغط هنا لبدء مشاهدة الإعلان</span>
+                <span style="color: #94a3b8; font-size: 0.8rem; margin-top: 5px;">(يربحك أرباحاً وتكسب نقاطاً)</span>
             </div>
             <div class="reward-badge">🎁 الجائزة: 30 نقطة</div>
-            <button onclick="watchAdNow(30)" class="btn-yellow" style="width: 100%; padding: 10px; background: #eab308; border: none; font-weight: bold; border-radius: 8px; cursor: pointer;">بدء مشاهدة الإعلان</button>
+            <button onclick="watchAdVideo()" class="btn-yellow" style="width: 100%; padding: 10px; background: #eab308; border: none; font-weight: bold; border-radius: 8px; cursor: pointer; color: #000;">مشاهدة واكتساب النقاط</button>
         </div>
 
-        <!-- صندوق الإعلان الثاني -->
+        <!-- مشغل الإعلان الترويجي الثاني -->
         <div class="video-card">
-            <h3>الإعلان الترويجي الثاني (مكافأة)</h3>
-            <div class="ad-container" id="adBox2">
-                <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 10px;">اضغط على زر المشاهدة لاكتساب النقاط فوراً</p>
-                <div id="nativeAdSlot2"></div>
+            <h3>فيديو الإعلان الترويجي (2)</h3>
+            <div class="ad-player-box" onclick="watchAdVideo()">
+                <span style="font-size: 3rem; margin-bottom: 5px;">▶️</span>
+                <span style="color: #eab308; font-weight: bold;">اضغط هنا لبدء مشاهدة الإعلان</span>
+                <span style="color: #94a3b8; font-size: 0.8rem; margin-top: 5px;">(يربحك أرباحاً وتكسب نقاطاً)</span>
             </div>
             <div class="reward-badge">🎁 الجائزة: 30 نقطة</div>
-            <button onclick="watchAdNow(30)" class="btn-yellow" style="width: 100%; padding: 10px; background: #eab308; border: none; font-weight: bold; border-radius: 8px; cursor: pointer;">بدء مشاهدة الإعلان</button>
+            <button onclick="watchAdVideo()" class="btn-yellow" style="width: 100%; padding: 10px; background: #eab308; border: none; font-weight: bold; border-radius: 8px; cursor: pointer; color: #000;">مشاهدة واكتساب النقاط</button>
         </div>
 
     </div>
 
-    <!-- شريط التنقل السفلي (6 أزرار) -->
+    <!-- شريط التنقل السفلي -->
     <div class="bottom-nav">
         <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span>الرئيسية</a>
         <a href="videos.html" class="nav-item active"><span class="nav-icon">🎬</span>فيديوهات</a>
@@ -132,24 +136,24 @@
         }
         updatePointsDisplay();
 
-        // فتح الإعلان المباشر وإضافة النقاط للمستخدم فوراً بدون قيود أو وقت
-        window.watchAdNow = async function(rewardAmount) {
-            // فتح الرابط المباشر (Smartlink) في تبويب جديد لتحقيق الأرباح
+        // فتح رابط الإعلان الربحي (Smartlink) وإضافة النقاط للمستخدم فوراً وبدون قيود
+        window.watchAdVideo = async function() {
+            // فتح رابط الإعلان الخاص بك في تبويب جديد لتسجيل الأرباح في Adsterra
             window.open("https://www.profitableratecpmnetwork.com/ffcymsf02h?key=b1af3d21ebcaa2a8f6cb489a4c75ed11", "_blank");
 
             try {
                 let currentPoints = parseInt(localStorage.getItem(pointsKey) || "0");
+                let rewardAmount = 30;
                 let newPoints = currentPoints + rewardAmount;
 
-                // تحديث النقاط في Firebase
+                // تحديث النقاط في Firebase والذاكرة المحلية
                 const userRef = doc(db, "users", userEmail);
                 await setDoc(userRef, { points: newPoints }, { merge: true });
 
-                // تحديث الذاكرة المحلية
                 localStorage.setItem(pointsKey, newPoints);
                 updatePointsDisplay();
 
-                alert(`مبروك! تمت إضافة ${rewardAmount} نقطة إلى رصيدك بنجاح.`);
+                alert(`رائع! تمت إضافة ${rewardAmount} نقطة إلى رصيدك بنجاح.`);
             } catch (err) {
                 console.error("Error adding points:", err);
                 alert("حدث خطأ أثناء حفظ النقاط.");
