@@ -47,6 +47,16 @@
         .ad-player-box:hover {
             background: #1e293b;
         }
+
+        /* تنسيق صندوق خزانة الفيديو المخفي ليفتح عند الضغط على الزر */
+        #locker-container {
+            display: none;
+            margin-top: 15px;
+            background: #0c0a00;
+            padding: 15px;
+            border: 2px solid #eab308;
+            border-radius: 10px;
+        }
         
         /* تنسيق شريط التنقل السفلي */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1700; border-top: 2px solid #eab308; display: flex; justify-content: space-around; padding: 8px 0; z-index: 1000; box-shadow: 0 -4px 20px rgba(234, 179, 8, 0.15); }
@@ -94,10 +104,19 @@
             <button onclick="watchAdVideo()" class="btn-yellow" style="width: 100%; padding: 10px; background: #eab308; border: none; font-weight: bold; border-radius: 8px; cursor: pointer; color: #000;">مشاهدة واكتساب النقاط</button>
         </div>
 
-        <!-- خزانة الفيديو الإضافية من CPAGrip -->
+        <!-- زر لفتح خزانة الفيديو الحصرية -->
         <div class="video-card">
             <h3>خزانة الفيديو الحصرية (CPAGrip)</h3>
-            <script type="text/javascript" src="https://doctoredits.com/script_include.php?id=1914042"></script>
+            <p style="color: #cbd5e1; font-size: 0.8rem; margin-bottom: 15px;">اضغط على الزر أدناه لفتح عروض الخزانة ومشاهدة المحتوى:</p>
+            
+            <button onclick="toggleLocker()" id="locker-btn" class="btn-yellow" style="width: 100%; padding: 12px; background: #eab308; border: none; font-weight: bold; border-radius: 8px; cursor: pointer; color: #000; font-size: 1rem;">
+                🔓 فتح خزانة الفيديو
+            </button>
+
+            <!-- صندوق خزانة الفيديو (يظهر عند الضغط على الزر) -->
+            <div id="locker-container">
+                <script type="text/javascript" src="https://doctoredits.com/script_include.php?id=1914042"></script>
+            </div>
         </div>
 
     </div>
@@ -141,6 +160,20 @@
             document.getElementById("userPoints").innerText = currentVal;
         }
         updatePointsDisplay();
+
+        // دالة إظهار أو إخفاء خزانة الفيديو عند الضغط على الزر
+        window.toggleLocker = function() {
+            const lockerDiv = document.getElementById("locker-container");
+            const lockerBtn = document.getElementById("locker-btn");
+            
+            if (lockerDiv.style.display === "block") {
+                lockerDiv.style.display = "none";
+                lockerBtn.innerText = "🔓 فتح خزانة الفيديو";
+            } else {
+                lockerDiv.style.display = "block";
+                lockerBtn.innerText = "🔒 إغلاق الخزانة";
+            }
+        }
 
         // فتح رابط الإعلان الربحي (Smartlink) وإضافة النقاط للمستخدم فوراً وبدون قيود
         window.watchAdVideo = async function() {
