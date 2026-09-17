@@ -85,7 +85,8 @@
             <h3 style="margin-bottom: 15px;">شركات حائط العروض</h3>
             <div class="offers-grid">
                 <a href="#" id="cpalead-link" target="_blank" class="btn-yellow">1. عروض CPALead</a>
-                <a href="#" target="_blank" class="btn-yellow">2. OfferWall الثانية</a>
+                <!-- تم وضع رابط حائط العروض الخاص بـ CPAGrip هنا مع دعم معرف المستخدم تلقائياً -->
+                <a href="#" id="cpagrip-link" target="_blank" class="btn-yellow">2. عروض CPAGrip</a>
                 <a href="#" target="_blank" class="btn-yellow">3. AdGate عروض إضافية</a>
             </div>
         </div>
@@ -148,12 +149,22 @@
         const pointsKey = "points_" + userEmail;
         const lastSpinKey = "last_spin_time_" + userEmail;
 
-        // جلب الـ uid الحقيقي من Firebase وتحديث رابط CPALead تلقائياً
+        // جلب الـ uid الحقيقي من Firebase وتحديث روابط شركات العروض تلقائياً
         onAuthStateChanged(auth, (user) => {
-            const cpaleadLink = document.getElementById("cpalead-link");
-            if (user && cpaleadLink) {
+            if (user) {
                 const userId = user.uid; // معرف المستخدم من قاعدة البيانات
-                cpaleadLink.href = "https://www.lnksforyou.com/wall/2qQGUmC?subid=" + userId;
+                
+                // تحديث رابط CPALead
+                const cpaleadLink = document.getElementById("cpalead-link");
+                if (cpaleadLink) {
+                    cpaleadLink.href = "https://www.lnksforyou.com/wall/2qQGUmC?subid=" + userId;
+                }
+
+                // تحديث رابط CPAGrip بناءً على الرابط المأخوذ من صورك مع تمرير الـ subid
+                const cpagripLink = document.getElementById("cpagrip-link");
+                if (cpagripLink) {
+                    cpagripLink.href = "https://doctoredits.com/1914002?subid=" + userId;
+                }
             }
         });
 
