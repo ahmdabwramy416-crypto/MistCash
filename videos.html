@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فيديوهات الأرباح - MistCash</title>
+    <title>فيديوهات الأرباح - Gamer Pro</title>
     <link rel="stylesheet" href="style.css">
     
     <!-- كود إعلانات Popunder من Adsterra لزيادة الأرباح في الخلفية -->
@@ -19,34 +19,6 @@
             text-align: center;
         }
         .video-card h3 { color: #eab308; margin-bottom: 10px; font-size: 1.1rem; }
-        .reward-badge {
-            display: inline-block;
-            background: #0f172a;
-            color: #4ade80;
-            border: 1px dashed #4ade80;
-            padding: 5px 12px;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 0.9rem;
-            margin-bottom: 12px;
-        }
-        .ad-player-box {
-            width: 100%;
-            height: 180px;
-            background: #0f172a;
-            border: 2px dashed #eab308;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 12px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .ad-player-box:hover {
-            background: #1e293b;
-        }
         
         /* تنسيق شريط التنقل السفلي */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1700; border-top: 2px solid #eab308; display: flex; justify-content: space-around; padding: 8px 0; z-index: 1000; box-shadow: 0 -4px 20px rgba(234, 179, 8, 0.15); }
@@ -58,7 +30,7 @@
 <body>
 
     <div class="header container" style="display: flex; justify-content: space-between; align-items: center; padding: 15px;">
-        <h2>قسم الفيديوهات الإعلانية</h2>
+        <h2>قسم الفيديوهات</h2>
         <div class="points-box" style="background: #1a1700; border: 1px solid #eab308; padding: 8px 15px; border-radius: 8px; color: #eab308; font-weight: bold;">
             النقاط: <span id="userPoints" style="color: #fff;">0</span>
         </div>
@@ -67,31 +39,13 @@
     <div class="container" style="margin-bottom: 80px;">
         
         <p style="text-align: center; color: #cbd5e1; font-size: 0.85rem; margin-bottom: 15px;">
-            اضغط على مشغل الفيديو أدناه لمشاهدة العرض الإعلاني وكسب النقاط فوراً!
+            أكمل العروض المطلوبة في خزانة الفيديو أدناه لفتح المحتوى الحصري ومضاعفة أرباحك:
         </p>
 
-        <!-- مشغل الإعلان الترويجي الأول -->
+        <!-- خزانة الفيديو الحقيقية من CPAGrip -->
         <div class="video-card">
-            <h3>فيديو الإعلان الترويجي (1)</h3>
-            <div class="ad-player-box" onclick="watchAdVideo()">
-                <span style="font-size: 3rem; margin-bottom: 5px;">▶️</span>
-                <span style="color: #eab308; font-weight: bold;">اضغط هنا لبدء مشاهدة الإعلان</span>
-                <span style="color: #94a3b8; font-size: 0.8rem; margin-top: 5px;">(يربحك أرباحاً وتكسب نقاطاً)</span>
-            </div>
-            <div class="reward-badge">🎁 الجائزة: 30 نقطة</div>
-            <button onclick="watchAdVideo()" class="btn-yellow" style="width: 100%; padding: 10px; background: #eab308; border: none; font-weight: bold; border-radius: 8px; cursor: pointer; color: #000;">مشاهدة واكتساب النقاط</button>
-        </div>
-
-        <!-- مشغل الإعلان الترويجي الثاني -->
-        <div class="video-card">
-            <h3>فيديو الإعلان الترويجي (2)</h3>
-            <div class="ad-player-box" onclick="watchAdVideo()">
-                <span style="font-size: 3rem; margin-bottom: 5px;">▶️</span>
-                <span style="color: #eab308; font-weight: bold;">اضغط هنا لبدء مشاهدة الإعلان</span>
-                <span style="color: #94a3b8; font-size: 0.8rem; margin-top: 5px;">(يربحك أرباحاً وتكسب نقاطاً)</span>
-            </div>
-            <div class="reward-badge">🎁 الجائزة: 30 نقطة</div>
-            <button onclick="watchAdVideo()" class="btn-yellow" style="width: 100%; padding: 10px; background: #eab308; border: none; font-weight: bold; border-radius: 8px; cursor: pointer; color: #000;">مشاهدة واكتساب النقاط</button>
+            <h3>خزانة الفيديو الحصرية</h3>
+            <script type="text/javascript" src="https://doctoredits.com/script_include.php?id=1914042"></script>
         </div>
 
     </div>
@@ -108,7 +62,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyB6rnXLMDlvy0Eezc7MkdmP334EzPTKlGE",
@@ -135,30 +89,6 @@
             document.getElementById("userPoints").innerText = currentVal;
         }
         updatePointsDisplay();
-
-        // فتح رابط الإعلان الربحي (Smartlink) وإضافة النقاط للمستخدم فوراً وبدون قيود
-        window.watchAdVideo = async function() {
-            // فتح رابط الإعلان الخاص بك في تبويب جديد لتسجيل الأرباح في Adsterra
-            window.open("https://www.profitableratecpmnetwork.com/ffcymsf02h?key=b1af3d21ebcaa2a8f6cb489a4c75ed11", "_blank");
-
-            try {
-                let currentPoints = parseInt(localStorage.getItem(pointsKey) || "0");
-                let rewardAmount = 30;
-                let newPoints = currentPoints + rewardAmount;
-
-                // تحديث النقاط في Firebase والذاكرة المحلية
-                const userRef = doc(db, "users", userEmail);
-                await setDoc(userRef, { points: newPoints }, { merge: true });
-
-                localStorage.setItem(pointsKey, newPoints);
-                updatePointsDisplay();
-
-                alert(`رائع! تمت إضافة ${rewardAmount} نقطة إلى رصيدك بنجاح.`);
-            } catch (err) {
-                console.error("Error adding points:", err);
-                alert("حدث خطأ أثناء حفظ النقاط.");
-            }
-        }
     </script>
 </body>
 </html>
