@@ -62,7 +62,7 @@
             box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
 
-        /* تنسيق مخصص لشريط التنقل ليتسع لـ 6 أزرار بانتظام */
+        /* شريط التنقل السفلي */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1700; border-top: 2px solid #eab308; display: flex; justify-content: space-around; padding: 8px 0; z-index: 1000; box-shadow: 0 -4px 20px rgba(234, 179, 8, 0.15); }
         .nav-item { color: #cbd5e1; text-decoration: none; font-size: 0.65rem; text-align: center; display: flex; flex-direction: column; align-items: center; transition: 0.3s; flex: 1; }
         .nav-item.active, .nav-item:hover { color: #eab308; transform: translateY(-2px); }
@@ -73,7 +73,6 @@
 
     <div class="header container" style="display: flex; justify-content: space-between; align-items: center; padding: 15px;">
         <h2>Gamer Pro</h2>
-        <!-- تم فصل النقاط وتنظيف خانتها تماماً لتظهر بشكل مرتب -->
         <div class="points-box" style="background: #1a1700; border: 1px solid #eab308; padding: 8px 15px; border-radius: 8px; color: #eab308; font-weight: bold;">
             النقاط: <span id="userPoints" style="color: #fff;">0</span>
         </div>
@@ -85,7 +84,7 @@
             <h3 style="margin-bottom: 15px;">شركات حائط العروض</h3>
             <div class="offers-grid">
                 <a href="#" id="cpalead-link" target="_blank" class="btn-yellow">1. عروض CPALead</a>
-                <a href="#" id="cpagrip-link" target="_blank" class="btn-yellow">2. عروض CPAGrip</a>
+                <a href="cpagrip.html" class="btn-yellow">2. عروض CPAGrip</a>
                 <a href="#" target="_blank" class="btn-yellow">3. AdGate عروض إضافية</a>
             </div>
         </div>
@@ -113,7 +112,7 @@
         </div>
     </div>
 
-    <!-- شريط التنقل السفلي المحدث (6 أزرار صحيحة) -->
+    <!-- شريط التنقل السفلي -->
     <div class="bottom-nav">
         <a href="index.html" class="nav-item active"><span class="nav-icon">🏠</span>الرئيسية</a>
         <a href="videos.html" class="nav-item"><span class="nav-icon">🎬</span>فيديوهات</a>
@@ -148,21 +147,12 @@
         const pointsKey = "points_" + userEmail;
         const lastSpinKey = "last_spin_time_" + userEmail;
 
-        // جلب الـ uid الحقيقي من Firebase وتحديث روابط شركات العروض تلقائياً
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                const userId = user.uid; // معرف المستخدم من قاعدة البيانات
-                
-                // تحديث رابط CPALead
+                const userId = user.uid;
                 const cpaleadLink = document.getElementById("cpalead-link");
                 if (cpaleadLink) {
                     cpaleadLink.href = "https://www.lnksforyou.com/wall/2qQGUmC?subid=" + userId;
-                }
-
-                // تحديث رابط جدار عروض CPAGrip المباشر مع تمرير معرف المستخدم
-                const cpagripLink = document.getElementById("cpagrip-link");
-                if (cpagripLink) {
-                    cpagripLink.href = "https://cpagrip.com/view.php?tracking_id=1913952&subid=" + userId;
                 }
             }
         });
@@ -195,24 +185,6 @@
                 }
             }
         }
-
-        function checkSpinAvailability() {
-            const lastSpinTime = localStorage.getItem(lastSpinKey);
-            const resultText = document.getElementById("wheelResult");
-
-            if (lastSpinTime) {
-                const now = new Date().getTime();
-                const elapsedHours = (now - parseInt(lastSpinTime)) / (1000 * 60 * 60);
-
-                if (elapsedHours < 24) {
-                    const remainingHours = Math.ceil(24 - elapsedHours);
-                    resultText.innerText = `لقد قمت بتدوير المجلة اليوم! يمكنك المحاولة مرة أخرى بعد ${remainingHours} ساعة.`;
-                    return false;
-                }
-            }
-            return true;
-        }
-        checkSpinAvailability();
 
         let isSpinning = false;
         window.spinWheel = async function() {
