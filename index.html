@@ -85,7 +85,6 @@
             <h3 style="margin-bottom: 15px;">شركات حائط العروض</h3>
             <div class="offers-grid">
                 <a href="#" id="cpalead-link" target="_blank" class="btn-yellow">1. عروض CPALead</a>
-                <!-- تم وضع رابط حائط العروض الخاص بـ CPAGrip هنا مع دعم معرف المستخدم تلقائياً -->
                 <a href="#" id="cpagrip-link" target="_blank" class="btn-yellow">2. عروض CPAGrip</a>
                 <a href="#" target="_blank" class="btn-yellow">3. AdGate عروض إضافية</a>
             </div>
@@ -160,10 +159,10 @@
                     cpaleadLink.href = "https://www.lnksforyou.com/wall/2qQGUmC?subid=" + userId;
                 }
 
-                // تحديث رابط CPAGrip بناءً على الرابط المأخوذ من صورك مع تمرير الـ subid
+                // تحديث رابط جدار عروض CPAGrip الصحيح مع تمرير معرف المستخدم
                 const cpagripLink = document.getElementById("cpagrip-link");
                 if (cpagripLink) {
-                    cpagripLink.href = "https://doctoredits.com/1914002?subid=" + userId;
+                    cpagripLink.href = "https://doctoredits.com/script_include.php?id=1913952&subid=" + userId;
                 }
             }
         });
